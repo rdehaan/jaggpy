@@ -1,5 +1,7 @@
-# We set up useful python classes for the scenarios and the 
-# possible solvers. 
+#####################################################################
+## Useful python classes for the scenarios and the 
+## possible solvers. 
+#####################################################################
 
 # A scenario class that will be read from a .jagg file. A scenario
 # has an agenda, input constraints, output constraints and a profile.
@@ -26,10 +28,10 @@ class Scenario:
 # A solver class with an enumerate_outcomes function that enumerates
 # all the outcomes given a scenario and an aggregation rule.
 class Solver:
-	def __init__(self, name, solver):
+	def __init__(self, name, solve):
 		self.name = name
-		self.solver = solver
+		self.solve = solve
 	
 	def enumerate_outcomes(self, scenario, rule):
-		for outcome in self.solver(scenario, rule):
+		for outcome in self.solve(scenario, rule):
 			print(outcome)
