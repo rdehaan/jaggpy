@@ -5,8 +5,10 @@
 
 # A scenario class that will be read from a .jagg file. A scenario
 # has an agenda, input constraints, output constraints and a profile.
-class Scenario:
 
+from abc import ABC, abstractmethod
+
+class Scenario:
 	def __init__(self):
 		self.agenda = []
 		self.inputConstraints = []
@@ -25,12 +27,16 @@ class Scenario:
 	def addToProfile(self, judgementSet):
 		self.profile.append(judgementSet)
 
+	def loadFromFile(self, file):
+		"""Load the scenario from a .jagg file """
+		raise NotImplementedError
+
 # A solver class with an enumerate_outcomes function that enumerates
 # all the outcomes given a scenario and an aggregation rule.
-class Solver:
-	def __init__(self, name, solve):
-		self.name = name
-		self.solve = solve
+class Solver(ABC):
+	@abstractmethod
+	def solve(self, scenario, rule):
+		pass
 	
 	def enumerate_outcomes(self, scenario, rule):
 		for outcome in self.solve(scenario, rule):

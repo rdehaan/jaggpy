@@ -3,10 +3,10 @@
 ## outcome of the judgement aggregation.
 #####################################################################
 
-import jaggpy.classes
+from classes import Solver
 
-def solve(scenario, rule):
-	"""Given a scenario and a rule we give back the outcome of the
-	judgement aggregation in the simplest possible way."""
-
-bruteForce = jaggpy.classes.Solver("Brute Force Solver", solve)
+class BruteForce(Solver):
+	def solve(self, scenario, rule):
+		"""Given a scenario object and the name of a rule 
+		this function will create a list of all the outcomes
+		of the judgement aggregation. """
