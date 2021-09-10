@@ -18,7 +18,8 @@ class Scenario:
 		self.agenda = dict()
 		self.inputConstraints = []
 		self.outputConstraints = []
-		self.profile = dict()
+		self.profile = []
+		self.variables = []
 
 	def addToAgenda(self, formula):
 		"""The addToAgenda function takes a formula as its only argument.
@@ -75,6 +76,7 @@ class Scenario:
 		The path should be a raw string, i.e. of the form r"path/to/file". 
 		The file should have the following format, with each element being on 
 		a new line:
+			- var_1,..., var_n: list of all the variables
 			- Number of Formulas: The number of formulas in the pre-agenda
 			- X, Formula: The formula labeled by the number X  
 			- In, Formula: The input constraint labeled by the text "In"
@@ -97,9 +99,12 @@ class Scenario:
 		lines = text.splitlines()
 		conn.close()
 
+		self.variables = lines[0].split(", ")
+		print(self.variables)
+
 		# Add the formulas to the agenda dictionary using the given label
-		numberOfFormulas = int(lines[0])
-		for i in range(1, numberOfFormulas+1):
+		numberOfFormulas = int(lines[1])
+		for i in range(2, numberOfFormulas+1):
 			currentLine = lines[i].split(", ")
 			label = int(currentLine[0])
 			formula = currentLine[1]
@@ -128,7 +133,8 @@ class Scenario:
 			acceptedFormulas = []
 			for formulaLabel in formulaLabels:
 				acceptedFormulas.append(self.agenda[formulaLabel])
-			self.profile[label] = acceptedFormulas
+			self.profile.append = [label, acceptedFormulas]
+			print(self.profile)
 
 		self.checkConsistency()
 
@@ -137,25 +143,25 @@ class Scenario:
 
 	def prettyPrint(self):
 		"""Prints the Scenario object in a readable way"""
-		print("Sub-agenda (label, formula):")
-		for key in self.agenda:
-			print(key, self.agenda[key])
-		print("\nInput constraint:")
-		for constraint in self.inputConstraints:
-			print(constraint)
-		print("\nOutput constraint:")
-		for constraint in self.outputConstraints:
-			print(constraint)
-		print("\nProfile (label, accepted formulas):")
-		for js in self.profile:
-			accepted = "("
-			for variable in self.profile[js]:
-				if accepted == "(":
-					accepted += variable
-				else:
-					accepted += ", " + variable
-			accepted += ")"
-			print(js,  accepted)
+	# 	print("Sub-agenda (label, formula):")
+	# 	for key in self.agenda:
+	# 		print(key, self.agenda[key])
+	# 	print("\nInput constraint:")
+	# 	for constraint in self.inputConstraints:
+	# 		print(constraint)
+	# 	print("\nOutput constraint:")
+	# 	for constraint in self.outputConstraints:
+	# 		print(constraint)
+	# 	print("\nProfile (label, accepted formulas):")
+	# 	for js in self.profile:
+	# 		accepted = "("
+	# 		for variable in self.profile[js]:
+	# 			if accepted == "(":
+	# 				accepted += variable
+	# 			else:
+	# 				accepted += ", " + variable
+	# 		accepted += ")"
+	# 		print(js,  accepted)
 
 # A solver class with an enumerate_outcomes function that enumerates
 # all the outcomes given a scenario and an aggregation rule.
