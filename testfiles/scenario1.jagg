@@ -1,0 +1,19 @@
+4
+1, x1
+2, x2
+3, x3
+4, x4
+In, ((not x1 or not x2) or not x3) and ((not x1 or not x3) or not x4)
+Out, ((not x1 or not x2) or not x3) and ((not x1 or not x3) or not x4)
+11
+1, [2,3,4] 
+2, [2,3,4] 
+3, [2,3,4] 
+4, [1,2]
+5, [1,2,4]
+6, [1,2,4]
+7, [1,2,4]
+8, [1]
+9, [1]
+10, [1]
+11, [1]

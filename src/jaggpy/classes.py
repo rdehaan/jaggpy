@@ -28,7 +28,25 @@ class Scenario:
 		self.profile.append(judgementSet)
 
 	def loadFromFile(self, file):
-		"""Load the scenario from a .jagg file """
+		"""Load the scenario from a .jagg file. The file should
+		have the following format, with each element being on 
+		a new line:
+			- Number of Formulas: The number of formulas in the pre-agenda
+			- X, Formula: The formula labeled by the number X  
+			- In, Formula: The input constraint labeled by the text "In"
+			- Out, Formula: The output constraint labeled by the text "Out"
+			- Number of Judgement Sets: The total number of judgement sets
+			- J, [Phi_1,...,Phi_n]: A list of the formulas phi_1 to phi_n 
+				that are accepted labelled by the number J. The formulas 
+				should be given by their label. The rest is rejected.
+		A formula should be build by lowercase atoms and the following operators:
+			- not
+			- and 
+			- or
+		The outermost parentheses can be omitted, but internal parentheses must
+		be explicit. For example, "(not x1 or not x2) or not x3" is the correct
+		format, while "not x1 or not x2 or not x3 will" not work.
+			"""
 		raise NotImplementedError
 
 # A solver class with an enumerate_outcomes function that enumerates
