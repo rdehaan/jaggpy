@@ -10,26 +10,158 @@ from abc import ABC, abstractmethod
 
 class Scenario:
 	def __init__(self):
-		self.agenda = []
+		"""A Scenario object has the following properties:
+			- agenda: a list of formulas
+			- inputConstraints: a list of input constraints
+			- outputConstraints: a list of output constraints
+			- profile: a list of judgement sets """
+		self.agenda = dict()
 		self.inputConstraints = []
 		self.outputConstraints = []
 		self.profile = []
+		self.variables = []
 
 	def addToAgenda(self, formula):
-		self.agenda.append(formula)
+		"""The addToAgenda function takes a formula as its only argument.
+		A formula should be in NNF and can contain the following operators:
+			- The OR operator |
+			- The AND operator &
+			- The NOT operator ~
+		The outermost parentheses can be omitted, internal parentheses must
+		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
+		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
+		newLabel = len(self.agenda)+1
+		self.agenda[newLabel] = formula
+		self.checkConsistency()
 
 	def addToInputConstraints(self, constraint):
+		"""The addToInputConstraints function takes a formula as its only argument.
+		A formula should be in NNF and can contain the following operators:
+			- The OR operator |
+			- The AND operator &
+			- The NOT operator ~
+		The outermost parentheses can be omitted, internal parentheses must
+		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
+		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
 		self.inputConstraints.append(constraint)
+		self.checkConsistency()
 
 	def addToOutputConstraints(self, constraint):
+		"""The addToOutputConstraints function takes a formula as its only argument.
+		A formula should be in NNF and can contain the following operators:
+			- The OR operator |
+			- The AND operator &
+			- The NOT operator ~
+		The outermost parentheses can be omitted, internal parentheses must
+		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
+		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work. """
 		self.outputConstraints.append(constraint)
+		self.checkConsistency()
 
-	def addToProfile(self, judgementSet):
-		self.profile.append(judgementSet)
+	def addToProfile(self, times, judgementSet):
+		"""The addToProfile function takes a judgement set as its only argument.
+		A judgement set should be a list of the labels of the formula that are
+		accepted. The rest is rejected. The formulas should be given by their 
+		label and seperated by a semicolon. For example, "2;4;5" """
+		formulaLabels = list(map(int, judgementSet.split(";")))
+		acceptedFormulas = []
+		for formulaLabel in formulaLabels:
+			acceptedFormulas.append(self.agenda[formulaLabel])
+		self.profile.append([times, acceptedFormulas])
+		self.checkConsistency()
 
-	def loadFromFile(self, file):
-		"""Load the scenario from a .jagg file """
-		raise NotImplementedError
+	def loadFromFile(self, path):
+		"""Load the scenario from a .jagg file given its path.
+		The path should be a raw string, i.e. of the form r"path/to/file". 
+		The file should have the following format, with each element being on 
+		a new line:
+			- var_1,..., var_n: list of all the variables
+			- Number of Formulas: The number of formulas in the pre-agenda
+			- X, Formula: The formula labeled by the number X  
+			- In, Formula: The input constraint labeled by the text "In"
+			- Out, Formula: The output constraint labeled by the text "Out"
+			- Number of Judgement Sets: The total number of judgement sets
+			- J, phi_1;...;phi_n: A list of the formulas phi_1 to phi_n 
+				that are accepted. The rest is rejected. This profile occurs J times.
+				The formulas should be given by the times they are selected 
+				and seperated by a semicolon. For example, "4, 2;4;5".
+		A formula should be in NNF and can contain the following operators:
+			- The OR operator |
+			- The AND operator &
+			- The NOT operator ~
+		The outermost parentheses can be omitted, internal parentheses must
+		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
+		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work.
+			"""
+		conn = open(path)
+		text = conn.read()
+		lines = text.splitlines()
+		conn.close()
+
+		self.variables = lines[0].split(", ")
+
+		# Add the formulas to the agenda dictionary using the given label
+		numberOfFormulas = int(lines[1])
+		for i in range(2, numberOfFormulas+2):
+			currentLine = lines[i].split(", ")
+			label = int(currentLine[0])
+			formula = currentLine[1]
+			self.agenda[label] = formula
+
+		# Add the input constraints to the list of constraints
+		lineNumber = numberOfFormulas+2
+		while lines[lineNumber].split(", ")[0] == "In":
+			formula = lines[lineNumber].split(", ")[1]
+			self.inputConstraints.append(formula)	
+			lineNumber += 1
+		
+		# Add the output constraints to the list of constraints
+		while lines[lineNumber].split(", ")[0] == "Out":
+			formula = lines[lineNumber].split(", ")[1]
+			self.outputConstraints.append(formula)	
+			lineNumber += 1
+			
+		# Add the list of accepted formulas to the profile dictionary
+		# for each of the judgement sets.
+		numberOfJS = int(lines[lineNumber].split(", ")[1])
+		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
+			currentLine = lines[i].split(", ")
+			label = int(currentLine[0])
+			formulaLabels = list(map(int, currentLine[1].split(";")))
+			acceptedFormulas = []
+			for formulaLabel in formulaLabels:
+				acceptedFormulas.append(self.agenda[formulaLabel])
+			self.profile.append([label, acceptedFormulas])
+
+		self.checkConsistency()
+
+	def checkConsistency(self):
+		print("Checking consistency...")
+
+	def prettyPrint(self):
+		"""Prints the Scenario object in a readable way"""
+		print("Variables: ")
+		for variable in self.variables:
+			print(variable)
+		print("\nSub-agenda (label, formula):")
+		for key in self.agenda:
+			print(key, self.agenda[key])
+		print("\nInput constraint:")
+		for constraint in self.inputConstraints:
+			print(constraint)
+		print("\nOutput constraint:")
+		for constraint in self.outputConstraints:
+			print(constraint)
+		print("\nProfile (times selected, accepted formulas):")
+		for js in self.profile:
+			accepted = "("
+			for variable in js[1]:
+				if accepted == "(":
+					accepted += variable
+				else:
+					accepted += ", " + variable
+			accepted += ")"
+			print(js[0],  accepted)
 
 # A solver class with an enumerate_outcomes function that enumerates
 # all the outcomes given a scenario and an aggregation rule.
