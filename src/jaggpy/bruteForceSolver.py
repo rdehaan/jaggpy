@@ -3,7 +3,7 @@
 ## outcome of the judgement aggregation.
 #####################################################################
 
-from classes import Solver
+from .classes import Solver
 
 class BruteForce(Solver):
 	def solve(self, scenario, rule):
