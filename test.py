@@ -9,5 +9,7 @@ filePath = r"testfiles/scenario1.jagg"
 
 scenario1.loadFromFile(filePath)
 
+scenario1.prettyPrint()
+
 # brutus = BruteForce()
 # print(brutus.solve("a", "b"))

@@ -128,7 +128,25 @@ class Scenario:
 
 	def prettyPrint(self):
 		"""Prints the Scenario object in a readable way"""
-		raise NotImplementedError
+		print("Sub-agenda (label, formula):")
+		for key in self.agenda:
+			print(key, self.agenda[key])
+		print("\nInput constraint:")
+		for constraint in self.inputConstraints:
+			print(constraint)
+		print("\nOutput constraint:")
+		for constraint in self.outputConstraints:
+			print(constraint)
+		print("\nProfile (label, accepted formulas):")
+		for js in self.profile:
+			accepted = "("
+			for variable in self.profile[js]:
+				if accepted == "(":
+					accepted += variable
+				else:
+					accepted += ", " + variable
+			accepted += ")"
+			print(js,  accepted)
 
 # A solver class with an enumerate_outcomes function that enumerates
 # all the outcomes given a scenario and an aggregation rule.
