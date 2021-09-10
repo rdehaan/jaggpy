@@ -61,7 +61,7 @@ class Scenario:
 		"""The addToProfile function takes a judgement set as its only argument.
 		A judgement set should be a list of the labels of the formula that are
 		accepted. The rest is rejected. The formulas should be given by their 
-		label and seperated by a semicolon. For example, "4, 2;4;5" """
+		label and seperated by a semicolon. For example, "2;4;5" """
 		newLabel = len(self.profile)+1
 		formulaLabels = list(map(int, judgementSet.split(";")))
 		acceptedFormulas = []
