@@ -22,38 +22,38 @@ class Scenario:
 
 	def addToAgenda(self, formula):
 		"""The addToAgenda function takes a formula as its only argument.
-		A formula should be build by lowercase atoms and the following operators:
-			- not
-			- and 
-			- or
-		The outermost parentheses can be omitted, but internal parentheses must
-		be explicit. For example, "(not x1 or not x2) or not x3" is the correct
-		format, while "not x1 or not x2 or not x3 will" not work. """
+		A formula should be in NNF and can contain the following operators:
+			- The OR operator |
+			- The AND operator &
+			- The NOT operator ~
+		The outermost parentheses can be omitted, internal parentheses must
+		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
+		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
 		newLabel = len(self.agenda)+1
 		self.agenda[newLabel] = formula
 		self.checkConsistency()
 
 	def addToInputConstraints(self, constraint):
 		"""The addToInputConstraints function takes a formula as its only argument.
-		A formula should be build by lowercase atoms and the following operators:
-			- not
-			- and 
-			- or
-		The outermost parentheses can be omitted, but internal parentheses must
-		be explicit. For example, "(not x1 or not x2) or not x3" is the correct
-		format, while "not x1 or not x2 or not x3 will" not work. """
+		A formula should be in NNF and can contain the following operators:
+			- The OR operator |
+			- The AND operator &
+			- The NOT operator ~
+		The outermost parentheses can be omitted, internal parentheses must
+		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
+		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
 		self.inputConstraints.append(constraint)
 		self.checkConsistency()
 
 	def addToOutputConstraints(self, constraint):
 		"""The addToOutputConstraints function takes a formula as its only argument.
-		A formula should be build by lowercase atoms and the following operators:
-			- not
-			- and 
-			- or
-		The outermost parentheses can be omitted, but internal parentheses must
-		be explicit. For example, "(not x1 or not x2) or not x3" is the correct
-		format, while "not x1 or not x2 or not x3 will" not work. """
+		A formula should be in NNF and can contain the following operators:
+			- The OR operator |
+			- The AND operator &
+			- The NOT operator ~
+		The outermost parentheses can be omitted, internal parentheses must
+		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
+		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work. """
 		self.outputConstraints.append(constraint)
 		self.checkConsistency()
 
@@ -84,13 +84,13 @@ class Scenario:
 				that are accepted labelled by the number J. The rest is rejected.
 				The formulas should be given by their label and seperated 
 				by a semicolon. For example, "4, 2;4;5"
-		A formula should be build by lowercase atoms and the following operators:
-			- not
-			- and 
-			- or
+		A formula should be in NNF and can contain the following operators:
+			- The OR operator |
+			- The AND operator &
+			- The NOT operator ~
 		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "(not x1 or not x2) or not x3" is the correct
-		format, while "not x1 or not x2 or not x3 will" not work.
+		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
+		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work.
 			"""
 		conn = open(path)
 		text = conn.read()
