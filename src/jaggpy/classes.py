@@ -31,6 +31,7 @@ class Scenario:
 		format, while "not x1 or not x2 or not x3 will" not work. """
 		newLabel = len(self.agenda)+1
 		self.agenda[newLabel] = formula
+		self.checkConsistency()
 
 	def addToInputConstraints(self, constraint):
 		"""The addToInputConstraints function takes a formula as its only argument.
@@ -42,6 +43,7 @@ class Scenario:
 		be explicit. For example, "(not x1 or not x2) or not x3" is the correct
 		format, while "not x1 or not x2 or not x3 will" not work. """
 		self.inputConstraints.append(constraint)
+		self.checkConsistency()
 
 	def addToOutputConstraints(self, constraint):
 		"""The addToOutputConstraints function takes a formula as its only argument.
@@ -53,6 +55,7 @@ class Scenario:
 		be explicit. For example, "(not x1 or not x2) or not x3" is the correct
 		format, while "not x1 or not x2 or not x3 will" not work. """
 		self.outputConstraints.append(constraint)
+		self.checkConsistency()
 
 	def addToProfile(self, judgementSet):
 		"""The addToProfile function takes a judgement set as its only argument.
@@ -65,6 +68,7 @@ class Scenario:
 		for formulaLabel in formulaLabels:
 			acceptedFormulas.append(self.agenda[formulaLabel])
 		self.profile[newLabel] = acceptedFormulas
+		self.checkConsistency()
 
 	def loadFromFile(self, path):
 		"""Load the scenario from a .jagg file given its path.
@@ -125,6 +129,11 @@ class Scenario:
 			for formulaLabel in formulaLabels:
 				acceptedFormulas.append(self.agenda[formulaLabel])
 			self.profile[label] = acceptedFormulas
+
+		self.checkConsistency()
+
+	def checkConsistency(self):
+		print("Checking consistency...")
 
 	def prettyPrint(self):
 		"""Prints the Scenario object in a readable way"""
