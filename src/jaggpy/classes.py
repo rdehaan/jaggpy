@@ -58,17 +58,16 @@ class Scenario:
 		self.outputConstraints.append(constraint)
 		self.checkConsistency()
 
-	def addToProfile(self, judgementSet):
+	def addToProfile(self, times, judgementSet):
 		"""The addToProfile function takes a judgement set as its only argument.
 		A judgement set should be a list of the labels of the formula that are
 		accepted. The rest is rejected. The formulas should be given by their 
 		label and seperated by a semicolon. For example, "2;4;5" """
-		newLabel = len(self.profile)+1
 		formulaLabels = list(map(int, judgementSet.split(";")))
 		acceptedFormulas = []
 		for formulaLabel in formulaLabels:
 			acceptedFormulas.append(self.agenda[formulaLabel])
-		self.profile[newLabel] = acceptedFormulas
+		self.profile.append([times, acceptedFormulas])
 		self.checkConsistency()
 
 	def loadFromFile(self, path):
@@ -83,9 +82,9 @@ class Scenario:
 			- Out, Formula: The output constraint labeled by the text "Out"
 			- Number of Judgement Sets: The total number of judgement sets
 			- J, phi_1;...;phi_n: A list of the formulas phi_1 to phi_n 
-				that are accepted labelled by the number J. The rest is rejected.
-				The formulas should be given by their label and seperated 
-				by a semicolon. For example, "4, 2;4;5"
+				that are accepted. The rest is rejected. This profile occurs J times.
+				The formulas should be given by the times they are selected 
+				and seperated by a semicolon. For example, "4, 2;4;5".
 		A formula should be in NNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
@@ -100,18 +99,17 @@ class Scenario:
 		conn.close()
 
 		self.variables = lines[0].split(", ")
-		print(self.variables)
 
 		# Add the formulas to the agenda dictionary using the given label
 		numberOfFormulas = int(lines[1])
-		for i in range(2, numberOfFormulas+1):
+		for i in range(2, numberOfFormulas+2):
 			currentLine = lines[i].split(", ")
 			label = int(currentLine[0])
 			formula = currentLine[1]
 			self.agenda[label] = formula
 
 		# Add the input constraints to the list of constraints
-		lineNumber = numberOfFormulas+1
+		lineNumber = numberOfFormulas+2
 		while lines[lineNumber].split(", ")[0] == "In":
 			formula = lines[lineNumber].split(", ")[1]
 			self.inputConstraints.append(formula)	
@@ -125,7 +123,7 @@ class Scenario:
 			
 		# Add the list of accepted formulas to the profile dictionary
 		# for each of the judgement sets.
-		numberOfJS = int(lines[lineNumber])
+		numberOfJS = int(lines[lineNumber].split(", ")[1])
 		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
 			currentLine = lines[i].split(", ")
 			label = int(currentLine[0])
@@ -133,8 +131,7 @@ class Scenario:
 			acceptedFormulas = []
 			for formulaLabel in formulaLabels:
 				acceptedFormulas.append(self.agenda[formulaLabel])
-			self.profile.append = [label, acceptedFormulas]
-			print(self.profile)
+			self.profile.append([label, acceptedFormulas])
 
 		self.checkConsistency()
 
@@ -143,25 +140,28 @@ class Scenario:
 
 	def prettyPrint(self):
 		"""Prints the Scenario object in a readable way"""
-	# 	print("Sub-agenda (label, formula):")
-	# 	for key in self.agenda:
-	# 		print(key, self.agenda[key])
-	# 	print("\nInput constraint:")
-	# 	for constraint in self.inputConstraints:
-	# 		print(constraint)
-	# 	print("\nOutput constraint:")
-	# 	for constraint in self.outputConstraints:
-	# 		print(constraint)
-	# 	print("\nProfile (label, accepted formulas):")
-	# 	for js in self.profile:
-	# 		accepted = "("
-	# 		for variable in self.profile[js]:
-	# 			if accepted == "(":
-	# 				accepted += variable
-	# 			else:
-	# 				accepted += ", " + variable
-	# 		accepted += ")"
-	# 		print(js,  accepted)
+		print("Variables: ")
+		for variable in self.variables:
+			print(variable)
+		print("\nSub-agenda (label, formula):")
+		for key in self.agenda:
+			print(key, self.agenda[key])
+		print("\nInput constraint:")
+		for constraint in self.inputConstraints:
+			print(constraint)
+		print("\nOutput constraint:")
+		for constraint in self.outputConstraints:
+			print(constraint)
+		print("\nProfile (times selected, accepted formulas):")
+		for js in self.profile:
+			accepted = "("
+			for variable in js[1]:
+				if accepted == "(":
+					accepted += variable
+				else:
+					accepted += ", " + variable
+			accepted += ")"
+			print(js[0],  accepted)
 
 # A solver class with an enumerate_outcomes function that enumerates
 # all the outcomes given a scenario and an aggregation rule.
