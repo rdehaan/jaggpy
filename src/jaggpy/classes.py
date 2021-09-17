@@ -7,6 +7,7 @@
 # has an agenda, input constraints, output constraints and a profile.
 
 from abc import ABC, abstractmethod
+from nnf import *
 
 class Scenario:
 	def __init__(self):
@@ -20,9 +21,16 @@ class Scenario:
 		self.outputConstraints = []
 		self.profile = []
 		self.variables = []
+	
+	def addToVariables(self, variable):
+		"""The addToVariables takes a string denoting a new variable as its
+		only argument. """
+		self.variables.append(variable)
 
 	def addToAgenda(self, formula):
 		"""The addToAgenda function takes a formula as its only argument.
+		If the formuls uses new variables, these should be added as well with
+		the addToVariables(var) function.
 		A formula should be in NNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
@@ -32,10 +40,11 @@ class Scenario:
 		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
 		newLabel = len(self.agenda)+1
 		self.agenda[newLabel] = formula
-		self.checkConsistency()
 
 	def addToInputConstraints(self, constraint):
 		"""The addToInputConstraints function takes a formula as its only argument.
+		If the new constraint uses new variables, these should be added as well with
+		the addToVariables(var) function.
 		A formula should be in NNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
@@ -44,10 +53,17 @@ class Scenario:
 		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
 		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
 		self.inputConstraints.append(constraint)
-		self.checkConsistency()
+		my_string = ""
+		for conjunct in self.inputConstraints:
+			my_string += f"({conjunct}) & "
+		my_string = my_string[:-3]
+		if not self.checkConsistency(my_string):
+			raise Exception ("The input constraints are inconsistent")
 
 	def addToOutputConstraints(self, constraint):
 		"""The addToOutputConstraints function takes a formula as its only argument.
+		If the new constraint uses new variables, these should be added as well with
+		the addToVariables(var) function.
 		A formula should be in NNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
@@ -56,11 +72,16 @@ class Scenario:
 		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
 		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work. """
 		self.outputConstraints.append(constraint)
-		self.checkConsistency()
+		my_string = ""
+		for conjunct in self.outputConstraints:
+			my_string += f"({conjunct}) & "
+		my_string = my_string[:-3]
+		if not self.checkConsistency(my_string):
+			raise Exception ("The input constraints are inconsistent")
 
 	def addToProfile(self, times, judgementSet):
 		"""The addToProfile function takes a judgement set as its only argument.
-		A judgement set should be a list of the labels of the formula that are
+		A judgement set should be a list of the labels of the formulas that are
 		accepted. The rest is rejected. The formulas should be given by their 
 		label and seperated by a semicolon. For example, "2;4;5" """
 		formulaLabels = list(map(int, judgementSet.split(";")))
@@ -68,7 +89,21 @@ class Scenario:
 		for formulaLabel in formulaLabels:
 			acceptedFormulas.append(self.agenda[formulaLabel])
 		self.profile.append([times, acceptedFormulas])
-		self.checkConsistency()
+		
+		# Check consistency of the judgement set with respect # to the input constraint
+		my_string = ""
+		for conjunct in self.inputConstraints:
+			my_string += f"({conjunct}) & "
+		for formulaLabel in formulaLabels:
+			my_string += f"({self.agenda[formulaLabel]}) & "
+		for j in range(1, len(self.agenda)+1):
+			if j not in formulaLabels:
+				my_string += f"(~{self.agenda[j]}) & "
+		my_string = my_string[:-3]
+		self.checkConsistency(my_string)
+		if not self.checkConsistency(my_string):
+			raise Exception (f"The new judgement set is inconsistent"\
+				"with the output constraints.")
 
 	def loadFromFile(self, path):
 		"""Load the scenario from a .jagg file given its path.
@@ -114,13 +149,30 @@ class Scenario:
 			formula = lines[lineNumber].split(", ")[1]
 			self.inputConstraints.append(formula)	
 			lineNumber += 1
+
+		# Check consistency of the input constraints
+		my_string = ""
+		for conjunct in self.inputConstraints:
+			my_string += f"({conjunct}) & "
+		my_string = my_string[:-3]
+		if not self.checkConsistency(my_string):
+			raise Exception ("The input constraints are inconsistent")
 		
 		# Add the output constraints to the list of constraints
 		while lines[lineNumber].split(", ")[0] == "Out":
 			formula = lines[lineNumber].split(", ")[1]
 			self.outputConstraints.append(formula)	
 			lineNumber += 1
-			
+
+		# Check consistency of the output constraints
+		my_string = ""
+		for conjunct in self.outputConstraints:
+			my_string += f"({conjunct}) & "
+		my_string = my_string[:-3]
+		self.checkConsistency(my_string)
+		if not self.checkConsistency(my_string):
+			raise Exception ("The output constraints are inconsistent")
+
 		# Add the list of accepted formulas to the profile dictionary
 		# for each of the judgement sets.
 		numberOfJS = int(lines[lineNumber].split(", ")[1])
@@ -133,10 +185,41 @@ class Scenario:
 				acceptedFormulas.append(self.agenda[formulaLabel])
 			self.profile.append([label, acceptedFormulas])
 
-		self.checkConsistency()
+			# Check consistency of the judgement set with respect 
+			# to the input constraint
+			my_string = ""
+			for conjunct in self.inputConstraints:
+				my_string += f"({conjunct}) & "
+			for formulaLabel in formulaLabels:
+				my_string += f"({self.agenda[formulaLabel]}) & "
+			for j in range(1, len(self.agenda)+1):
+				if j not in formulaLabels:
+					my_string += f"(~{self.agenda[j]}) & "
+			my_string = my_string[:-3]
+			self.checkConsistency(my_string)
+			if not self.checkConsistency(my_string):
+				raise Exception (f"The judgement set on line {i} is inconsistent"\
+					"with the output constraints.")
 
-	def checkConsistency(self):
-		print("Checking consistency...")
+	def checkConsistency(self, sentence):
+		my_string = sentence
+
+		# Use a prefix to prevent variable name collisions
+		# Add this prefix to all variables in the string
+		var_prefix = "my_var_"
+		my_string_preprocessed = my_string
+		for var in self.variables:
+			my_string_preprocessed = my_string_preprocessed.replace(var, var_prefix + var)
+
+		# Declare variables (with prefix) and parse the formula with the
+		# variable prefixes added
+		for var in self.variables:
+			exec(f"{var_prefix}{var} = Var('{var}')")
+		formula = eval(my_string_preprocessed)
+
+		# Return whether the formula is consistent
+		return(formula.consistent())
+		
 
 	def prettyPrint(self):
 		"""Prints the Scenario object in a readable way"""

@@ -10,4 +10,5 @@ absoluteFilePath = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario1
 
 scenario1.loadFromFile(relativeFilePath)
 
-scenario1.prettyPrint()
+
+# scenario1.prettyPrint()
