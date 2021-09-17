@@ -14,3 +14,5 @@ scenario1.loadFromFile(relativeFilePath)
 brutus = BruteForce()
 
 brutus.solve(scenario1, "slater")
+
+print(scenario1.agenda)

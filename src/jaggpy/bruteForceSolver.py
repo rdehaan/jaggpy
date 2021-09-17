@@ -30,6 +30,7 @@ class BruteForce(Solver):
 			exec(f"{var_prefix}{var} = Var('{var}')")
 		outputConstraint = eval(my_string_preprocessed)
 		consistentOutcomes =  list(outputConstraint.models())
+		print(consistentOutcomes)
 
 		# We can see if the formula labeled by X is true in model N by using
 		# print(consistentOutcomes[N][scenario.agenda[X]])
@@ -37,6 +38,31 @@ class BruteForce(Solver):
 		# Kemeny rule
 		if rule == "kemeny":
 			print("Solving the Kemeny rule")
+
+			# Keep track of the maximum agreement score and initiate list of outcomes
+			maxAgreement = 0
+			outcomes = []
+
+			# Check agreement score for each outcome and update list of outcomes accordingly
+			for outcome in consistentOutcomes:
+				agreementScore = 0
+				# For each formula in the pre-agenda, check how many agents agree with the outcome and update agreement score.
+				for formula in scenario.agenda.values():
+					if outcome[formula]:
+						agreementScore += supportNumber(scenario.agenda, scenario.profile)
+					else:
+						agreementScore += scenario.numberVoters - supportNumber(scenario.agenda, scenario.profile)
+				
+				if agreementScore == maxAgreement:
+					outcomes.append(outcome)
+				elif agreementScore > maxAgreement:
+					maxAgreement = agreementScore
+					outcomes = [outcome]
+			
+			return(outcomes)
+				
+
+					
 
 		# Other rules.
 		elif rule == "slater":

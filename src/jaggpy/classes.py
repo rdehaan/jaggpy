@@ -21,6 +21,7 @@ class Scenario:
 		self.outputConstraints = []
 		self.profile = []
 		self.variables = []
+		self.numberVoters = 0
 	
 	def addToVariables(self, variable):
 		"""The addToVariables takes a string denoting a new variable as its
@@ -89,6 +90,7 @@ class Scenario:
 		for formulaLabel in formulaLabels:
 			acceptedFormulas.append(self.agenda[formulaLabel])
 		self.profile.append([times, acceptedFormulas])
+		self.numberVoters += times
 		
 		# Check consistency of the judgement set with respect # to the input constraint
 		my_string = ""
@@ -174,6 +176,10 @@ class Scenario:
 
 		# Add the list of accepted formulas to the profile dictionary
 		# for each of the judgement sets.
+		self.numberVoters += int(lines[lineNumber].split(", ")[0])
+		print(self.numberVoters)
+
+
 		numberOfJS = int(lines[lineNumber].split(", ")[1])
 		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
 			currentLine = lines[i].split(", ")
