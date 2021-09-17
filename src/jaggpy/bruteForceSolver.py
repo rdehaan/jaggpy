@@ -7,6 +7,7 @@ from .classes import Solver
 from nnf import *
 from itertools import chain, combinations
 import copy
+import math
 
 class BruteForce(Solver):
 	def solve(self, scenario, rule):
@@ -16,6 +17,7 @@ class BruteForce(Solver):
 		as a string and can be one of the following lowercase commands:
 
 			- kemeny
+			- maxhamming
 			- slater 
 			"""
 		# First we make a list of all the judgement sets that are consistent
@@ -38,7 +40,7 @@ class BruteForce(Solver):
 
 		# Kemeny rule
 		if rule == "kemeny":
-			print("Solving the Kemeny rule")
+			print("Computing outcome with the Kemeny rule...")
 
 			# Keep track of the maximum agreement score and initiate list of outcomes
 			maxAgreement = 0
@@ -61,9 +63,42 @@ class BruteForce(Solver):
 					outcomes = [outcome]
 			
 			return(outcomes)
-				
 
-					
+		# MaxHamming rule
+		elif rule == "maxhamming":
+			print("Computing outcome with the MaxHamming rule...")
+
+			# Keep track of minimum maximal Hamming distance and initialise list of outcomes.
+			minimumMHD = math.inf
+			outcomes = []
+
+			# Find max Hamming difference for each outcome and update 
+			for outcome in consistentOutcomes:
+				# Reset max Hamming Distance
+				maxHD = 0
+				# Check the Hamming distance from the outcome to each judgement set and track the maximal distance.
+				for judSet in scenario.profile:
+					# Check Hamming distance. NOT CORRECT YET
+					hamDist = 0
+					for formula in scenario.agenda.values():
+						if outcome[formula] and formula not in judSet[1]:
+							hamDist += 1
+						elif not outcome[formula] and formula in judSet[1]:
+							hamDist += 1
+
+					# Update the maximum HD for the outcome.
+					if hamDist > maxHD:
+						maxHD = hamDist
+
+				# Update outcome set to include only those outcomes with the minimum maximum Hamming distance (thus far)
+				if maxHD == minimumMHD:
+					outcomes.append(outcome)
+				elif maxHD < minimumMHD:
+					minimumMHD = maxHD
+					outcomes = [outcome]
+			
+			return(outcomes)
+	
 
 		# Other rules.
 		elif rule == "slater":
@@ -122,12 +157,8 @@ class BruteForce(Solver):
 			return(outcomes)
 
 
-			
-
-
-
 		else:
-			raise Exception ("This is not a rule that has been implemented.")
+			raise Exception (f"{rule} is not a recognized aggregation rule.")
 
 	def supportNumber(self, agenda, profile):
 		"""The function supportNumber gets an agenda profile and returns a dictionary that 
