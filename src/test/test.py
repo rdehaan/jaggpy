@@ -13,6 +13,4 @@ scenario1.loadFromFile(relativeFilePath)
 
 brutus = BruteForce()
 
-brutus.solve(scenario1, "slater")
-
-print(scenario1.agenda)
+print("Outcome according to maxhamming rule is: " + str(brutus.solve(scenario1, "maxhamming")))
