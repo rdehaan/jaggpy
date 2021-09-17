@@ -11,3 +11,13 @@ class BruteForce(Solver):
 		this function will create a list of all the outcomes
 		of the judgement aggregation. """
 		print(["Outcome 1", "Outcome 2", "Outcome 3"])
+
+		# Kemeny rule
+		if rule == "kemeny":
+	
+		# Other rules.
+		# elif rule == :
+
+		else:
+			raise Exception
+
