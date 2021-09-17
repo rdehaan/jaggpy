@@ -13,6 +13,6 @@ scenario1.loadFromFile(relativeFilePath)
 
 brutus = BruteForce()
 
-brutus.solve(scenario1, "slater")
-
-print(scenario1.agenda)
+# print(brutus.solve(scenario1, "kemeny"))
+# print(brutus.solve(scenario1, "slater"))
+brutus.enumerate_outcomes(scenario1, "slater")

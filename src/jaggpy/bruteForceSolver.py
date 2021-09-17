@@ -5,6 +5,8 @@
 
 from .classes import Solver
 from nnf import *
+from itertools import chain, combinations
+import copy
 
 class BruteForce(Solver):
 	def solve(self, scenario, rule):
@@ -30,7 +32,6 @@ class BruteForce(Solver):
 			exec(f"{var_prefix}{var} = Var('{var}')")
 		outputConstraint = eval(my_string_preprocessed)
 		consistentOutcomes =  list(outputConstraint.models())
-		print(consistentOutcomes)
 
 		# We can see if the formula labeled by X is true in model N by using
 		# print(consistentOutcomes[N][scenario.agenda[X]])
@@ -49,9 +50,9 @@ class BruteForce(Solver):
 				# For each formula in the pre-agenda, check how many agents agree with the outcome and update agreement score.
 				for formula in scenario.agenda.values():
 					if outcome[formula]:
-						agreementScore += supportNumber(scenario.agenda, scenario.profile)
+						agreementScore += self.supportNumber(scenario.agenda, scenario.profile)[formula]
 					else:
-						agreementScore += scenario.numberVoters - supportNumber(scenario.agenda, scenario.profile)
+						agreementScore += scenario.numberVoters - self.supportNumber(scenario.agenda, scenario.profile)[formula]
 				
 				if agreementScore == maxAgreement:
 					outcomes.append(outcome)
@@ -68,19 +69,60 @@ class BruteForce(Solver):
 		elif rule == "slater":
 			print("Solving slater rule")
 
-			# # Determine the set of formulas that has a majority vote
-			# scenario.numberVoters = 11 #DEZE MOE NOG WEG
-			# majorityNumber = scenario.numberVoters / 2
-			# majoritySet = []
-			# support = self.supportNumber(scenario.agenda, scenario.profile)
-			# for formula in scenario.agenda.values():
-			# 	if support[formula] > majorityNumber:
-			# 		majoritySet.append(formula)
-			# 	elif support[formula] == majorityNumber:
-			# 		pass
-			# 	else:
-			# 		negatedFormula = f'~{formula}'
-			# 		majoritySet.append(negatedFormula)
+			# Determine the set of formulas that has a majority vote
+			majorityNumber = scenario.numberVoters / 2
+			majoritySet = []
+			support = self.supportNumber(scenario.agenda, scenario.profile)
+			for formula in scenario.agenda.values():
+				if support[formula] > majorityNumber:
+					majoritySet.append(formula)
+				elif support[formula] == majorityNumber:
+					pass
+				else:
+					negatedFormula = f'neg {formula}'
+					majoritySet.append(negatedFormula)
+			potentialSubsets = []
+			for i in range(len(majoritySet), 0, -1):
+				subsets = list(combinations(majoritySet, i))
+				for subset in subsets:
+					tempOutcomes = copy.deepcopy(consistentOutcomes)
+					toRemove = []
+					for formula in subset:
+						if formula[0:4] == "neg ":
+							for j in range(len(tempOutcomes)):
+								if tempOutcomes[j][formula[4:]]:
+									toRemove.append(j)
+						else:
+							for j in range(len(tempOutcomes)):
+								if not tempOutcomes[j][formula]:
+									toRemove.append(j)
+					toKeep = [index for index in range(len(tempOutcomes)) if index not in toRemove]
+					consistentList = [tempOutcomes[index] for index in toKeep]
+
+					if consistentList != []:
+						potentialSubsets.append(subset)
+				if potentialSubsets != []:
+					break
+			outcomes = []
+			for subset in potentialSubsets:
+				tempOutcomes = copy.deepcopy(consistentOutcomes)
+				toRemove = []
+				for formula in subset:
+					if formula[0:4] == "neg ":
+						for j in range(len(tempOutcomes)):
+							if tempOutcomes[j][formula[4:]]:
+								toRemove.append(j)
+					else:
+						for j in range(len(tempOutcomes)):
+							if not tempOutcomes[j][formula]:
+								toRemove.append(j)
+				toKeep = [index for index in range(len(tempOutcomes)) if index not in toRemove]
+				consistentList = [tempOutcomes[index] for index in toKeep]
+				outcomes.append(consistentList)
+			return(outcomes)
+
+
+			
 
 
 

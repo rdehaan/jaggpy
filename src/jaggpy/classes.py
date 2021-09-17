@@ -177,8 +177,6 @@ class Scenario:
 		# Add the list of accepted formulas to the profile dictionary
 		# for each of the judgement sets.
 		self.numberVoters += int(lines[lineNumber].split(", ")[0])
-		print(self.numberVoters)
-
 
 		numberOfJS = int(lines[lineNumber].split(", ")[1])
 		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
