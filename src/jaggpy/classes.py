@@ -183,30 +183,31 @@ class Scenario:
 		numberOfJS = int(lines[lineNumber].split(", ")[1])
 		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
 			currentLine = lines[i].split(", ")
-			if currentLine[1] == '':
-				break
-			label = int(currentLine[0])
-			formulaLabels = list(map(int, currentLine[1].split(";")))
-			acceptedFormulas = []
-			for formulaLabel in formulaLabels:
-				acceptedFormulas.append(self.agenda[formulaLabel])
-			self.profile.append([label, acceptedFormulas])
+			if currentLine[1] != '':
+				label = int(currentLine[0])
+				formulaLabels = list(map(int, currentLine[1].split(";")))
+				acceptedFormulas = []
+				for formulaLabel in formulaLabels:
+					acceptedFormulas.append(self.agenda[formulaLabel])
+				self.profile.append([label, acceptedFormulas])
 
-			# Check consistency of the judgement set with respect 
-			# to the input constraint
-			my_string = ""
-			for conjunct in self.inputConstraints:
-				my_string += f"({conjunct}) & "
-			for j in range(1, len(self.agenda)+1):
-				if j not in formulaLabels:
-					my_string += f"(~{self.agenda[j]}) & "
-				else:
-					my_string += f"({self.agenda[j]}) & "
-			my_string = my_string[:-3]
-			self.checkConsistency(my_string)
-			if not self.checkConsistency(my_string):
-				raise Exception (f"The judgement set on line {i} is inconsistent"\
-					" with the input constraints.")
+				# Check consistency of the judgement set with respect 
+				# to the input constraint
+				my_string = ""
+				for conjunct in self.inputConstraints:
+					my_string += f"({conjunct}) & "
+				for j in range(1, len(self.agenda)+1):
+					if j not in formulaLabels:
+						my_string += f"(~{self.agenda[j]}) & "
+					else:
+						my_string += f"({self.agenda[j]}) & "
+				my_string = my_string[:-3]
+				self.checkConsistency(my_string)
+				if not self.checkConsistency(my_string):
+					raise Exception (f"The judgement set on line {i} is inconsistent"\
+						" with the input constraints.")
+			else:
+				self.profile.append([label, []])
 
 	def checkConsistency(self, sentence):
 		my_string = sentence

@@ -68,6 +68,36 @@ class BruteForce(Solver):
 		elif rule == "slater":
 			print("Solving slater rule")
 
+			# # Determine the set of formulas that has a majority vote
+			# scenario.numberVoters = 11 #DEZE MOE NOG WEG
+			# majorityNumber = scenario.numberVoters / 2
+			# majoritySet = []
+			# support = self.supportNumber(scenario.agenda, scenario.profile)
+			# for formula in scenario.agenda.values():
+			# 	if support[formula] > majorityNumber:
+			# 		majoritySet.append(formula)
+			# 	elif support[formula] == majorityNumber:
+			# 		pass
+			# 	else:
+			# 		negatedFormula = f'~{formula}'
+			# 		majoritySet.append(negatedFormula)
+
+
+
 		else:
 			raise Exception ("This is not a rule that has been implemented.")
+
+	def supportNumber(self, agenda, profile):
+		"""The function supportNumber gets an agenda profile and returns a dictionary that 
+		has the labels of the formulas as keys and the number of times it is suported
+		as its values."""
+		supportCount = dict()
+		for formula in agenda.values():
+			supportCount[formula] = 0
+		for JS in profile:
+			timesAccepted = JS[0]
+			acceptedFormula = JS[1]
+			for formula in acceptedFormula:
+				supportCount[formula] += timesAccepted
+		return supportCount
 
