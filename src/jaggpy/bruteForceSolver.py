@@ -30,7 +30,6 @@ class BruteForce(Solver):
 			exec(f"{var_prefix}{var} = Var('{var}')")
 		outputConstraint = eval(my_string_preprocessed)
 		consistentOutcomes =  list(outputConstraint.models())
-		print(consistentOutcomes)
 
 		# We can see if the formula labeled by X is true in model N by using
 		# print(consistentOutcomes[N][scenario.agenda[X]])
@@ -49,9 +48,9 @@ class BruteForce(Solver):
 				# For each formula in the pre-agenda, check how many agents agree with the outcome and update agreement score.
 				for formula in scenario.agenda.values():
 					if outcome[formula]:
-						agreementScore += supportNumber(scenario.agenda, scenario.profile)
+						agreementScore += self.supportNumber(scenario.agenda, scenario.profile)[formula]
 					else:
-						agreementScore += scenario.numberVoters - supportNumber(scenario.agenda, scenario.profile)
+						agreementScore += scenario.numberVoters - self.supportNumber(scenario.agenda, scenario.profile)[formula]
 				
 				if agreementScore == maxAgreement:
 					outcomes.append(outcome)
