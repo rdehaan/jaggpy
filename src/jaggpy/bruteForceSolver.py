@@ -36,7 +36,7 @@ class BruteForce(Solver):
 
 		# Kemeny rule
 		if rule == "kemeny":
-			print("Solving the Kemeny rule")
+			print("Computing outcome with the Kemeny rule...")
 
 			# Keep track of the maximum agreement score and initiate list of outcomes
 			maxAgreement = 0
@@ -84,7 +84,7 @@ class BruteForce(Solver):
 
 
 		else:
-			raise Exception ("This is not a rule that has been implemented.")
+			raise Exception (f"{rule} is not a recognized aggregation rule.")
 
 	def supportNumber(self, agenda, profile):
 		"""The function supportNumber gets an agenda profile and returns a dictionary that 
