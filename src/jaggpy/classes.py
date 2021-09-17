@@ -169,7 +169,6 @@ class Scenario:
 		for conjunct in self.outputConstraints:
 			my_string += f"({conjunct}) & "
 		my_string = my_string[:-3]
-		self.checkConsistency(my_string)
 		if not self.checkConsistency(my_string):
 			raise Exception ("The output constraints are inconsistent")
 
@@ -178,6 +177,8 @@ class Scenario:
 		numberOfJS = int(lines[lineNumber].split(", ")[1])
 		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
 			currentLine = lines[i].split(", ")
+			if currentLine[1] == '':
+				break
 			label = int(currentLine[0])
 			formulaLabels = list(map(int, currentLine[1].split(";")))
 			acceptedFormulas = []
@@ -190,16 +191,16 @@ class Scenario:
 			my_string = ""
 			for conjunct in self.inputConstraints:
 				my_string += f"({conjunct}) & "
-			for formulaLabel in formulaLabels:
-				my_string += f"({self.agenda[formulaLabel]}) & "
 			for j in range(1, len(self.agenda)+1):
 				if j not in formulaLabels:
 					my_string += f"(~{self.agenda[j]}) & "
+				else:
+					my_string += f"({self.agenda[j]}) & "
 			my_string = my_string[:-3]
 			self.checkConsistency(my_string)
 			if not self.checkConsistency(my_string):
 				raise Exception (f"The judgement set on line {i} is inconsistent"\
-					"with the output constraints.")
+					" with the input constraints.")
 
 	def checkConsistency(self, sentence):
 		my_string = sentence
