@@ -13,4 +13,4 @@ scenario1.loadFromFile(relativeFilePath)
 
 brutus = BruteForce()
 
-brutus.solve(scenario1, "kemeny")
+brutus.solve(scenario1, "slater")
