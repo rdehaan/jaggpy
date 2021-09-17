@@ -5,6 +5,8 @@
 
 from .classes import Solver
 from nnf import *
+from itertools import chain, combinations
+import copy
 import math
 
 class BruteForce(Solver):
@@ -96,34 +98,63 @@ class BruteForce(Solver):
 					outcomes = [outcome]
 			
 			return(outcomes)
-
-
-
-					
-
-
-				
-
-					
+	
 
 		# Other rules.
 		elif rule == "slater":
 			print("Solving slater rule")
 
-			# # Determine the set of formulas that has a majority vote
-			# scenario.numberVoters = 11 #DEZE MOE NOG WEG
-			# majorityNumber = scenario.numberVoters / 2
-			# majoritySet = []
-			# support = self.supportNumber(scenario.agenda, scenario.profile)
-			# for formula in scenario.agenda.values():
-			# 	if support[formula] > majorityNumber:
-			# 		majoritySet.append(formula)
-			# 	elif support[formula] == majorityNumber:
-			# 		pass
-			# 	else:
-			# 		negatedFormula = f'~{formula}'
-			# 		majoritySet.append(negatedFormula)
+			# Determine the set of formulas that has a majority vote
+			majorityNumber = scenario.numberVoters / 2
+			majoritySet = []
+			support = self.supportNumber(scenario.agenda, scenario.profile)
+			for formula in scenario.agenda.values():
+				if support[formula] > majorityNumber:
+					majoritySet.append(formula)
+				elif support[formula] == majorityNumber:
+					pass
+				else:
+					negatedFormula = f'neg {formula}'
+					majoritySet.append(negatedFormula)
+			potentialSubsets = []
+			for i in range(len(majoritySet), 0, -1):
+				subsets = list(combinations(majoritySet, i))
+				for subset in subsets:
+					tempOutcomes = copy.deepcopy(consistentOutcomes)
+					toRemove = []
+					for formula in subset:
+						if formula[0:4] == "neg ":
+							for j in range(len(tempOutcomes)):
+								if tempOutcomes[j][formula[4:]]:
+									toRemove.append(j)
+						else:
+							for j in range(len(tempOutcomes)):
+								if not tempOutcomes[j][formula]:
+									toRemove.append(j)
+					toKeep = [index for index in range(len(tempOutcomes)) if index not in toRemove]
+					consistentList = [tempOutcomes[index] for index in toKeep]
 
+					if consistentList != []:
+						potentialSubsets.append(subset)
+				if potentialSubsets != []:
+					break
+			outcomes = []
+			for subset in potentialSubsets:
+				tempOutcomes = copy.deepcopy(consistentOutcomes)
+				toRemove = []
+				for formula in subset:
+					if formula[0:4] == "neg ":
+						for j in range(len(tempOutcomes)):
+							if tempOutcomes[j][formula[4:]]:
+								toRemove.append(j)
+					else:
+						for j in range(len(tempOutcomes)):
+							if not tempOutcomes[j][formula]:
+								toRemove.append(j)
+				toKeep = [index for index in range(len(tempOutcomes)) if index not in toRemove]
+				consistentList = [tempOutcomes[index] for index in toKeep]
+				outcomes.append(consistentList)
+			return(outcomes)
 
 
 		else:
