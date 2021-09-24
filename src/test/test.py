@@ -26,3 +26,5 @@ asp = ASPSolver()
 asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
+
+# STAAT DIT ER NOG???
