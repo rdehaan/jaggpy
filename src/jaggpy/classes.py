@@ -259,6 +259,10 @@ class Solver(ABC):
 	def solve(self, scenario, rule):
 		pass
 	
-	def enumerate_outcomes(self, scenario, rule):
+	def enumerateOutcomes(self, scenario, rule):
 		for outcome in self.solve(scenario, rule):
 			print(outcome)
+
+	def enumerateFirstNOutcomes(self, scenario, rule, n):
+		for i in range(n):
+			print(next(self.solve(scenario, rule)))

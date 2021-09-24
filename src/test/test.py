@@ -16,5 +16,5 @@ brutus = BruteForce()
 
 # print(brutus.solve(scenario1, "kemeny"))
 # print(brutus.solve(scenario1, "slater"))
-brutus.enumerate_outcomes(scenario1, "slater")
-print("Outcome according to maxhamming rule is: " + str(brutus.solve(scenario1, "maxhamming")))
+brutus.enumerateOutcomes(scenario1, "slater")
+# print("Outcome according to maxhamming rule is: " + str(brutus.solve(scenario1, "maxhamming")))

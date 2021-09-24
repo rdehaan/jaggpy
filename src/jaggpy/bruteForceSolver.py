@@ -62,7 +62,7 @@ class BruteForce(Solver):
 					maxAgreement = agreementScore
 					outcomes = [outcome]
 			
-			return(outcomes)
+			yield(outcomes)
 
 		# MaxHamming rule
 		elif rule == "maxhamming":
@@ -97,7 +97,7 @@ class BruteForce(Solver):
 					minimumMHD = maxHD
 					outcomes = [outcome]
 			
-			return(outcomes)
+			yield(outcomes)
 	
 
 		# Other rules.
@@ -171,8 +171,7 @@ class BruteForce(Solver):
 				toKeep = [index for index in range(len(tempOutcomes)) if index not in toRemove]
 				consistentList = [tempOutcomes[index] for index in toKeep]
 				# Add all the extensions of the chosen subsets to the outcome
-				outcomes.append(consistentList)
-			return(outcomes)
+				yield(consistentList)
 
 
 		else:
