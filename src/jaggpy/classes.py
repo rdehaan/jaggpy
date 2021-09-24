@@ -32,7 +32,7 @@ class Scenario:
 		"""The addToAgenda function takes a formula as its only argument.
 		If the formuls uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in NNF and can contain the following operators:
+		A formula should be in CNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
@@ -46,7 +46,7 @@ class Scenario:
 		"""The addToInputConstraints function takes a formula as its only argument.
 		If the new constraint uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in NNF and can contain the following operators:
+		A formula should be in CNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
@@ -65,7 +65,7 @@ class Scenario:
 		"""The addToOutputConstraints function takes a formula as its only argument.
 		If the new constraint uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in NNF and can contain the following operators:
+		A formula should be in CNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
@@ -122,7 +122,7 @@ class Scenario:
 				that are accepted. The rest is rejected. This profile occurs J times.
 				The formulas should be given by the times they are selected 
 				and seperated by a semicolon. For example, "4, 2;4;5".
-		A formula should be in NNF and can contain the following operators:
+		A formula should be in CNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
