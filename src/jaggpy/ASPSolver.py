@@ -20,19 +20,33 @@ class ASPSolver(Solver):
 			"""
 		# Add the scenario to asp_program using the scenario
 		# argument.
-		asp_program = ""
-
-		# Voters
-		asp_program += textwrap.dedent("""
-			""")
+		asp_program = textwrap.dedent("""% We first add the scenario to our ASP program.
+		""")
 
 		# Issues
 		asp_program += textwrap.dedent("""
-			""")
+		% Adding the issues.
+		""")
+		for key in scenario.agenda:
+			asp_program += f"issue({scenario.agenda[key]}).\n"
 
-		# Judgement sets
-		asp_program += textwrap.dedent("""
-			""")
+		# Voters and judgement sets.
+		asp_program += textwrap.dedent("""\n
+		% Adding voters and specifying what they voted for sets.
+		""")
+		voter_count = 0
+		for coalition in scenario.profile:
+			for voter_index in range(1,coalition[0]+1):
+				# Register new voter.
+				voter = str(voter_count + voter_index)
+				asp_program += f"voter({voter}).\n"
+				# Register what they voted for.
+				for formula in scenario.agenda.values():
+					if formula in coalition[1]:
+						asp_program += f"js({voter},{formula}).\n"
+					else:
+						asp_program += f"js({voter},-{formula}).\n"
+			voter_count += coalition[0]
 
 		# Input constraints
 		asp_program += textwrap.dedent("""

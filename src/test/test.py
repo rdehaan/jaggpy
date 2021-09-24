@@ -16,7 +16,6 @@ scenario1.loadFromFile(relativeFilePath)
 
 brutus = BruteForce()
 
-
 # brutus.enumerateOutcomes(scenario1, "kemeny")
 # brutus.enumerateOutcomes(scenario1, "slater")
 # brutus.enumerateOutcomes(scenario1, "slater")
@@ -27,3 +26,12 @@ asp.solve(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
+
+# print("Agenda:")
+# print(scenario1.agenda)
+# print("Input constraints:")
+# print(scenario1.inputConstraints)
+# print("Output constraints:")
+# print(scenario1.outputConstraints)
+# print("Profile:")
+# print(scenario1.profile)
