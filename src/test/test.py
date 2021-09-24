@@ -1,6 +1,8 @@
 # A file to implement and test the functions that have 
 # been written until now.
 
+# To test this file, run "python3 -m unittest test.test" in the terminal.
+
 from jaggpy.classes import Scenario
 from jaggpy.bruteForceSolver import BruteForce
 from jaggpy.ASPSolver import ASPSolver
