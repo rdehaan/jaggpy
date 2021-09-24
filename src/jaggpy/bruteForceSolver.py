@@ -12,10 +12,9 @@ import math
 class BruteForce(Solver):
 	def solve(self, scenario, rule):
 		"""Given a scenario object and the name of a rule 
-		this function will create a list of all the outcomes
+		this function will yield a list with all the outcomes
 		of the judgement aggregation. The rule should be given 
 		as a string and can be one of the following lowercase commands:
-
 			- kemeny
 			- maxhamming
 			- slater 
@@ -62,7 +61,7 @@ class BruteForce(Solver):
 					maxAgreement = agreementScore
 					outcomes = [outcome]
 			
-			return(outcomes)
+			yield(outcomes)
 
 		# MaxHamming rule
 		elif rule == "maxhamming":
@@ -97,7 +96,7 @@ class BruteForce(Solver):
 					minimumMHD = maxHD
 					outcomes = [outcome]
 			
-			return(outcomes)
+			yield(outcomes)
 	
 
 		# Other rules.
@@ -169,12 +168,10 @@ class BruteForce(Solver):
 							if not tempOutcomes[j][formula]:
 								toRemove.append(j)
 				toKeep = [index for index in range(len(tempOutcomes)) if index not in toRemove]
-				consistentList = [tempOutcomes[index] for index in toKeep]
 				# Add all the extensions of the chosen subsets to the outcome
-				outcomes.append(consistentList)
-			return(outcomes)
-
-
+				for index in toKeep:
+					outcomes.append(tempOutcomes[index])
+			yield(outcomes)
 		else:
 			raise Exception (f"{rule} is not a recognized aggregation rule.")
 

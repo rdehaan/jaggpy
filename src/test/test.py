@@ -1,8 +1,11 @@
 # A file to implement and test the functions that have 
 # been written until now.
 
+# To test this file, run "python3 -m unittest test.test" in the terminal.
+
 from jaggpy.classes import Scenario
 from jaggpy.bruteForceSolver import BruteForce
+from jaggpy.ASPSolver import ASPSolver
 
 scenario1 = Scenario()
 
@@ -13,8 +16,12 @@ scenario1.loadFromFile(relativeFilePath)
 
 brutus = BruteForce()
 
+# brutus.enumerateOutcomes(scenario1, "kemeny")
+# brutus.enumerateOutcomes(scenario1, "slater")
+# brutus.enumerateOutcomes(scenario1, "slater")
+# print("Outcome according to maxhamming rule is: " + str(brutus.solve(scenario1, "maxhamming")))
 
-# print(brutus.solve(scenario1, "kemeny"))
-# print(brutus.solve(scenario1, "slater"))
-brutus.enumerate_outcomes(scenario1, "slater")
-print("Outcome according to maxhamming rule is: " + str(brutus.solve(scenario1, "maxhamming")))
+asp = ASPSolver()
+asp.enumerateOutcomes(scenario1, "kemeny")
+# asp.enumerateOutcomes(scenario1, "leximax")
+# asp.enumerateOutcomes(scenario1, "young")

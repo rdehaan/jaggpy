@@ -32,13 +32,14 @@ class Scenario:
 		"""The addToAgenda function takes a formula as its only argument.
 		If the formuls uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in NNF and can contain the following operators:
+		A formula should be in CNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
-		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
+		The outermost parentheses should be omitted, parentheses around clauses
+		are optional. Parenthesis within clauses should be omitted. 
+		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
+		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
 		newLabel = len(self.agenda)+1
 		self.agenda[newLabel] = formula
 
@@ -46,13 +47,14 @@ class Scenario:
 		"""The addToInputConstraints function takes a formula as its only argument.
 		If the new constraint uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in NNF and can contain the following operators:
+		A formula should be in CNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
-		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
+		The outermost parentheses should be omitted, parentheses around clauses
+		are optional. Parenthesis within clauses should be omitted. 
+		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
+		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
 		self.inputConstraints.append(constraint)
 		my_string = ""
 		for conjunct in self.inputConstraints:
@@ -65,13 +67,14 @@ class Scenario:
 		"""The addToOutputConstraints function takes a formula as its only argument.
 		If the new constraint uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in NNF and can contain the following operators:
+		A formula should be in CNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
-		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work. """
+		The outermost parentheses should be omitted, parentheses around clauses
+		are optional. Parenthesis within clauses should be omitted. 
+		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
+		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
 		self.outputConstraints.append(constraint)
 		my_string = ""
 		for conjunct in self.outputConstraints:
@@ -122,14 +125,14 @@ class Scenario:
 				that are accepted. The rest is rejected. This profile occurs J times.
 				The formulas should be given by the times they are selected 
 				and seperated by a semicolon. For example, "4, 2;4;5".
-		A formula should be in NNF and can contain the following operators:
+		A formula should be in CNF and can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
-		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work.
-			"""
+		The outermost parentheses should be omitted, parentheses around clauses
+		are optional. Parenthesis within clauses should be omitted. 
+		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
+		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
 		conn = open(path)
 		text = conn.read()
 		lines = text.splitlines()
@@ -259,6 +262,10 @@ class Solver(ABC):
 	def solve(self, scenario, rule):
 		pass
 	
-	def enumerate_outcomes(self, scenario, rule):
+	def enumerateOutcomes(self, scenario, rule):
 		for outcome in self.solve(scenario, rule):
 			print(outcome)
+
+	def enumerateFirstNOutcomes(self, scenario, rule, n):
+		for i in range(n):
+			print(next(self.solve(scenario, rule)))
