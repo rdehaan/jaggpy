@@ -36,9 +36,10 @@ class Scenario:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
-		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
+		The outermost parentheses should be omitted, parentheses around clauses
+		are optional. Parenthesis within clauses should be omitted. 
+		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
+		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
 		newLabel = len(self.agenda)+1
 		self.agenda[newLabel] = formula
 
@@ -50,9 +51,10 @@ class Scenario:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
-		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work."""
+		The outermost parentheses should be omitted, parentheses around clauses
+		are optional. Parenthesis within clauses should be omitted. 
+		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
+		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
 		self.inputConstraints.append(constraint)
 		my_string = ""
 		for conjunct in self.inputConstraints:
@@ -69,9 +71,10 @@ class Scenario:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
-		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work. """
+		The outermost parentheses should be omitted, parentheses around clauses
+		are optional. Parenthesis within clauses should be omitted. 
+		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
+		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
 		self.outputConstraints.append(constraint)
 		my_string = ""
 		for conjunct in self.outputConstraints:
@@ -126,10 +129,10 @@ class Scenario:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses can be omitted, internal parentheses must
-		be explicit. For example, "((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4)" is the correct
-		format, while "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" not work.
-			"""
+		The outermost parentheses should be omitted, parentheses around clauses
+		are optional. Parenthesis within clauses should be omitted. 
+		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
+		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
 		conn = open(path)
 		text = conn.read()
 		lines = text.splitlines()

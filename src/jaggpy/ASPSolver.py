@@ -35,12 +35,50 @@ class ASPSolver(Solver):
 			""")
 
 		# Input constraints
-		asp_program += textwrap.dedent("""
-		""")
+		asp_program += "% Declare input constraints (in CNF)\n"
+		totalInputConstraints = ""
+		for conjunct in scenario.inputConstraints:
+			totalInputConstraints += f"{conjunct} & "
+		totalIC = totalInputConstraints[:-3]
+		conjuncts = ("".join(totalIC.split())).split("&")
+		clauseNumber = 1
+		for clause in conjuncts:
+			conjunct = clause.split("|")
+			for string in conjunct:
+				if string[0] == "(":
+					formula = string[1:]
+				elif string[-1] == ")":
+					formula = string[:-1]
+				else:
+					formula = string
+				if formula[0] == "~":
+					asp_program += f'inputClause({clauseNumber}, -{formula[1:]}).\n'
+				else:
+					asp_program += f'inputClause({clauseNumber}, {formula}).\n'
+			clauseNumber += 1
 
 		# Output constraints
-		asp_program += textwrap.dedent("""
-		""")
+		asp_program += "\n% Declare input constraints (in CNF)\n"
+		totalOutputConstraints = ""
+		for conjunct in scenario.outputConstraints:
+			totalOutputConstraints += f"{conjunct} & "
+		totalOC = totalOutputConstraints[:-3]
+		conjuncts = ("".join(totalOC.split())).split("&")
+		clauseNumber = 1
+		for clause in conjuncts:
+			conjunct = clause.split("|")
+			for string in conjunct:
+				if string[0] == "(":
+					formula = string[1:]
+				elif string[-1] == ")":
+					formula = string[:-1]
+				else:
+					formula = string
+				if formula[0] == "~":
+					asp_program += f'outputClause({clauseNumber}, -{formula[1:]}).\n'
+				else:
+					asp_program += f'outputClause({clauseNumber}, {formula}).\n'
+			clauseNumber += 1
 
 		# asp_program = textwrap.dedent("""
 		# % Declare voters and issues (now only literals)
