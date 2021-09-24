@@ -104,7 +104,10 @@ class BruteForce(Solver):
 		elif rule == "slater":
 			print("Solving slater rule")
 
-			# Determine the set of formulas that has a majority vote
+			# Determine the set of formulas that has a majority vote, add a 
+			# formula if it is accepted and add it with 'neg ' in front of
+			# it when it is rejected. The 'neg ' is merely a prefix to read
+			# later.
 			majorityNumber = scenario.numberVoters / 2
 			majoritySet = []
 			support = self.supportNumber(scenario.agenda, scenario.profile)
@@ -116,12 +119,20 @@ class BruteForce(Solver):
 				else:
 					negatedFormula = f'neg {formula}'
 					majoritySet.append(negatedFormula)
+
+			# Make a list of potential subsets to see if the current 
+			# 'size' of subsets has consistent ones.
 			potentialSubsets = []
 			for i in range(len(majoritySet), 0, -1):
+				# For a given length give all subsets of the majorityset
+				# of that given length.
 				subsets = list(combinations(majoritySet, i))
 				for subset in subsets:
 					tempOutcomes = copy.deepcopy(consistentOutcomes)
 					toRemove = []
+					# For each formula in the subset, remove all the models
+					# that do not agree with it. Hence looking if some model
+					# agrees with all formulas in the subset
 					for formula in subset:
 						if formula[0:4] == "neg ":
 							for j in range(len(tempOutcomes)):
@@ -131,17 +142,23 @@ class BruteForce(Solver):
 							for j in range(len(tempOutcomes)):
 								if not tempOutcomes[j][formula]:
 									toRemove.append(j)
+					# Keep all models that have not been put in the toRemove list
 					toKeep = [index for index in range(len(tempOutcomes)) if index not in toRemove]
 					consistentList = [tempOutcomes[index] for index in toKeep]
 
+					# If some models were kept we add this subset as a candidate
 					if consistentList != []:
 						potentialSubsets.append(subset)
+				# If at least one subset has been chosen this length of subsets
+				# has the greatest consistent sets.
 				if potentialSubsets != []:
 					break
+			# Go over all chosen subsets in max(m(J),<=)
 			outcomes = []
 			for subset in potentialSubsets:
 				tempOutcomes = copy.deepcopy(consistentOutcomes)
 				toRemove = []
+				# For each formula remove all the models that do not agree
 				for formula in subset:
 					if formula[0:4] == "neg ":
 						for j in range(len(tempOutcomes)):
@@ -153,6 +170,7 @@ class BruteForce(Solver):
 								toRemove.append(j)
 				toKeep = [index for index in range(len(tempOutcomes)) if index not in toRemove]
 				consistentList = [tempOutcomes[index] for index in toKeep]
+				# Add all the extensions of the chosen subsets to the outcome
 				outcomes.append(consistentList)
 			return(outcomes)
 
