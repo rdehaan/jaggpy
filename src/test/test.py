@@ -15,8 +15,10 @@ scenario1.loadFromFile(relativeFilePath)
 brutus = BruteForce()
 
 
+brutus.enumerateOutcomes(scenario1, "kemeny")
+# brutus.enumerateOutcomes(scenario1, "slater")
 # brutus.enumerateOutcomes(scenario1, "slater")
 # print("Outcome according to maxhamming rule is: " + str(brutus.solve(scenario1, "maxhamming")))
 
 asp = ASPSolver()
-asp.enumerateOutcomes(scenario1, "kemeny")
+# asp.enumerateOutcomes(scenario1, "kemeny")
