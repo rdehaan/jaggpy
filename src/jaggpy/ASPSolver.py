@@ -20,26 +20,48 @@ class ASPSolver(Solver):
 			"""
 		# Add the scenario to asp_program using the scenario
 		# argument.
+		asp_program = ""
+
+		# Voters
 		asp_program = textwrap.dedent("""
-		% Declare voters and issues (now only literals)
-		voter(1..11).
-		issue(x1;x2;x3;x4).
+			""")
 
-		% Declare input constraints (in CNF)
-		inputClause(1,(-x1;-x2;-x3)). 
-		inputClause(2, (-x1;-x3;-x4)).
+		# Issues
+		asp_program = textwrap.dedent("""
+			""")
 
-		% Declare ouptut constraints (in CNF)
-		outputClause(1, (-x1;-x2;-x3)). 
-		outputClause(2, (-x1;-x3;-x4)).
+		# Judgement sets
+		asp_program = textwrap.dedent("""
+			""")
 
-		% Encode the profile, this also needs to include the negation
-		% of the formulas that are not accepted. 
-		js(1..4, (x1;-x2;x3;-x4)).
-		js(5..7, (-x1;x2;x3;x4)).
-		js(8..10, (x1;x2;-x3;x4)).
-		js(11, (x1;x2;-x3;-x4)).
+		# Input constraints
+		asp_program += textwrap.dedent("""
 		""")
+
+		# Output constraints
+		asp_program += textwrap.dedent("""
+		""")
+
+		# asp_program = textwrap.dedent("""
+		# % Declare voters and issues (now only literals)
+		# voter(1..11).
+		# issue(x1;x2;x3;x4).
+
+		# % Declare input constraints (in CNF)
+		# inputClause(1,(-x1;-x2;-x3)). 
+		# inputClause(2, (-x1;-x3;-x4)).
+
+		# % Declare ouptut constraints (in CNF)
+		# outputClause(1, (-x1;-x2;-x3)). 
+		# outputClause(2, (-x1;-x3;-x4)).
+
+		# % Encode the profile, this also needs to include the negation
+		# % of the formulas that are not accepted. 
+		# js(1..4, (x1;-x2;x3;-x4)).
+		# js(5..7, (-x1;x2;x3;x4)).
+		# js(8..10, (x1;x2;-x3;x4)).
+		# js(11, (x1;x2;-x3;-x4)).
+		# """)
 
 		# Add the consistency check for the given scenario
 		asp_program += textwrap.dedent("""
