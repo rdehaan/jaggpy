@@ -108,23 +108,25 @@ class ASPSolver(Solver):
 			#show outcome/1.
 				""")
 
-		# Ground and solve the program
-		control = clingo.Control()
-		control.add("base", [], asp_program)
-		control.ground([("base", [])])
-		control.configuration.solve.models = 0
-		control.configuration.solve.opt_mode = "optN"
+		print(asp_program)
 
-		# Yield the results of the program
-		with control.solve(yield_=True) as handle:
-			for model in handle:
-				if model.optimality_proven:
-					outcome = dict()
-					for formula in scenario.agenda.values():
-						for atom in model.symbols(shown=True):
-							if f'outcome({formula})' == str(atom):
-								outcome[formula] = True
-								break
-							else:
-								outcome[formula] = False
-					yield (outcome)
+		# # Ground and solve the program
+		# control = clingo.Control()
+		# control.add("base", [], asp_program)
+		# control.ground([("base", [])])
+		# control.configuration.solve.models = 0
+		# control.configuration.solve.opt_mode = "optN"
+
+		# # Yield the results of the program
+		# with control.solve(yield_=True) as handle:
+		# 	for model in handle:
+		# 		if model.optimality_proven:
+		# 			outcome = dict()
+		# 			for formula in scenario.agenda.values():
+		# 				for atom in model.symbols(shown=True):
+		# 					if f'outcome({formula})' == str(atom):
+		# 						outcome[formula] = True
+		# 						break
+		# 					else:
+		# 						outcome[formula] = False
+		# 			yield (outcome)
