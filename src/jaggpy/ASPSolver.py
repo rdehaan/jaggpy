@@ -31,7 +31,7 @@ class ASPSolver(Solver):
 			asp_program += f"issue({scenario.agenda[key]}).\n"
 
 		# Voters and judgement sets.
-		asp_program += textwrap.dedent("""\n
+		asp_program += textwrap.dedent("""
 		% Adding voters and specifying what they voted for sets.
 		""")
 		voter_count = 0
@@ -49,7 +49,7 @@ class ASPSolver(Solver):
 			voter_count += coalition[0]
 
 		# Input constraints
-		asp_program += "% Declare input constraints (in CNF)\n"
+		asp_program += "\n% Declare input constraints (in CNF)\n"
 		totalInputConstraints = ""
 		for conjunct in scenario.inputConstraints:
 			totalInputConstraints += f"{conjunct} & "
@@ -72,7 +72,7 @@ class ASPSolver(Solver):
 			clauseNumber += 1
 
 		# Output constraints
-		asp_program += "\n% Declare input constraints (in CNF)\n"
+		asp_program += "\n% Declare output constraints (in CNF)\n"
 		totalOutputConstraints = ""
 		for conjunct in scenario.outputConstraints:
 			totalOutputConstraints += f"{conjunct} & "
@@ -93,27 +93,6 @@ class ASPSolver(Solver):
 				else:
 					asp_program += f'outputClause({clauseNumber}, {formula}).\n'
 			clauseNumber += 1
-
-		# asp_program = textwrap.dedent("""
-		# % Declare voters and issues (now only literals)
-		# voter(1..11).
-		# issue(x1;x2;x3;x4).
-
-		# % Declare input constraints (in CNF)
-		# inputClause(1,(-x1;-x2;-x3)). 
-		# inputClause(2, (-x1;-x3;-x4)).
-
-		# % Declare ouptut constraints (in CNF)
-		# outputClause(1, (-x1;-x2;-x3)). 
-		# outputClause(2, (-x1;-x3;-x4)).
-
-		# % Encode the profile, this also needs to include the negation
-		# % of the formulas that are not accepted. 
-		# js(1..4, (x1;-x2;x3;-x4)).
-		# js(5..7, (-x1;x2;x3;x4)).
-		# js(8..10, (x1;x2;-x3;x4)).
-		# js(11, (x1;x2;-x3;-x4)).
-		# """)
 
 		# Add the consistency check for the given scenario
 		asp_program += textwrap.dedent("""
@@ -160,25 +139,23 @@ class ASPSolver(Solver):
 			#show outcome/1.
 				""")
 
-		print(asp_program)
+		# Ground and solve the program
+		control = clingo.Control()
+		control.add("base", [], asp_program)
+		control.ground([("base", [])])
+		control.configuration.solve.models = 0
+		control.configuration.solve.opt_mode = "optN"
 
-		# # Ground and solve the program
-		# control = clingo.Control()
-		# control.add("base", [], asp_program)
-		# control.ground([("base", [])])
-		# control.configuration.solve.models = 0
-		# control.configuration.solve.opt_mode = "optN"
-
-		# # Yield the results of the program
-		# with control.solve(yield_=True) as handle:
-		# 	for model in handle:
-		# 		if model.optimality_proven:
-		# 			outcome = dict()
-		# 			for formula in scenario.agenda.values():
-		# 				for atom in model.symbols(shown=True):
-		# 					if f'outcome({formula})' == str(atom):
-		# 						outcome[formula] = True
-		# 						break
-		# 					else:
-		# 						outcome[formula] = False
-		# 			yield (outcome)
+		# Yield the results of the program
+		with control.solve(yield_=True) as handle:
+			for model in handle:
+				if model.optimality_proven:
+					outcome = dict()
+					for formula in scenario.agenda.values():
+						for atom in model.symbols(shown=True):
+							if f'outcome({formula})' == str(atom):
+								outcome[formula] = True
+								break
+							else:
+								outcome[formula] = False
+					yield (outcome)
