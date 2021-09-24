@@ -23,15 +23,15 @@ class ASPSolver(Solver):
 		asp_program = ""
 
 		# Voters
-		asp_program = textwrap.dedent("""
+		asp_program += textwrap.dedent("""
 			""")
 
 		# Issues
-		asp_program = textwrap.dedent("""
+		asp_program += textwrap.dedent("""
 			""")
 
 		# Judgement sets
-		asp_program = textwrap.dedent("""
+		asp_program += textwrap.dedent("""
 			""")
 
 		# Input constraints
