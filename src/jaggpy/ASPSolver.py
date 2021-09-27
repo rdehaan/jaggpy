@@ -140,7 +140,7 @@ class ASPSolver(Solver):
 				""")
 
 		# Ground and solve the program
-		control = clingo.Control()
+		control = clingo.Control(arguments=["--project"])
 		control.add("base", [], asp_program)
 		control.ground([("base", [])])
 		control.configuration.solve.models = 0

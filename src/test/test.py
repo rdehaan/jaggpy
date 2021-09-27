@@ -22,6 +22,6 @@ brutus = BruteForce()
 # print("Outcome according to maxhamming rule is: " + str(brutus.solve(scenario1, "maxhamming")))
 
 asp = ASPSolver()
-asp.enumerateOutcomes(scenario1, "kemeny")
+# asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
-# asp.enumerateOutcomes(scenario1, "young")
+asp.enumerateOutcomes(scenario1, "young")
