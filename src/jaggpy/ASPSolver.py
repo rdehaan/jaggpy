@@ -16,7 +16,12 @@ class ASPSolver(Solver):
 		of the judgement aggregation. Each outcome is yielded seperately.
 		The rule should be given as a string and can be one of the 
 		following lowercase commands:
-			- 
+			- kemeny
+			- leximax
+			- young
+			- reversal
+			- slater
+			- majority
 			"""
 		# Add the scenario to asp_program using the scenario
 		# argument.
@@ -132,6 +137,40 @@ class ASPSolver(Solver):
 			inmaj(X) :- lit(X), inwgt(X,N), inwgt(-X,M), N > M.
 			js(col,X) :- inmaj(X).
 			#minimize { 1@1,out(A) : out(A) }.
+			""")
+		elif rule == "reversal":
+			print("Computing outcome with ASP and the reversal rule...")
+			asp_program+= textwrap.dedent("""
+			% Reversal scoring
+			agent(vrt(A,X)) :- voter(A), lit(X). 
+			js(vrt(A,X),-X) :- voter(A), lit(X), js(A,X).
+
+			disagree(A,X,Y) :- voter(A), lit(X), lit(Y), js(A,Y), js(vrt(A,X),-Y).
+			disagreement(A,X,D) :- voter(A), lit(X), D = #count { Y : disagree(A,X,Y) }.
+			#minimize { D@2,disagreemt(A,X,D) : disagreement(A,X,D) }.
+
+			score(A,X,D) :- js(col,X), disagreement(A,X,D).
+			score(E) :- E = #sum { D,score(A,X,D) : score(A,X,D) }.
+			#maximize { E@1,score(E) : score(E) }.""")
+		elif rule == "slater":
+			print("Computing outcome with ASP and the slater rule...")
+			asp_program += textwrap.dedent("""
+			% Slater rule
+			% determine the majority outcome
+			pc(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
+			maj(X) :- lit(X), pc(X,N), pc(-X,M), N > M.
+			% maximize agreement with the majority outcome
+			#minimize { 1@10,maj(X) : maj(X), js(col,-X) }.
+			""")
+		elif rule == "majority":
+			print("Computing outcome with ASP and the majority rule...")
+			asp_program += textwrap.dedent("""
+			% Majority rule
+			% require that the collective outcome agrees with all issues
+			% that have strictly more support than their negation
+			pc(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
+			maj(X) :- lit(X), pc(X,N), pc(-X,M), N > M.
+			js(col,X) :- maj(X).
 			""")
 		else:
 			raise Exception (f"{rule} is not a recognized aggregation rule.")

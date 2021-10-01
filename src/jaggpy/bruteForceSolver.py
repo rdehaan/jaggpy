@@ -24,11 +24,15 @@ class BruteForce(Solver):
 		my_string = ""
 		for conjunct in scenario.outputConstraints:
 			my_string += f"({conjunct}) & "
+		# Make sure that each variable gets an assigment
+		for var in scenario.variables:
+			my_string += f"({var} | ~{var}) & "
 		my_string = my_string[:-3]
 		var_prefix = "my_var_"
 		my_string_preprocessed = my_string
 		for var in scenario.variables:
 			my_string_preprocessed = my_string_preprocessed.replace(var, var_prefix + var)
+
 		for var in scenario.variables:
 			exec(f"{var_prefix}{var} = Var('{var}')")
 		outputConstraint = eval(my_string_preprocessed)
