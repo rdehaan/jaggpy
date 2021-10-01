@@ -22,6 +22,12 @@ relativeFilePath3 = r"./test/testfiles/scenario3.jagg"
 absoluteFilePath3 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario3.jagg"
 scenario3.loadFromFile(relativeFilePath3)
 
+scenario4 = Scenario()
+relativeFilePath4 = r"./test/testfiles/scenario4.jagg"
+absoluteFilePath4 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario4.jagg"
+scenario4.loadFromFile(relativeFilePath4)
+
+print(scenario4.toNNF("(~x1 -> x2) & (x2 | x3)"))
 
 brutus = BruteForce()
 
@@ -45,6 +51,6 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario2, "majority")
 
 # asp.enumerateOutcomes(scenario3, "kemeny")
-asp.enumerateOutcomes(scenario3, "slater")
+# asp.enumerateOutcomes(scenario3, "slater")
 
 
