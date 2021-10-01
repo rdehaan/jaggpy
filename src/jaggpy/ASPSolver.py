@@ -110,18 +110,21 @@ class ASPSolver(Solver):
 
 		# Add the rule depending on what rule we need to use
 		if rule == "kemeny":
+			print("Computing outcome with ASP and the Kemeny rule...")
 			asp_program += textwrap.dedent("""
 			% Kemeny rule 
 			wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
 			#maximize { N@1,wgt(X,N) : wgt(X,N), js(col,X) }.
 			""")
 		elif rule == "leximax":
+			print("Computing outcome with ASP and the leximax rule...")
 			asp_program += textwrap.dedent("""
 			% Leximax rule
 			wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
 			#maximize { 1@N,wgt(X,N) : wgt(X,N), js(col,X) }.
 			""")
 		elif rule == "young":
+			print("Computing outcome with ASP and the young rule...")
 			asp_program += textwrap.dedent("""
 			% Young rule
 			in(A) ; out(A) :- voter(A).

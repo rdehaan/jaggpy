@@ -39,7 +39,7 @@ class BruteForce(Solver):
 
 		# Kemeny rule
 		if rule == "kemeny":
-			print("Computing outcome with the Kemeny rule...")
+			print("Computing outcome with brute force and the Kemeny rule...")
 
 			# Keep track of the maximum agreement score and initiate list of outcomes
 			maxAgreement = 0
@@ -65,7 +65,7 @@ class BruteForce(Solver):
 
 		# MaxHamming rule
 		elif rule == "maxhamming":
-			print("Computing outcome with the MaxHamming rule...")
+			print("Computing outcome with the brute force and MaxHamming rule...")
 
 			# Keep track of minimum maximal Hamming distance and initialise list of outcomes.
 			minimumMHD = math.inf
@@ -101,7 +101,7 @@ class BruteForce(Solver):
 
 		# Other rules.
 		elif rule == "slater":
-			print("Solving slater rule")
+			print("Computing outcome with the brute force and Slater rule...")
 
 			# Determine the set of formulas that has a majority vote, add a 
 			# formula if it is accepted and add it with 'neg ' in front of
