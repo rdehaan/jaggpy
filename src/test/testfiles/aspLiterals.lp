@@ -10,6 +10,7 @@ inputClause(1, (i3;-i4)).
 inputClause(2, (-i1;-i3;i4)).
 inputClause(3, (-i2;-i3;i4)).
 
+
 % Declare ouptut constraints (in CNF)
 outputClause(1, (i3;-i4)). 
 outputClause(2, (-i1;-i3;i4)).

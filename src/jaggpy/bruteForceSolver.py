@@ -64,7 +64,14 @@ class BruteForce(Solver):
 				elif agreementScore > maxAgreement:
 					maxAgreement = agreementScore
 					outcomes = [outcome]
-			
+			# Clean outcomes to only contain issues
+			for outcome in outcomes:
+				removeList = []
+				for formula in outcome.keys():
+					if not formula in scenario.agenda.values():
+						removeList.append(formula)
+				for formula in removeList:
+					outcome.pop(formula)
 			yield(outcomes)
 
 		# MaxHamming rule
@@ -99,7 +106,14 @@ class BruteForce(Solver):
 				elif maxHD < minimumMHD:
 					minimumMHD = maxHD
 					outcomes = [outcome]
-			
+			# Clean outcomes to only contain issues
+			for outcome in outcomes:
+				removeList = []
+				for formula in outcome.keys():
+					if not formula in scenario.agenda.values():
+						removeList.append(formula)
+				for formula in removeList:
+					outcome.pop(formula)
 			yield(outcomes)
 	
 
@@ -175,6 +189,14 @@ class BruteForce(Solver):
 				# Add all the extensions of the chosen subsets to the outcome
 				for index in toKeep:
 					outcomes.append(tempOutcomes[index])
+			# Clean outcomes to only contain issues
+			for outcome in outcomes:
+				removeList = []
+				for formula in outcome.keys():
+					if not formula in scenario.agenda.values():
+						removeList.append(formula)
+				for formula in removeList:
+					outcome.pop(formula)
 			yield(outcomes)
 		else:
 			raise Exception (f"{rule} is not a recognized aggregation rule.")
