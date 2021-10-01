@@ -6,6 +6,7 @@
 from jaggpy.classes import Scenario
 from jaggpy.bruteForceSolver import BruteForce
 from jaggpy.ASPSolver import ASPSolver
+from jaggpy.parser import Parser
 
 scenario1 = Scenario()
 relativeFilePath = r"./test/testfiles/scenario1.jagg"
@@ -27,7 +28,7 @@ relativeFilePath4 = r"./test/testfiles/scenario4.jagg"
 absoluteFilePath4 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario4.jagg"
 scenario4.loadFromFile(relativeFilePath4)
 
-print(scenario4.toNNF("(~x1 -> x2) & (x2 | x3)"))
+# print(scenario4.toNNF("(~x1 -> x2) & (x2 | x3)"))
 
 brutus = BruteForce()
 
@@ -53,4 +54,5 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario3, "kemeny")
 # asp.enumerateOutcomes(scenario3, "slater")
 
-
+parser = Parser()
+parser.parseSentence("~~x1 -> x2 & ~ x2 | x3")
