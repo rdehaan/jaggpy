@@ -29,8 +29,8 @@ brutus = BruteForce()
 # brutus.enumerateOutcomes(scenario1, "slater")
 # brutus.enumerateOutcomes(scenario2, "slater")
 # brutus.enumerateOutcomes(scenario2, "kemeny")
-brutus.enumerateOutcomes(scenario3, "kemeny")
-brutus.enumerateOutcomes(scenario3, "slater")
+# brutus.enumerateOutcomes(scenario3, "kemeny")
+# brutus.enumerateOutcomes(scenario3, "slater")
 
 asp = ASPSolver()
 # asp.enumerateOutcomes(scenario1, "kemeny")
@@ -45,6 +45,6 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario2, "majority")
 
 # asp.enumerateOutcomes(scenario3, "kemeny")
-# asp.enumerateOutcomes(scenario3, "slater")
+asp.enumerateOutcomes(scenario3, "slater")
 
 

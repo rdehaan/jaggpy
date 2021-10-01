@@ -53,6 +53,16 @@ class ASPSolver(Solver):
 						asp_program += f"js({voter},-{formula}).\n"
 			voter_count += coalition[0]
 
+		# Variables
+		asp_program+= "\n% Declare variables\n"
+		for variable in scenario.variables:
+			asp_program += f"variable({variable}).\n"
+		asp_program += textwrap.dedent("""
+		% Check consistency for the variables, extra variables included
+		1 {js(cons, X); js(cons, -X)} 1 :- variable(X).
+		:- inputClause(C,_), js(cons,-L) : inputClause(C,L).
+		:- outputClause(C,_), js(cons,-L) : outputClause(C,L).\n""")
+
 		# Input constraints
 		asp_program += "\n% Declare input constraints (in CNF)\n"
 		totalInputConstraints = ""

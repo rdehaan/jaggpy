@@ -5,16 +5,26 @@
 voter(1..17).
 issue(i1;i2;i3;i4;i5).
 
+% Declare variables
+variable(i1;i2;i3;i4;i5;i6).
+1 {js(cons, X); js(cons, -X)} 1 :- variable(X).
+
+:- inputClause(C,_), js(cons,-L) : inputClause(C,L).
+:- outputClause(C,_), js(cons,-L) : outputClause(C,L).
+
+consistency(X) :- js(cons, X).
+
 % Declare input constraints (in CNF)
 inputClause(1, (i3;-i4)). 
 inputClause(2, (-i1;-i3;i4)).
 inputClause(3, (-i2;-i3;i4)).
-
+inputClause(4, i6).
 
 % Declare ouptut constraints (in CNF)
 outputClause(1, (i3;-i4)). 
 outputClause(2, (-i1;-i3;i4)).
 outputClause(3, (-i2;-i3;i4)).
+outputClause(4, i6).
 
 % Consistency check with respect to the input constraint
 agent(A) :- voter(A).
@@ -33,9 +43,9 @@ js(1..6, (i1;i2;i3;i4;i5)).
 js(7..10, (i1;i2;-i3;-i4;i5)).
 js(11..17, (-i1;-i2;i3;-i4;-i5)).
 
-% % Kemeny rule 
-% wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
-% #maximize { N@1,wgt(X,N) : wgt(X,N), js(col,X) }.
+% Kemeny rule 
+wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
+#maximize { N@1,wgt(X,N) : wgt(X,N), js(col,X) }.
 
 % % Leximax rule
 % wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
@@ -77,4 +87,5 @@ js(11..17, (-i1;-i2;i3;-i4;-i5)).
 % Represent the outcome 
 outcome(X) :- agent(col), js(col, X).
 
+% #show consistency/1.
 #show outcome/1.
