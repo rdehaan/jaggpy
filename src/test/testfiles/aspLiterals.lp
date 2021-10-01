@@ -40,11 +40,11 @@ js(11, (x1;x2;-x3;-x4)).
 % #maximize { 1@N,wgt(X,N) : wgt(X,N), js(col,X) }.
 
 % Young rule
-in(A) ; out(A) :- voter(A).
-inwgt(X,N) :- lit(X), N = #count{ A : voter(A), in(A), js(A,X) }.
-inmaj(X) :- lit(X), inwgt(X,N), inwgt(-X,M), N > M.
-js(col,X) :- inmaj(X).
-#minimize { 1@1,out(A) : out(A) }.
+% in(A) ; out(A) :- voter(A).
+% inwgt(X,N) :- lit(X), N = #count{ A : voter(A), in(A), js(A,X) }.
+% inmaj(X) :- lit(X), inwgt(X,N), inwgt(-X,M), N > M.
+% js(col,X) :- inmaj(X).
+% #minimize { 1@1,out(A) : out(A) }.
 
 % Represent the outcome 
 outcome(X) :- agent(col), js(col, X).
