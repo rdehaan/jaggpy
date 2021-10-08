@@ -8,6 +8,7 @@
 
 from abc import ABC, abstractmethod
 from nnf import *
+from jaggpy.parser import Parser
 
 class Scenario:
 	def __init__(self):
@@ -138,6 +139,8 @@ class Scenario:
 		lines = text.splitlines()
 		conn.close()
 
+		parser = Parser()
+
 		self.variables = lines[0].split(", ")
 
 		# Add the formulas to the agenda dictionary using the given label
@@ -152,7 +155,7 @@ class Scenario:
 		lineNumber = numberOfFormulas+2
 		while lines[lineNumber].split(", ")[0] == "In":
 			formula = lines[lineNumber].split(", ")[1]
-			self.inputConstraints.append(formula)	
+			self.inputConstraints.append(parser.toNNF(formula))	
 			lineNumber += 1
 
 		# Check consistency of the input constraints
@@ -166,7 +169,7 @@ class Scenario:
 		# Add the output constraints to the list of constraints
 		while lines[lineNumber].split(", ")[0] == "Out":
 			formula = lines[lineNumber].split(", ")[1]
-			self.outputConstraints.append(formula)	
+			self.outputConstraints.append(parser.toNNF(formula))	
 			lineNumber += 1
 
 		# Check consistency of the output constraints

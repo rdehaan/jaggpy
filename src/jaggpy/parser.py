@@ -123,10 +123,12 @@ class Parser:
 			operator = sentence[1]
 			if operator == '->':
 				left = self.toNNFParsed(['~', sentence[0]])
+				right = self.toNNFParsed(sentence[2])
+				return " ".join(['(', left, '|', right, ')'])
 			else:
 				left = self.toNNFParsed(sentence[0])
-			right = self.toNNFParsed(sentence[2])
-			return " ".join(['(', left, '|', right, ')'])
+				right = self.toNNFParsed(sentence[2])
+				return " ".join(['(', left, operator, right, ')'])
 
 	def negAnd(self, sentence):
 		# Negate the first and second conjunct
