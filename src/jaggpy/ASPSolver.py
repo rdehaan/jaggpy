@@ -7,6 +7,7 @@
 import clingo
 from .classes import Solver
 from clingo import String
+from .parser import Parser
 import textwrap
 
 class ASPSolver(Solver):
@@ -23,6 +24,7 @@ class ASPSolver(Solver):
 			- slater
 			- majority
 			"""
+		parser = Parser()
 		# Add the scenario to asp_program using the scenario
 		# argument.
 		asp_program = textwrap.dedent("""% We first add the scenario to our ASP program.
@@ -53,15 +55,15 @@ class ASPSolver(Solver):
 						asp_program += f"js({voter},-{formula}).\n"
 			voter_count += coalition[0]
 
-		# Variables
-		asp_program+= "\n% Declare variables\n"
-		for variable in scenario.variables:
-			asp_program += f"variable({variable}).\n"
-		asp_program += textwrap.dedent("""
-		% Check consistency for the variables, extra variables included
-		1 {js(cons, X); js(cons, -X)} 1 :- variable(X).
-		:- inputClause(C,_), js(cons,-L) : inputClause(C,L).
-		:- outputClause(C,_), js(cons,-L) : outputClause(C,L).\n""")
+		# # Variables
+		# asp_program+= "\n% Declare variables\n"
+		# for variable in scenario.variables:
+		# 	asp_program += f"variable({variable}).\n"
+		# asp_program += textwrap.dedent("""
+		# % Check consistency for the variables, extra variables included
+		# 1 {js(cons, X); js(cons, -X)} 1 :- variable(X).
+		# :- inputClause(C,_), js(cons,-L) : inputClause(C,L).
+		# :- outputClause(C,_), js(cons,-L) : outputClause(C,L).\n""")
 
 		# Input constraints
 		asp_program += "\n% Declare input constraints (in CNF)\n"
@@ -69,6 +71,9 @@ class ASPSolver(Solver):
 		for conjunct in scenario.inputConstraints:
 			totalInputConstraints += f"{conjunct} & "
 		totalIC = totalInputConstraints[:-3]
+		# TRANSLATE TO CNF HERE
+		# ic = parser.toCNF(totalIC)[0]
+		# icvariables = ic = parser.toCNF(totalIC)[1]
 		conjuncts = ("".join(totalIC.split())).split("&")
 		clauseNumber = 1
 		for clause in conjuncts:
@@ -94,6 +99,7 @@ class ASPSolver(Solver):
 		for conjunct in scenario.outputConstraints:
 			totalOutputConstraints += f"{conjunct} & "
 		totalOC = totalOutputConstraints[:-3]
+		# TRANSLATE TO CNF HERE
 		conjuncts = ("".join(totalOC.split())).split("&")
 		clauseNumber = 1
 		for clause in conjuncts:
@@ -113,12 +119,14 @@ class ASPSolver(Solver):
 					asp_program += f'outputClause({clauseNumber}, {formula}).\n'
 			clauseNumber += 1
 
+		# Add variables
+
 		# Add the consistency check for the given scenario
 		asp_program += textwrap.dedent("""
 		% Consistency check with respect to the input constraint
 		agent(A) :- voter(A).
 		lit(X;-X) :- issue(X).
-		1 { js(A,X) ; js(A,-X) } 1 :- agent(A), issue(X).
+		1 { js(A,X) ; js(A,-X) } 1 :- agent(A), variable(X).
 		:- voter(A), inputClause(C,_), js(A,-L) : inputClause(C,L).
 
 		% Consistency check of the collective outcome with respect 
@@ -191,7 +199,7 @@ class ASPSolver(Solver):
 
 		# Add the outcome predicate
 		asp_program += textwrap.dedent("""
-			outcome(X) :- agent(col), js(col, X).
+			outcome(X) :- agent(col), js(col, X), issue(X).
 			#show outcome/1.
 				""")
 
