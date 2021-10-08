@@ -72,7 +72,9 @@ class ASPSolver(Solver):
 		conjuncts = ("".join(totalIC.split())).split("&")
 		clauseNumber = 1
 		for clause in conjuncts:
-			conjunct = clause.split("|")
+			prepClause = "".join(clause.split("("))
+			prepClause = "".join(prepClause.split(")"))
+			conjunct = prepClause.split("|")
 			for string in conjunct:
 				if string[0] == "(":
 					formula = string[1:]
@@ -95,7 +97,9 @@ class ASPSolver(Solver):
 		conjuncts = ("".join(totalOC.split())).split("&")
 		clauseNumber = 1
 		for clause in conjuncts:
-			conjunct = clause.split("|")
+			prepClause = "".join(clause.split("("))
+			prepClause = "".join(prepClause.split(")"))
+			conjunct = prepClause.split("|")
 			for string in conjunct:
 				if string[0] == "(":
 					formula = string[1:]

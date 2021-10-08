@@ -28,7 +28,10 @@ relativeFilePath4 = r"./test/testfiles/scenario4.jagg"
 absoluteFilePath4 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario4.jagg"
 scenario4.loadFromFile(relativeFilePath4)
 
-# print(scenario4.toNNF("(~x1 -> x2) & (x2 | x3)"))
+scenario5 = Scenario()
+relativeFilePath5 = r"./test/testfiles/scenario5.jagg"
+absoluteFilePath5 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario5.jagg"
+scenario5.loadFromFile(relativeFilePath5)
 
 brutus = BruteForce()
 
@@ -66,3 +69,4 @@ print("""The cnf formula produced by toCNF():
 
 """)
 print(cnfFormula)
+
