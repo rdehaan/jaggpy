@@ -229,11 +229,6 @@ class Scenario:
 		# Return whether the formula is consistent
 		return(formula.consistent())
 	
-	def toNNF(self, sentence):
-		
-
-		return(sentence)
-		
 
 	def prettyPrint(self):
 		"""Prints the Scenario object in a readable way"""
