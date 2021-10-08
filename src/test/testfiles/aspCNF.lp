@@ -7,12 +7,12 @@ issue(x1;x2;x3;x4;x5).
 
 % Declare variables
 variable(x1;x2;x3;x4;x5;b;c).
-1 {js(cons, X); js(cons, -X)} 1 :- variable(X).
+% 1 {js(cons, X); js(cons, -X)} 1 :- variable(X).
 
-:- inputClause(C,_), js(cons,-L) : inputClause(C,L).
-:- outputClause(C,_), js(cons,-L) : outputClause(C,L).
+% :- inputClause(C,_), js(cons,-L) : inputClause(C,L).
+% :- outputClause(C,_), js(cons,-L) : outputClause(C,L).
 
-consistency(X) :- js(cons, X).
+% consistency(X) :- js(cons, X).
 
 % ( ( x3 | ~x4 ) & ( ~x1 | ~x3 | x4 ) & ( ~x2 | ~x3 | ~x4 ) )
 % inputClause(1, (x3;-x4)).
@@ -30,7 +30,7 @@ inputClause(3, (x1;b)).
 inputClause(4, (-b;-x1;-x3)).  
 inputClause(5, (x2;c)).  
 inputClause(6, (x3;c)).  
-inputClause(7, (-x4;c)).  
+inputClause(7, (x4;c)).  
 inputClause(8, (-c;-x2;-x3)).  
 inputClause(9, (-x4;x3)).  
 
@@ -41,14 +41,15 @@ outputClause(3, (x1;b)).
 outputClause(4, (-b;-x1;-x3)).  
 outputClause(5, (x2;c)).  
 outputClause(6, (x3;c)).  
-outputClause(7, (-x4;c)).  
+outputClause(7, (x4;c)).  
 outputClause(8, (-c;-x2;-x3)).  
 outputClause(9, (-x4;x3)). 
 
 % Consistency check with respect to the input constraint
 agent(A) :- voter(A).
 lit(X;-X) :- issue(X).
-1 { js(A,X) ; js(A,-X) } 1 :- agent(A), issue(X).
+% 1 { js(A,X) ; js(A,-X) } 1 :- agent(A), issue(X).
+1 { js(A,X) ; js(A,-X) } 1 :- agent(A), variable(X).
 :- voter(A), inputClause(C,_), js(A,-L) : inputClause(C,L).
 
 % Consistency check of the collective outcome with respect 
@@ -104,7 +105,7 @@ wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
 % js(col,X) :- maj(X).
 
 % Represent the outcome 
-outcome(X) :- agent(col), js(col, X).
+outcome(X) :- agent(col), js(col, X), issue(X).
 
 % #show consistency/1.
 #show outcome/1.
