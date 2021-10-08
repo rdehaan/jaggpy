@@ -198,8 +198,33 @@ class Parser:
 		for var in variables:
 			exec(f"{var_prefix}{var} = Var('{var}')")
 		formula = eval(my_string_preprocessed)
-		print("Immed. before converting to CNF:")
-		print(formula)
 
-		# Translate NNF to CNF using to_CNF method from nnf package.
-		return formula.to_CNF()
+		# Change nothing if formula already in CNF, else convert to CNF using to_CNF method from nnf package.
+		if formula.is_CNF():
+			print("Formula is already in CNF.")
+			return sentence
+		else:
+			formula = formula.to_CNF()
+			# Translate formula to string.
+			list_of_conjuncts = []
+			for conjunct in formula:
+				conj = "( "
+				disjunct_counter = 0
+				for disjunct in conjunct:
+					if disjunct_counter < len(conjunct) - 1:
+						conj = conj + str(disjunct) + " | "
+					else:
+						conj = conj + str(disjunct) + " )"
+					disjunct_counter += 1
+				list_of_conjuncts.append(conj)
+			
+			if len(formula) == 1:
+				return list_of_conjuncts[0]
+			else:
+				formula_str = "( "
+				for i in range(len(list_of_conjuncts)):
+					if i < len(list_of_conjuncts) - 1:
+						formula_str = formula_str + list_of_conjuncts[i] + " & "
+					else:
+						formula_str = formula_str + list_of_conjuncts[i] + " )"
+				return formula_str
