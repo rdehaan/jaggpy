@@ -6,6 +6,7 @@
 #####################################################################
 from typing import Callable, Iterable
 from pyparsing import infixNotation, opAssoc, Keyword, Word, alphas, alphanums, ParserElement
+from nnf import *
 
 class Parser:
 	def parseSentence(self, sentence):
@@ -178,3 +179,27 @@ class Parser:
 
 		# Return the negated implication as a conjunction
 		return " ".join(['(', antecedent, '|', consequent, ')'])
+
+	def toCNF(self, sentence, variables):
+		"""
+		Translate a sentence from NNF (as produced by the toNNF function), to CNF.
+		"""
+		my_string = sentence
+
+		# Use a prefix to prevent variable name collisions
+		# Add this prefix to all variables in the string
+		var_prefix = "my_var_"
+		my_string_preprocessed = my_string
+		for var in variables:
+			my_string_preprocessed = my_string_preprocessed.replace(var, var_prefix + var)
+
+		# Declare variables (with prefix) and parse the formula with the
+		# variable prefixes added
+		for var in variables:
+			exec(f"{var_prefix}{var} = Var('{var}')")
+		formula = eval(my_string_preprocessed)
+		print("Immed. before converting to CNF:")
+		print(formula)
+
+		# Translate NNF to CNF using to_CNF method from nnf package.
+		return formula.to_CNF()

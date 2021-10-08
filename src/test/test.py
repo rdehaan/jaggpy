@@ -54,4 +54,19 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario2, "slater")
 # asp.enumerateOutcomes(scenario2, "majority")
 
-# asp.enumerateOutcomes(scenario4, "kemeny")
+# asp.enumerateOutcomes(scenario3, "kemeny")
+# asp.enumerateOutcomes(scenario3, "slater")
+
+parser = Parser()
+sentence = ("(i1 -> ~(i2 & i3))")
+nnfSentence = parser.toNNF(sentence)
+print(nnfSentence)
+print("""
+
+""")
+cnfFormula = parser.toCNF(nnfSentence, ['i1','i2','i3','i4'])
+print("""The cnf formula produced by toCNF():
+
+""")
+print(cnfFormula)
+
