@@ -43,7 +43,7 @@ brutus = BruteForce()
 # brutus.enumerateOutcomes(scenario3, "slater")
 
 asp = ASPSolver()
-# asp.enumerateOutcomes(scenario1, "kemeny")
+asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
 
@@ -57,16 +57,11 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario3, "kemeny")
 # asp.enumerateOutcomes(scenario3, "slater")
 
-parser = Parser()
-sentence = ("(i1 -> ~(i2 & i3))")
-nnfSentence = parser.toNNF(sentence)
-print(nnfSentence)
-print("""
-
-""")
-cnfFormula = parser.toCNF(nnfSentence, ['i1','i2','i3','i4'])
-print("""The cnf formula produced by toCNF():
-
-""")
-print(cnfFormula)
+# parser = Parser()
+# sentence = ("(x3 | ~x4)&(~x1 | ~x3 | x4)&(~x2 | ~x3 | x4)")
+# nnfSentence = parser.toNNF(sentence)
+# print(nnfSentence)
+# cnfFormula = parser.toCNF(nnfSentence, ['x1', 'x2', 'x3', 'x4', 'x5'])
+# print("""The cnf formula produced by toCNF(): """)
+# print(cnfFormula)
 

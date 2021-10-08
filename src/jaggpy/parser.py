@@ -94,8 +94,8 @@ class Parser:
 		boolOperand,
 		[
 			(NOT, 1, opAssoc.RIGHT, BoolNot),
-			(AND, 2, opAssoc.LEFT, BoolAnd),
 			(OR, 2, opAssoc.LEFT, BoolOr),
+			(AND, 2, opAssoc.LEFT, BoolAnd),
 			(IMPLIES, 2, opAssoc.LEFT, BoolImplies)
 		],
 		)
