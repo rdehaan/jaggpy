@@ -11,17 +11,17 @@ from jaggpy.parser import Parser
 scenario1 = Scenario()
 relativeFilePath = r"./test/testfiles/scenario1.jagg"
 absoluteFilePath = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario1.jagg"
-# scenario1.loadFromFile(relativeFilePath)
+scenario1.loadFromFile(relativeFilePath)
 
 scenario2 = Scenario()
 relativeFilePath2 = r"./test/testfiles/scenario2.jagg"
 absoluteFilePath2 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario2.jagg"
-# scenario2.loadFromFile(relativeFilePath2)
+scenario2.loadFromFile(relativeFilePath2)
 
 scenario3 = Scenario()
 relativeFilePath3 = r"./test/testfiles/scenario3.jagg"
 absoluteFilePath3 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario3.jagg"
-# scenario3.loadFromFile(relativeFilePath3)
+scenario3.loadFromFile(relativeFilePath3)
 
 scenario4 = Scenario()
 relativeFilePath4 = r"./test/testfiles/scenario4.jagg"
@@ -31,7 +31,7 @@ scenario4.loadFromFile(relativeFilePath4)
 scenario5 = Scenario()
 relativeFilePath5 = r"./test/testfiles/scenario5.jagg"
 absoluteFilePath5 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario5.jagg"
-# scenario5.loadFromFile(relativeFilePath5)
+scenario5.loadFromFile(relativeFilePath5)
 
 brutus = BruteForce()
 
@@ -54,6 +54,4 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario2, "slater")
 # asp.enumerateOutcomes(scenario2, "majority")
 
-asp.enumerateOutcomes(scenario4, "kemeny")
-
-# brutus.enumerateOutcomes(scenario4, "kemeny")
+# asp.enumerateOutcomes(scenario4, "kemeny")

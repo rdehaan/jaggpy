@@ -54,12 +54,25 @@ class Parser:
 		class BoolAnd(BoolBinOp):
 			repr_symbol = "&"
 			def as_list(self):
-				return [self.args[0].as_list(), "&", self.args[1].as_list()]
+				result = []
+				for argument in self.args:
+					result.append(argument.as_list())
+					result. append("&")
+				result = result[:-1]
+				return result
+				# return [self.args[0].as_list(), "&", self.args[1].as_list()]
 
 		class BoolOr(BoolBinOp):
 			repr_symbol = "|"
 			def as_list(self):
-				return [self.args[0].as_list(), "|", self.args[1].as_list()]
+				result = []
+				num = len(self.args)
+				for argument in self.args:
+					result.append(argument.as_list())
+					result.append("|")
+				result = result[:-1]
+				return result
+				# return [self.args[0].as_list(), "|", self.args[1].as_list()]
 
 		class BoolImplies(BoolBinOp):
 			repr_symbol = "->"
@@ -126,25 +139,37 @@ class Parser:
 				right = self.toNNFParsed(sentence[2])
 				return " ".join(['(', left, '|', right, ')'])
 			else:
-				left = self.toNNFParsed(sentence[0])
-				right = self.toNNFParsed(sentence[2])
-				return " ".join(['(', left, operator, right, ')'])
+				result = ['(']
+				for i in range(len(sentence)):
+					if i % 2 == 0:
+						element = self.toNNFParsed(sentence[i])
+						result.append(element)
+						result.append(operator)
+				result = result[:-1]
+				result.append(')')
+				return " ".join(result)
 
 	def negAnd(self, sentence):
-		# Negate the first and second conjunct
-		firstConjunct = self.toNNFParsed(['~', sentence[0]])
-		secondConjunct = self.toNNFParsed(['~', sentence[2]])
-
-		# Return the negated conjunction
-		return " ".join(['(', firstConjunct, '|', secondConjunct, ')'])
+		result = ['(']
+		for i in range(len(sentence)):
+			if i % 2 == 0:
+				element = self.toNNFParsed(['~', sentence[i]])
+				result.append(element)
+				result.append('|')
+		result = result[:-1]
+		result.append(')')
+		return " ".join(result)
 
 	def negOr(self, sentence):
-		# Negate the first and second disjunct
-		firstDisjunct = self.toNNFParsed(['~', sentence[0]])
-		secondDisjunct = self.toNNFParsed(['~', sentence[2]])
-
-		# Return the negated disjunction
-		return " ".join(['(', firstDisjunct, '&', secondDisjunct, ')'])
+		result = ['(']
+		for i in range(len(sentence)):
+			if i % 2 == 0:
+				element = self.toNNFParsed(['~', sentence[i]])
+				result.append(element)
+				result.append('&')
+		result = result[:-1]
+		result.append(')')
+		return " ".join(result)
 
 	def negImplies(self, sentence):
 		# Negate the antecedent
@@ -153,4 +178,3 @@ class Parser:
 
 		# Return the negated implication as a conjunction
 		return " ".join(['(', antecedent, '|', consequent, ')'])
-

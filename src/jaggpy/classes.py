@@ -37,10 +37,7 @@ class Scenario:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses should be omitted, parentheses around clauses
-		are optional. Parenthesis within clauses should be omitted. 
-		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
-		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
+		Parentheses can be omitted where clear from context. """
 		newLabel = len(self.agenda)+1
 		self.agenda[newLabel] = formula
 
@@ -49,13 +46,10 @@ class Scenario:
 		If the new constraint uses new variables, these should be added as well with
 		the addToVariables(var) function.
 		A formula should be in CNF and can contain the following operators:
+			- The NOT operator ~
 			- The OR operator |
 			- The AND operator &
-			- The NOT operator ~
-		The outermost parentheses should be omitted, parentheses around clauses
-		are optional. Parenthesis within clauses should be omitted. 
-		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
-		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
+		Parentheses can be omitted where clear from context. """
 		self.inputConstraints.append(constraint)
 		my_string = ""
 		for conjunct in self.inputConstraints:
@@ -72,10 +66,7 @@ class Scenario:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses should be omitted, parentheses around clauses
-		are optional. Parenthesis within clauses should be omitted. 
-		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
-		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
+		Parentheses can be omitted where clear from context. """
 		self.outputConstraints.append(constraint)
 		my_string = ""
 		for conjunct in self.outputConstraints:
@@ -130,10 +121,7 @@ class Scenario:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		The outermost parentheses should be omitted, parentheses around clauses
-		are optional. Parenthesis within clauses should be omitted. 
-		For example, "(~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)" is the correct
-		format, while "(((~x1 | ~x2) | ~x3) & ((~x1 | ~x3) | ~x4))"  will not work. """
+		Parentheses can be omitted where clear from context. """
 		conn = open(path)
 		text = conn.read()
 		lines = text.splitlines()
