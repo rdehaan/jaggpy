@@ -1,7 +1,8 @@
 #####################################################################
 ## Parser for sentences
-## Taken from https://github.com/pyparsing/pyparsing/blob/master/examples/simpleBool.py#L16
-## Altered for own use by returning a parsed list
+## The function parseSentence is heavily inspired by
+## https://github.com/pyparsing/pyparsing/blob/master/examples/simpleBool.py#L16
+## It has been altered for this application.
 #####################################################################
 from typing import Callable, Iterable
 from pyparsing import infixNotation, opAssoc, Keyword, Word, alphas, alphanums, ParserElement
@@ -90,57 +91,64 @@ class Parser:
 		return parsedSentence.as_list()
 
 	def toNNF(self, sentence):
-		listSentence = self.toNNFList(sentence)
-		return listSentence
+		# Parse the sentence and then convert it to NNF
+		parsed = self.parseSentence(sentence)
+		nnf = self.toNNFParsed(parsed)
 
-	def toNNFList(self, sentence):
+		return nnf
+
+	# Recursively convert the sentence to NNF
+	def toNNFParsed(self, sentence):
+		# If the sentence is just a string, leave it be
 		if type(sentence) == str:
 			return sentence 
+		# If it is negated, push the negation through
 		elif sentence[0] == '~':
 			if type(sentence[1]) == str:
-				return sentence
+				return "".join(sentence)
 			elif sentence[1][1] == '&':
 				return self.negAnd(sentence[1])
 			elif sentence[1][1] == '|':
 				return self.negOr(sentence[1])
 			elif sentence[1][1] == '->':
 				return self.negImplies(sentence[1])
+			# Remove double negations
 			elif sentence[1][0] == '~':
-				return self.toNNFList(sentence[1][1])
+				return self.toNNFParsed(sentence[1][1])
 			else:
 				raise Exception("There seems to be something wrong..")
 		else:
+			# If it is not negated, rewrite implication and
+			# search for more negations
 			operator = sentence[1]
 			if operator == '->':
-				left = self.toNNFList(['~', sentence[0]])
+				left = self.toNNFParsed(['~', sentence[0]])
 			else:
-				left = self.toNNFList(sentence[0])
-			right = self.toNNFList(sentence[2])
-			return [left, '|', right]
+				left = self.toNNFParsed(sentence[0])
+			right = self.toNNFParsed(sentence[2])
+			return " ".join(['(', left, '|', right, ')'])
 
 	def negAnd(self, sentence):
 		# Negate the first and second conjunct
-		firstConjunct = self.toNNFList(['~', sentence[0]])
-		secondConjunct = self.toNNFList(['~', sentence[2]])
+		firstConjunct = self.toNNFParsed(['~', sentence[0]])
+		secondConjunct = self.toNNFParsed(['~', sentence[2]])
 
 		# Return the negated conjunction
-		return [firstConjunct, '|', secondConjunct]
+		return " ".join(['(', firstConjunct, '|', secondConjunct, ')'])
 
 	def negOr(self, sentence):
 		# Negate the first and second disjunct
-		firstDisjunct = self.toNNFList(['~', sentence[0]])
-		secondDisjunct = self.toNNFList(['~', sentence[2]])
+		firstDisjunct = self.toNNFParsed(['~', sentence[0]])
+		secondDisjunct = self.toNNFParsed(['~', sentence[2]])
 
 		# Return the negated disjunction
-		return [firstDisjunct, '&', secondDisjunct]
-		return sentence
+		return " ".join(['(', firstDisjunct, '&', secondDisjunct, ')'])
 
 	def negImplies(self, sentence):
-		# Negate the first
-		antecedent = self.toNNFList(['~', sentence[0]])
-		consequent = self.toNNFList(sentence[2])
+		# Negate the antecedent
+		antecedent = self.toNNFParsed(['~', sentence[0]])
+		consequent = self.toNNFParsed(sentence[2])
 
 		# Return the negated implication as a conjunction
-		return [antecedent, '|', consequent]
-		return sentence
+		return " ".join(['(', antecedent, '|', consequent, ')'])
 
