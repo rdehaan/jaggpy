@@ -41,7 +41,7 @@ class ASPSolver(Solver):
 			asp_program += f"issue(l{key}).\n"
 			allVariables.add(f"l{key}")
 
-		# Voters and judgement sets (WHAT THEY VOTE FOR SHOULD BE THE LABELS)
+		# Voters and judgement sets
 		asp_program += textwrap.dedent("""
 		% Adding voters and specifying what they voted for sets.
 		""")
@@ -67,7 +67,7 @@ class ASPSolver(Solver):
 			totalInputConstraints += f"{conjunct} & "
 		# Add auxiliary input constraints that guarantee that labels corresponds to the right formulas.
 		for constraint in parser.translateAgenda(scenario.agenda):
-			totalInputConstraints += f"{constraint} & "
+			totalInputConstraints += f"({constraint}) & "
 		totalIC = totalInputConstraints[:-3]
 		# Translate to cnf
 		cnfObject = parser.toCNF(totalIC, allVariables) 
@@ -100,7 +100,7 @@ class ASPSolver(Solver):
 			totalOutputConstraints += f"{conjunct} & "
 		# Add auxiliary input constraints that guarantee that labels corresponds to the right formulas.
 		for constraint in parser.translateAgenda(scenario.agenda):
-			totalOutputConstraints += f"{constraint} & "
+			totalOutputConstraints += f"({constraint}) & "
 		totalOC = totalOutputConstraints[:-3]
 		# Translate to cnf
 		cnfObject = parser.toCNF(totalOC, allVariables)
@@ -124,7 +124,6 @@ class ASPSolver(Solver):
 				else:
 					asp_program += f'outputClause({clauseNumber}, {formula}).\n'
 			clauseNumber += 1
-
 		# Add variables
 		asp_program += '\n'
 		for variable in allVariables:
@@ -146,7 +145,6 @@ class ASPSolver(Solver):
 
 		# Add the rule depending on what rule we need to use
 		if rule == "kemeny":
-			pass
 			print("Computing outcome with ASP and the Kemeny rule...")
 			asp_program += textwrap.dedent("""
 			% Kemeny rule 
@@ -225,10 +223,9 @@ class ASPSolver(Solver):
 								break
 					yield (outcome)
 
-		# # Yield the results of the program
+		# Yield the results of the program
 		# with control.solve(yield_=True) as handle:
 		# 	for model in handle:
-		# 		print(model)
 		# 		outcome = dict()
 		# 		for label in scenario.agenda:
 		# 			outcome[scenario.agenda[label]] = False

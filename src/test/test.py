@@ -48,14 +48,13 @@ brutus = BruteForce()
 
 asp = ASPSolver()
 
-asp.enumerateOutcomes(scenario1, "kemeny")
+# asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
 
 # asp.enumerateOutcomes(scenario2, "kemeny")
 # asp.enumerateOutcomes(scenario2, "leximax")
 # asp.enumerateOutcomes(scenario2, "young")
-# # asp.enumerateOutcomes(scenario2, "reversal") 
 # asp.enumerateOutcomes(scenario2, "slater")
 # asp.enumerateOutcomes(scenario2, "majority")
 
@@ -79,12 +78,7 @@ parser = Parser()
 # cnfFormula = parser.toCNF(nnfSentence, ['x1', 'x2', 'x3', 'x4', 'x5'])
 # print(cnfFormula)
 
-
-# agenda = {"1": "p",
-# 	"2": "q",
-# 	"3": "r",
-# 	"4": "p | ~q | r"}
-# result = parser.translateAgenda(agenda)
-# print(result)
-
-# asp.enumerateOutcomes(scenario6, "kemeny")
+brutus.enumerateOutcomes(scenario6, "kemeny")
+asp.enumerateOutcomes(scenario6, "kemeny")
+brutus.enumerateOutcomes(scenario6, "slater")
+asp.enumerateOutcomes(scenario6, "slater")
