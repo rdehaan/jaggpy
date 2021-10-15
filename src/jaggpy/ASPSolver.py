@@ -25,6 +25,7 @@ class ASPSolver(Solver):
 			- majority
 			"""
 		parser = Parser()
+		allVariables = set() 
 		# Add the scenario to asp_program using the scenario
 		# argument.
 		asp_program = textwrap.dedent("""% We first add the scenario to our ASP program.
@@ -36,6 +37,7 @@ class ASPSolver(Solver):
 		""")
 		for key in scenario.agenda:
 			asp_program += f"issue({scenario.agenda[key]}).\n"
+			allVariables.add(scenario.agenda[key])
 
 		# Voters and judgement sets.
 		asp_program += textwrap.dedent("""
@@ -55,26 +57,18 @@ class ASPSolver(Solver):
 						asp_program += f"js({voter},-{formula}).\n"
 			voter_count += coalition[0]
 
-		# # Variables
-		# asp_program+= "\n% Declare variables\n"
-		# for variable in scenario.variables:
-		# 	asp_program += f"variable({variable}).\n"
-		# asp_program += textwrap.dedent("""
-		# % Check consistency for the variables, extra variables included
-		# 1 {js(cons, X); js(cons, -X)} 1 :- variable(X).
-		# :- inputClause(C,_), js(cons,-L) : inputClause(C,L).
-		# :- outputClause(C,_), js(cons,-L) : outputClause(C,L).\n""")
-
 		# Input constraints
 		asp_program += "\n% Declare input constraints (in CNF)\n"
 		totalInputConstraints = ""
 		for conjunct in scenario.inputConstraints:
 			totalInputConstraints += f"{conjunct} & "
 		totalIC = totalInputConstraints[:-3]
-		# TRANSLATE TO CNF HERE
-		# ic = parser.toCNF(totalIC)[0]
-		# icvariables = ic = parser.toCNF(totalIC)[1]
-		conjuncts = ("".join(totalIC.split())).split("&")
+		# Translate to cnf
+		cnfObject = parser.toCNF(totalIC, scenario.variables) 
+		icCNF = cnfObject[0]
+		allVariables = allVariables.union(cnfObject[1])
+
+		conjuncts = ("".join(icCNF.split())).split("&")
 		clauseNumber = 1
 		for clause in conjuncts:
 			prepClause = "".join(clause.split("("))
@@ -99,8 +93,11 @@ class ASPSolver(Solver):
 		for conjunct in scenario.outputConstraints:
 			totalOutputConstraints += f"{conjunct} & "
 		totalOC = totalOutputConstraints[:-3]
-		# TRANSLATE TO CNF HERE
-		conjuncts = ("".join(totalOC.split())).split("&")
+		# Translate to cnf
+		cnfObject = parser.toCNF(totalOC, scenario.variables) 
+		ocCNF = cnfObject[0]
+		allVariables = allVariables.union(cnfObject[1])
+		conjuncts = ("".join(ocCNF.split())).split("&")
 		clauseNumber = 1
 		for clause in conjuncts:
 			prepClause = "".join(clause.split("("))
@@ -120,6 +117,9 @@ class ASPSolver(Solver):
 			clauseNumber += 1
 
 		# Add variables
+		asp_program += '\n'
+		for variable in allVariables:
+			asp_program += f'variable({variable}).\n'
 
 		# Add the consistency check for the given scenario
 		asp_program += textwrap.dedent("""
@@ -160,20 +160,20 @@ class ASPSolver(Solver):
 			js(col,X) :- inmaj(X).
 			#minimize { 1@1,out(A) : out(A) }.
 			""")
-		elif rule == "reversal":
-			print("Computing outcome with ASP and the reversal rule...")
-			asp_program+= textwrap.dedent("""
-			% Reversal scoring
-			agent(vrt(A,X)) :- voter(A), lit(X). 
-			js(vrt(A,X),-X) :- voter(A), lit(X), js(A,X).
+		# elif rule == "reversal":
+		# 	print("Computing outcome with ASP and the reversal rule...")
+		# 	asp_program+= textwrap.dedent("""
+		# 	% Reversal scoring
+		# 	agent(vrt(A,X)) :- voter(A), lit(X). 
+		# 	js(vrt(A,X),-X) :- voter(A), lit(X), js(A,X).
 
-			disagree(A,X,Y) :- voter(A), lit(X), lit(Y), js(A,Y), js(vrt(A,X),-Y).
-			disagreement(A,X,D) :- voter(A), lit(X), D = #count { Y : disagree(A,X,Y) }.
-			#minimize { D@2,disagreemt(A,X,D) : disagreement(A,X,D) }.
+		# 	disagree(A,X,Y) :- voter(A), lit(X), lit(Y), js(A,Y), js(vrt(A,X),-Y).
+		# 	disagreement(A,X,D) :- voter(A), lit(X), D = #count { Y : disagree(A,X,Y) }.
+		# 	#minimize { D@2,disagreemt(A,X,D) : disagreement(A,X,D) }.
 
-			score(A,X,D) :- js(col,X), disagreement(A,X,D).
-			score(E) :- E = #sum { D,score(A,X,D) : score(A,X,D) }.
-			#maximize { E@1,score(E) : score(E) }.""")
+		# 	score(A,X,D) :- js(col,X), disagreement(A,X,D).
+		# 	score(E) :- E = #sum { D,score(A,X,D) : score(A,X,D) }.
+		# 	#maximize { E@1,score(E) : score(E) }.""")
 		elif rule == "slater":
 			print("Computing outcome with ASP and the slater rule...")
 			asp_program += textwrap.dedent("""

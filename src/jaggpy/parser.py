@@ -185,6 +185,7 @@ class Parser:
 		Translate a sentence from NNF (as produced by the toNNF function), to CNF.
 		"""
 		my_string = sentence
+		allVariables = set()
 
 		# Use a prefix to prevent variable name collisions
 		# Add this prefix to all variables in the string
@@ -197,6 +198,7 @@ class Parser:
 		# variable prefixes added
 		for var in variables:
 			exec(f"{var_prefix}{var} = Var('{var}')")
+			allVariables.add(var)
 		formula = eval(my_string_preprocessed)
 
 		# Change nothing if formula already in CNF, else convert to CNF using to_CNF method from nnf package.
@@ -204,13 +206,21 @@ class Parser:
 			print("Formula is already in CNF.")
 			return sentence
 		else:
+
 			formula = formula.to_CNF()
+			for var in formula.vars():
+				if type(var) != str:
+					allVariables.add('a' + str(var)[:4])
+				else:
+					allVariables.add(var)
 			# Translate formula to string.
 			list_of_conjuncts = []
 			for conjunct in formula:
 				conj = "( "
 				disjunct_counter = 0
 				for disjunct in conjunct:
+					if str(disjunct)[-1] == '>':
+						disjunct = "a".join(str(disjunct)[:-1].split('<'))
 					if disjunct_counter < len(conjunct) - 1:
 						conj = conj + str(disjunct) + " | "
 					else:
@@ -219,7 +229,7 @@ class Parser:
 				list_of_conjuncts.append(conj)
 			
 			if len(formula) == 1:
-				return list_of_conjuncts[0]
+				return [list_of_conjuncts[0], allVariables]
 			else:
 				formula_str = "( "
 				for i in range(len(list_of_conjuncts)):
@@ -227,4 +237,4 @@ class Parser:
 						formula_str = formula_str + list_of_conjuncts[i] + " & "
 					else:
 						formula_str = formula_str + list_of_conjuncts[i] + " )"
-				return formula_str
+				return [formula_str, allVariables]

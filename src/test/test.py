@@ -50,17 +50,24 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario2, "kemeny")
 # asp.enumerateOutcomes(scenario2, "leximax")
 # asp.enumerateOutcomes(scenario2, "young")
-# asp.enumerateOutcomes(scenario2, "reversal") 
+# # asp.enumerateOutcomes(scenario2, "reversal") 
 # asp.enumerateOutcomes(scenario2, "slater")
 # asp.enumerateOutcomes(scenario2, "majority")
 
 # asp.enumerateOutcomes(scenario3, "kemeny")
 # asp.enumerateOutcomes(scenario3, "slater")
 
-parser = Parser()
-sentence = ("(x3 | ~x4)&(~x1 | ~x3 | x4)&(~x2 | ~x3 | x4)")
-nnfSentence = parser.toNNF(sentence)
-cnfFormula = parser.toCNF(nnfSentence, ['x1', 'x2', 'x3', 'x4', 'x5'])
-# print(nnfSentence)
-print(cnfFormula)
+asp.enumerateOutcomes(scenario4, "kemeny")
+asp.enumerateOutcomes(scenario4, "slater")
+
+asp.enumerateOutcomes(scenario5, "kemeny")
+asp.enumerateOutcomes(scenario5, "slater")
+
+
+
+# parser = Parser()
+# sentence = ("(x3 | ~x4)&(~x1 | ~x3 | x4)&(~x2 | ~x3 | x4)")
+# nnfSentence = parser.toNNF(sentence)
+# cnfFormula = parser.toCNF(nnfSentence, ['x1', 'x2', 'x3', 'x4', 'x5'])
+# print(cnfFormula)
 
