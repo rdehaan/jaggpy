@@ -79,7 +79,6 @@ parser = Parser()
 # cnfFormula = parser.toCNF(nnfSentence, ['x1', 'x2', 'x3', 'x4', 'x5'])
 # print(cnfFormula)
 
-<<<<<<< HEAD
 
 # agenda = {"1": "p",
 # 	"2": "q",
@@ -89,8 +88,3 @@ parser = Parser()
 # print(result)
 
 # asp.enumerateOutcomes(scenario6, "kemeny")
-=======
-# brutus.enumerateOutcomes(scenario6, "kemeny")
-# brutus.enumerateOutcomes(scenario6, "maxhamming")
-# brutus.enumerateOutcomes(scenario6, "slater")
->>>>>>> fef3253282c6f1e9ab9b8d7021ebbc29bf80a183
