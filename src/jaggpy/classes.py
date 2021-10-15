@@ -137,7 +137,7 @@ class Scenario:
 			currentLine = lines[i].split(", ")
 			label = int(currentLine[0])
 			formula = currentLine[1]
-			self.agenda[label] = formula
+			self.agenda[label] = parser.toNNF(formula)
 
 		# Add the input constraints to the list of constraints
 		lineNumber = numberOfFormulas+2
