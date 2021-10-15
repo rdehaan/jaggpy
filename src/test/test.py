@@ -61,9 +61,7 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario4, "slater")
 
 asp.enumerateOutcomes(scenario5, "kemeny")
-asp.enumerateOutcomes(scenario5, "slater")
-
-
+# asp.enumerateOutcomes(scenario5, "slater")
 
 # parser = Parser()
 # sentence = ("(x3 | ~x4)&(~x1 | ~x3 | x4)&(~x2 | ~x3 | x4)")
