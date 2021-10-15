@@ -201,12 +201,11 @@ class Parser:
 			allVariables.add(var)
 		formula = eval(my_string_preprocessed)
 
-		# Change nothing if formula already in CNF, else convert to CNF using to_CNF method from nnf package.
+		# Change nothing if formula already in CNF (DOES THIS WORK??), else convert to CNF using to_CNF method from nnf package.
 		if formula.is_CNF():
 			print("Formula is already in CNF.")
 			return sentence
 		else:
-
 			formula = formula.to_CNF()
 			for var in formula.vars():
 				if type(var) != str:

@@ -48,7 +48,7 @@ brutus = BruteForce()
 
 asp = ASPSolver()
 
-# asp.enumerateOutcomes(scenario1, "kemeny")
+asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
 
@@ -81,9 +81,11 @@ parser = Parser()
 # print(cnfFormula)
 
 
-agenda = {"1": "p",
-	"2": "q",
-	"3": "r",
-	"4": "p | ~q | r"}
-result = parser.translateAgenda(agenda)
-print(result)
+# agenda = {"1": "p",
+# 	"2": "q",
+# 	"3": "r",
+# 	"4": "p | ~q | r"}
+# result = parser.translateAgenda(agenda)
+# print(result)
+
+# asp.enumerateOutcomes(scenario6, "kemeny")
