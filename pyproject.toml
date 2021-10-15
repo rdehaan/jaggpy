@@ -2,10 +2,6 @@
 requires = [
     "setuptools>=42",
     "wheel",
-    "clingo >= 5.5.0",
-    "nnf >= 0.3.0",
-    "typing >= 3.4.3",
-    "pyparsing >= 2.4.7"
 ]
 
 build-backend = "setuptools.build_meta"
