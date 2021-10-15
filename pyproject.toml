@@ -1,7 +1,16 @@
 [build-system]
 requires = [
     "setuptools>=42",
-    "wheel"
+    "wheel",
+    "clingo",
+    "textwrap",
+    "nnf",
+    "itertools",
+    "copy",
+    "math",
+    "abc",
+    "typing",
+    "pyparsing"
 ]
 
 build-backend = "setuptools.build_meta"

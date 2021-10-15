@@ -57,8 +57,8 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario3, "kemeny")
 # asp.enumerateOutcomes(scenario3, "slater")
 
-asp.enumerateOutcomes(scenario4, "kemeny")
-asp.enumerateOutcomes(scenario4, "slater")
+# asp.enumerateOutcomes(scenario4, "kemeny")
+# asp.enumerateOutcomes(scenario4, "slater")
 
 asp.enumerateOutcomes(scenario5, "kemeny")
 asp.enumerateOutcomes(scenario5, "slater")
