@@ -4,6 +4,7 @@
 #####################################################################
 
 from .classes import Solver
+from .parser import Parser
 from nnf import *
 from itertools import chain, combinations
 import copy
@@ -21,22 +22,36 @@ class BruteForce(Solver):
 			"""
 		# First we make a list of all the judgement sets that are consistent
 		# with the output constraints.
+		parser = Parser()
+		translatedAgenda = parser.translateAgenda(scenario.agenda)
+
 		my_string = ""
 		for conjunct in scenario.outputConstraints:
-			my_string += f"({conjunct}) & "
-		# Make sure that each variable gets an assigment
+			my_string += f'({conjunct}) & '
+		for conjunct in translatedAgenda:
+			my_string += f'({conjunct}) & '
+
+		allVariables = []
 		for var in scenario.variables:
+			allVariables.append(var)
+		for label in scenario.agenda.keys():
+			allVariables.append(f'l{label}')
+
+		# Make sure that each variable gets an assignment
+		for var in allVariables:
 			my_string += f"({var} | ~{var}) & "
 		my_string = my_string[:-3]
+
 		var_prefix = "my_var_"
 		my_string_preprocessed = my_string
-		for var in scenario.variables:
+		for var in allVariables:
 			my_string_preprocessed = my_string_preprocessed.replace(var, var_prefix + var)
 
-		for var in scenario.variables:
+		for var in allVariables:
 			exec(f"{var_prefix}{var} = Var('{var}')")
 		outputConstraint = eval(my_string_preprocessed)
 		consistentOutcomes =  list(outputConstraint.models())
+		print(len(consistentOutcomes))
 
 		# We can see if the formula labeled by X is true in model N by using
 		# print(consistentOutcomes[N][scenario.agenda[X]])
@@ -53,11 +68,17 @@ class BruteForce(Solver):
 			for outcome in consistentOutcomes:
 				agreementScore = 0
 				# For each formula in the pre-agenda, check how many agents agree with the outcome and update agreement score.
-				for formula in scenario.agenda.values():
-					if outcome[formula]:
-						agreementScore += self.supportNumber(scenario.agenda, scenario.profile)[formula]
+				for label in scenario.agenda.keys():
+					support = self.supportNumber(scenario.agenda, scenario.profile)
+					if outcome[f'l{label}']:
+						agreementScore += support[scenario.agenda[label]]
 					else:
-						agreementScore += scenario.numberVoters - self.supportNumber(scenario.agenda, scenario.profile)[formula]
+						agreementScore += scenario.numberVoters - support[scenario.agenda[label]] 
+				# for formula in scenario.agenda.values():
+				# 	if outcome[formula]:
+				# 		agreementScore += self.supportNumber(scenario.agenda, scenario.profile)[formula]
+				# 	else:
+				# 		agreementScore += scenario.numberVoters - self.supportNumber(scenario.agenda, scenario.profile)[formula]
 				
 				if agreementScore == maxAgreement:
 					outcomes.append(outcome)
@@ -65,13 +86,15 @@ class BruteForce(Solver):
 					maxAgreement = agreementScore
 					outcomes = [outcome]
 			# Clean outcomes to only contain issues
-			for outcome in outcomes:
-				removeList = []
+			for i in range(len(outcomes)):
+				outcome = outcomes[i]
+				translatedOutcomes = {}
 				for formula in outcome.keys():
-					if not formula in scenario.agenda.values():
-						removeList.append(formula)
-				for formula in removeList:
-					outcome.pop(formula)
+					if formula[0] == 'l':
+						label = int(formula[1])
+						translation = scenario.agenda[label]
+						translatedOutcomes[translation] = outcome[formula]
+				outcomes[i] = translatedOutcomes
 			yield(outcomes)
 
 		# MaxHamming rule
@@ -90,11 +113,16 @@ class BruteForce(Solver):
 				for judSet in scenario.profile:
 					# Check Hamming distance. NOT CORRECT YET
 					hamDist = 0
-					for formula in scenario.agenda.values():
-						if outcome[formula] and formula not in judSet[1]:
+					for key in scenario.agenda.keys():
+						if outcome[f'l{key}'] and scenario.agenda[key] not in judSet[1]:
 							hamDist += 1
-						elif not outcome[formula] and formula in judSet[1]:
+						elif not outcome[f'l{key}'] and scenario.agenda[key] in judSet[1]: 
 							hamDist += 1
+					# for formula in scenario.agenda.values():
+					# 	if outcome[formula] and formula not in judSet[1]:
+					# 		hamDist += 1
+					# 	elif not outcome[formula] and formula in judSet[1]:
+					# 		hamDist += 1
 
 					# Update the maximum HD for the outcome.
 					if hamDist > maxHD:
@@ -107,13 +135,15 @@ class BruteForce(Solver):
 					minimumMHD = maxHD
 					outcomes = [outcome]
 			# Clean outcomes to only contain issues
-			for outcome in outcomes:
-				removeList = []
+			for i in range(len(outcomes)):
+				outcome = outcomes[i]
+				translatedOutcomes = {}
 				for formula in outcome.keys():
-					if not formula in scenario.agenda.values():
-						removeList.append(formula)
-				for formula in removeList:
-					outcome.pop(formula)
+					if formula[0] == 'l':
+						label = int(formula[1])
+						translation = scenario.agenda[label]
+						translatedOutcomes[translation] = outcome[formula]
+				outcomes[i] = translatedOutcomes
 			yield(outcomes)
 	
 
@@ -128,13 +158,14 @@ class BruteForce(Solver):
 			majorityNumber = scenario.numberVoters / 2
 			majoritySet = []
 			support = self.supportNumber(scenario.agenda, scenario.profile)
-			for formula in scenario.agenda.values():
+			for key in scenario.agenda.keys():
+				formula = scenario.agenda[key]
 				if support[formula] > majorityNumber:
-					majoritySet.append(formula)
+					majoritySet.append(f'l{key}')
 				elif support[formula] == majorityNumber:
 					pass
 				else:
-					negatedFormula = f'neg {formula}'
+					negatedFormula = f'neg l{key}'
 					majoritySet.append(negatedFormula)
 
 			# Make a list of potential subsets to see if the current 
@@ -190,13 +221,15 @@ class BruteForce(Solver):
 				for index in toKeep:
 					outcomes.append(tempOutcomes[index])
 			# Clean outcomes to only contain issues
-			for outcome in outcomes:
-				removeList = []
+			for i in range(len(outcomes)):
+				outcome = outcomes[i]
+				translatedOutcomes = {}
 				for formula in outcome.keys():
-					if not formula in scenario.agenda.values():
-						removeList.append(formula)
-				for formula in removeList:
-					outcome.pop(formula)
+					if formula[0] == 'l':
+						label = int(formula[1])
+						translation = scenario.agenda[label]
+						translatedOutcomes[translation] = outcome[formula]
+				outcomes[i] = translatedOutcomes
 			yield(outcomes)
 		else:
 			raise Exception (f"{rule} is not a recognized aggregation rule.")
