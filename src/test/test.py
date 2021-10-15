@@ -39,7 +39,7 @@ scenario6.loadFromFile(relativeFilePath6)
 
 brutus = BruteForce()
 
-# brutus.enumerateOutcomes(scenario1, "kemeny")
+# brutus.enumerateOutcomes(scenario1,/ "kemeny")
 # brutus.enumerateOutcomes(scenario1, "slater")
 # brutus.enumerateOutcomes(scenario2, "slater")
 # brutus.enumerateOutcomes(scenario2, "kemeny")
@@ -48,7 +48,7 @@ brutus = BruteForce()
 
 asp = ASPSolver()
 
-# asp.enumerateOutcomes(scenario1, "kemeny")
+asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
 
@@ -81,4 +81,4 @@ parser = Parser()
 
 # brutus.enumerateOutcomes(scenario6, "kemeny")
 # brutus.enumerateOutcomes(scenario6, "maxhamming")
-brutus.enumerateOutcomes(scenario6, "slater")
+# brutus.enumerateOutcomes(scenario6, "slater")

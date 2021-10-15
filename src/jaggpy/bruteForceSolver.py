@@ -51,6 +51,7 @@ class BruteForce(Solver):
 			exec(f"{var_prefix}{var} = Var('{var}')")
 		outputConstraint = eval(my_string_preprocessed)
 		consistentOutcomes =  list(outputConstraint.models())
+		print(len(consistentOutcomes))
 
 		# We can see if the formula labeled by X is true in model N by using
 		# print(consistentOutcomes[N][scenario.agenda[X]])
