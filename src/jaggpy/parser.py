@@ -238,3 +238,18 @@ class Parser:
 					else:
 						formula_str = formula_str + list_of_conjuncts[i] + " )"
 				return [formula_str, allVariables]
+
+	def translateAgenda(self, agenda):
+		newConstraints = []
+		for label in agenda.keys():
+			labelVar = f'l{label}'
+			formula = agenda[label]
+
+			# Add label -> formula
+			newConstraints.append(f'~{labelVar} | {formula}')
+
+			# Add formula -> label
+			negFormula = self.toNNF(f'~ ({formula})')
+			newConstraints.append(f'{negFormula} | {labelVar}')
+
+		return newConstraints

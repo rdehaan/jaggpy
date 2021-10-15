@@ -68,10 +68,22 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario5, "kemeny")
 # asp.enumerateOutcomes(scenario5, "slater")
 
-# parser = Parser()
+# brutus.enumerateOutcomes(scenario3, "kemeny")
+
+
+# asp.enumerateOutcomes(scenario5, "kemeny")
+# asp.enumerateOutcomes(scenario5, "slater")
+
+parser = Parser()
 # sentence = ("(x3 | ~x4)&(~x1 | ~x3 | x4)&(~x2 | ~x3 | x4)")
 # nnfSentence = parser.toNNF(sentence)
 # cnfFormula = parser.toCNF(nnfSentence, ['x1', 'x2', 'x3', 'x4', 'x5'])
 # print(cnfFormula)
 
-scenario6.prettyPrint()
+
+agenda = {"1": "p",
+	"2": "q",
+	"3": "r",
+	"4": "p | ~q | r"}
+result = parser.translateAgenda(agenda)
+print(result)
