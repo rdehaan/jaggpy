@@ -201,12 +201,11 @@ class Parser:
 			allVariables.add(var)
 		formula = eval(my_string_preprocessed)
 
-		# Change nothing if formula already in CNF, else convert to CNF using to_CNF method from nnf package.
+		# Change nothing if formula already in CNF (DOES THIS WORK??), else convert to CNF using to_CNF method from nnf package.
 		if formula.is_CNF():
 			print("Formula is already in CNF.")
 			return sentence
 		else:
-
 			formula = formula.to_CNF()
 			for var in formula.vars():
 				if type(var) != str:
@@ -238,3 +237,18 @@ class Parser:
 					else:
 						formula_str = formula_str + list_of_conjuncts[i] + " )"
 				return [formula_str, allVariables]
+
+	def translateAgenda(self, agenda):
+		newConstraints = []
+		for label in agenda.keys():
+			labelVar = f'l{label}'
+			formula = agenda[label]
+
+			# Add label -> formula
+			newConstraints.append(f'~{labelVar} | {formula}')
+
+			# Add formula -> label
+			negFormula = self.toNNF(f'~ ({formula})')
+			newConstraints.append(f'{negFormula} | {labelVar}')
+
+		return newConstraints

@@ -112,7 +112,7 @@ class Scenario:
 			- X, Formula: The formula labeled by the number X  
 			- In, Formula: The input constraint labeled by the text "In"
 			- Out, Formula: The output constraint labeled by the text "Out"
-			- Number of Judgement Sets: The total number of judgement sets
+			- Number of voters, Number of distinct judgement sets
 			- J, phi_1;...;phi_n: A list of the formulas phi_1 to phi_n 
 				that are accepted. The rest is rejected. This profile occurs J times.
 				The formulas should be given by the times they are selected 
@@ -137,7 +137,7 @@ class Scenario:
 			currentLine = lines[i].split(", ")
 			label = int(currentLine[0])
 			formula = currentLine[1]
-			self.agenda[label] = formula
+			self.agenda[label] = parser.toNNF(formula)
 
 		# Add the input constraints to the list of constraints
 		lineNumber = numberOfFormulas+2

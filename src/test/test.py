@@ -33,9 +33,13 @@ relativeFilePath5 = r"./test/testfiles/scenario5.jagg"
 absoluteFilePath5 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario5.jagg"
 scenario5.loadFromFile(relativeFilePath5)
 
+scenario6 = Scenario()
+relativeFilePath6 = r"./test/testfiles/scenario6.jagg"
+scenario6.loadFromFile(relativeFilePath6)
+
 brutus = BruteForce()
 
-# brutus.enumerateOutcomes(scenario1, "kemeny")
+# brutus.enumerateOutcomes(scenario1,/ "kemeny")
 # brutus.enumerateOutcomes(scenario1, "slater")
 # brutus.enumerateOutcomes(scenario2, "slater")
 # brutus.enumerateOutcomes(scenario2, "kemeny")
@@ -43,6 +47,7 @@ brutus = BruteForce()
 # brutus.enumerateOutcomes(scenario3, "slater")
 
 asp = ASPSolver()
+
 # asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
@@ -50,24 +55,30 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario2, "kemeny")
 # asp.enumerateOutcomes(scenario2, "leximax")
 # asp.enumerateOutcomes(scenario2, "young")
-# # asp.enumerateOutcomes(scenario2, "reversal") 
 # asp.enumerateOutcomes(scenario2, "slater")
 # asp.enumerateOutcomes(scenario2, "majority")
 
 # asp.enumerateOutcomes(scenario3, "kemeny")
 # asp.enumerateOutcomes(scenario3, "slater")
 
-asp.enumerateOutcomes(scenario4, "kemeny")
-asp.enumerateOutcomes(scenario4, "slater")
+# asp.enumerateOutcomes(scenario4, "kemeny")
+# asp.enumerateOutcomes(scenario4, "slater")
 
-asp.enumerateOutcomes(scenario5, "kemeny")
-asp.enumerateOutcomes(scenario5, "slater")
+# asp.enumerateOutcomes(scenario5, "kemeny")
+# asp.enumerateOutcomes(scenario5, "slater")
 
+# brutus.enumerateOutcomes(scenario3, "kemeny")
 
+# asp.enumerateOutcomes(scenario5, "kemeny")
+# asp.enumerateOutcomes(scenario5, "slater")
 
-# parser = Parser()
+parser = Parser()
 # sentence = ("(x3 | ~x4)&(~x1 | ~x3 | x4)&(~x2 | ~x3 | x4)")
 # nnfSentence = parser.toNNF(sentence)
 # cnfFormula = parser.toCNF(nnfSentence, ['x1', 'x2', 'x3', 'x4', 'x5'])
 # print(cnfFormula)
 
+brutus.enumerateOutcomes(scenario6, "kemeny")
+asp.enumerateOutcomes(scenario6, "kemeny")
+brutus.enumerateOutcomes(scenario6, "slater")
+asp.enumerateOutcomes(scenario6, "slater")

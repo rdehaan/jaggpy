@@ -26,6 +26,8 @@ class ASPSolver(Solver):
 			"""
 		parser = Parser()
 		allVariables = set() 
+		for var in scenario.variables:
+			allVariables.add(var)
 		# Add the scenario to asp_program using the scenario
 		# argument.
 		asp_program = textwrap.dedent("""% We first add the scenario to our ASP program.
@@ -33,13 +35,13 @@ class ASPSolver(Solver):
 
 		# Issues
 		asp_program += textwrap.dedent("""
-		% Adding the issues.
+		% Adding the labels that represent the issues.
 		""")
 		for key in scenario.agenda:
-			asp_program += f"issue({scenario.agenda[key]}).\n"
-			allVariables.add(scenario.agenda[key])
+			asp_program += f"issue(l{key}).\n"
+			allVariables.add(f"l{key}")
 
-		# Voters and judgement sets.
+		# Voters and judgement sets
 		asp_program += textwrap.dedent("""
 		% Adding voters and specifying what they voted for sets.
 		""")
@@ -50,21 +52,25 @@ class ASPSolver(Solver):
 				voter = str(voter_count + voter_index)
 				asp_program += f"voter({voter}).\n"
 				# Register what they voted for.
-				for formula in scenario.agenda.values():
-					if formula in coalition[1]:
-						asp_program += f"js({voter},{formula}).\n"
+				for label in scenario.agenda:
+					if scenario.agenda[label] in coalition[1]:
+						asp_program += f"js({voter},l{label}).\n"
 					else:
-						asp_program += f"js({voter},-{formula}).\n"
+						asp_program += f"js({voter},-l{label}).\n"
 			voter_count += coalition[0]
 
 		# Input constraints
 		asp_program += "\n% Declare input constraints (in CNF)\n"
 		totalInputConstraints = ""
+		# Add input constraints specified in the scenario.
 		for conjunct in scenario.inputConstraints:
 			totalInputConstraints += f"{conjunct} & "
+		# Add auxiliary input constraints that guarantee that labels corresponds to the right formulas.
+		for constraint in parser.translateAgenda(scenario.agenda):
+			totalInputConstraints += f"({constraint}) & "
 		totalIC = totalInputConstraints[:-3]
 		# Translate to cnf
-		cnfObject = parser.toCNF(totalIC, scenario.variables) 
+		cnfObject = parser.toCNF(totalIC, allVariables) 
 		icCNF = cnfObject[0]
 		allVariables = allVariables.union(cnfObject[1])
 
@@ -92,9 +98,12 @@ class ASPSolver(Solver):
 		totalOutputConstraints = ""
 		for conjunct in scenario.outputConstraints:
 			totalOutputConstraints += f"{conjunct} & "
+		# Add auxiliary input constraints that guarantee that labels corresponds to the right formulas.
+		for constraint in parser.translateAgenda(scenario.agenda):
+			totalOutputConstraints += f"({constraint}) & "
 		totalOC = totalOutputConstraints[:-3]
 		# Translate to cnf
-		cnfObject = parser.toCNF(totalOC, scenario.variables) 
+		cnfObject = parser.toCNF(totalOC, allVariables)
 		ocCNF = cnfObject[0]
 		allVariables = allVariables.union(cnfObject[1])
 		conjuncts = ("".join(ocCNF.split())).split("&")
@@ -115,7 +124,6 @@ class ASPSolver(Solver):
 				else:
 					asp_program += f'outputClause({clauseNumber}, {formula}).\n'
 			clauseNumber += 1
-
 		# Add variables
 		asp_program += '\n'
 		for variable in allVariables:
@@ -143,6 +151,7 @@ class ASPSolver(Solver):
 			wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
 			#maximize { N@1,wgt(X,N) : wgt(X,N), js(col,X) }.
 			""")
+		
 		elif rule == "leximax":
 			print("Computing outcome with ASP and the leximax rule...")
 			asp_program += textwrap.dedent("""
@@ -150,6 +159,7 @@ class ASPSolver(Solver):
 			wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
 			#maximize { 1@N,wgt(X,N) : wgt(X,N), js(col,X) }.
 			""")
+		
 		elif rule == "young":
 			print("Computing outcome with ASP and the young rule...")
 			asp_program += textwrap.dedent("""
@@ -160,20 +170,7 @@ class ASPSolver(Solver):
 			js(col,X) :- inmaj(X).
 			#minimize { 1@1,out(A) : out(A) }.
 			""")
-		# elif rule == "reversal":
-		# 	print("Computing outcome with ASP and the reversal rule...")
-		# 	asp_program+= textwrap.dedent("""
-		# 	% Reversal scoring
-		# 	agent(vrt(A,X)) :- voter(A), lit(X). 
-		# 	js(vrt(A,X),-X) :- voter(A), lit(X), js(A,X).
-
-		# 	disagree(A,X,Y) :- voter(A), lit(X), lit(Y), js(A,Y), js(vrt(A,X),-Y).
-		# 	disagreement(A,X,D) :- voter(A), lit(X), D = #count { Y : disagree(A,X,Y) }.
-		# 	#minimize { D@2,disagreemt(A,X,D) : disagreement(A,X,D) }.
-
-		# 	score(A,X,D) :- js(col,X), disagreement(A,X,D).
-		# 	score(E) :- E = #sum { D,score(A,X,D) : score(A,X,D) }.
-		# 	#maximize { E@1,score(E) : score(E) }.""")
+		
 		elif rule == "slater":
 			print("Computing outcome with ASP and the slater rule...")
 			asp_program += textwrap.dedent("""
@@ -184,6 +181,7 @@ class ASPSolver(Solver):
 			% maximize agreement with the majority outcome
 			#minimize { 1@10,maj(X) : maj(X), js(col,-X) }.
 			""")
+		
 		elif rule == "majority":
 			print("Computing outcome with ASP and the majority rule...")
 			asp_program += textwrap.dedent("""
@@ -202,6 +200,8 @@ class ASPSolver(Solver):
 			outcome(X) :- agent(col), js(col, X), issue(X).
 			#show outcome/1.
 				""")
+		
+		# print(asp_program)
 
 		# Ground and solve the program
 		control = clingo.Control(arguments=["--project"])
@@ -215,11 +215,22 @@ class ASPSolver(Solver):
 			for model in handle:
 				if model.optimality_proven:
 					outcome = dict()
-					for formula in scenario.agenda.values():
+					for label in scenario.agenda:
 						for atom in model.symbols(shown=True):
-							if f'outcome({formula})' == str(atom):
-								outcome[formula] = True
+							outcome[scenario.agenda[label]] = False
+							if f'outcome(l{label})' == str(atom):
+								outcome[scenario.agenda[label]] = True
 								break
-							else:
-								outcome[formula] = False
 					yield (outcome)
+
+		# Yield the results of the program
+		# with control.solve(yield_=True) as handle:
+		# 	for model in handle:
+		# 		outcome = dict()
+		# 		for label in scenario.agenda:
+		# 			outcome[scenario.agenda[label]] = False
+		# 			for atom in model.symbols(shown=True):
+		# 				if f'outcome(l{label})' == str(atom):
+		# 					outcome[scenario.agenda[label]] = True
+		# 					break
+		# 		yield (outcome)
