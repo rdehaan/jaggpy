@@ -10,32 +10,31 @@ from jaggpy.parser import Parser
 
 scenario1 = Scenario()
 relativeFilePath = r"./test/testfiles/scenario1.jagg"
-absoluteFilePath = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario1.jagg"
 scenario1.loadFromFile(relativeFilePath)
 
 scenario2 = Scenario()
 relativeFilePath2 = r"./test/testfiles/scenario2.jagg"
-absoluteFilePath2 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario2.jagg"
 scenario2.loadFromFile(relativeFilePath2)
 
 scenario3 = Scenario()
 relativeFilePath3 = r"./test/testfiles/scenario3.jagg"
-absoluteFilePath3 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario3.jagg"
 scenario3.loadFromFile(relativeFilePath3)
 
 scenario4 = Scenario()
 relativeFilePath4 = r"./test/testfiles/scenario4.jagg"
-absoluteFilePath4 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario4.jagg"
 scenario4.loadFromFile(relativeFilePath4)
 
 scenario5 = Scenario()
 relativeFilePath5 = r"./test/testfiles/scenario5.jagg"
-absoluteFilePath5 = r"/Users/Bo/Documents/MoL/jaggpy/src/test/testfiles/scenario5.jagg"
 scenario5.loadFromFile(relativeFilePath5)
 
 scenario6 = Scenario()
 relativeFilePath6 = r"./test/testfiles/scenario6.jagg"
 scenario6.loadFromFile(relativeFilePath6)
+
+scenario7 = Scenario()
+relativeFilePath7 = r"./test/testfiles/scenario7.jagg"
+scenario7.loadFromFile(relativeFilePath7)
 
 brutus = BruteForce()
 
@@ -72,13 +71,15 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario5, "kemeny")
 # asp.enumerateOutcomes(scenario5, "slater")
 
-parser = Parser()
+# parser = Parser()
 # sentence = ("(x3 | ~x4)&(~x1 | ~x3 | x4)&(~x2 | ~x3 | x4)")
 # nnfSentence = parser.toNNF(sentence)
 # cnfFormula = parser.toCNF(nnfSentence, ['x1', 'x2', 'x3', 'x4', 'x5'])
 # print(cnfFormula)
 
-brutus.enumerateOutcomes(scenario6, "kemeny")
-asp.enumerateOutcomes(scenario6, "kemeny")
-brutus.enumerateOutcomes(scenario6, "slater")
-asp.enumerateOutcomes(scenario6, "slater")
+# brutus.enumerateOutcomes(scenario6, "kemeny")
+# asp.enumerateOutcomes(scenario6, "kemeny")
+# brutus.enumerateOutcomes(scenario6, "slater")
+# asp.enumerateOutcomes(scenario6, "slater")
+
+asp.enumerateOutcomes(scenario7, "kemeny")

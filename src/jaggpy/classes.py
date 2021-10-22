@@ -16,7 +16,10 @@ class Scenario:
 			- agenda: a list of formulas
 			- inputConstraints: a list of input constraints
 			- outputConstraints: a list of output constraints
-			- profile: a list of judgement sets """
+			- profile: a list of judgement sets
+			- variables: a list of occurring variables
+			- numberVoters: an integer specifying the number of voters
+			"""
 		self.agenda = dict()
 		self.inputConstraints = []
 		self.outputConstraints = []
@@ -33,11 +36,12 @@ class Scenario:
 		"""The addToAgenda function takes a formula as its only argument.
 		If the formuls uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in CNF and can contain the following operators:
+		A formula can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
-		Parentheses can be omitted where clear from context. """
+			- The IMPLIES operator ->
+		Parentheses can be omitted where clear from context.  """
 		newLabel = len(self.agenda)+1
 		self.agenda[newLabel] = formula
 
@@ -45,10 +49,11 @@ class Scenario:
 		"""The addToInputConstraints function takes a formula as its only argument.
 		If the new constraint uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in CNF and can contain the following operators:
-			- The NOT operator ~
+		A formula can contain the following operators:
 			- The OR operator |
 			- The AND operator &
+			- The NOT operator ~
+			- The IMPLIES operator ->
 		Parentheses can be omitted where clear from context. """
 		self.inputConstraints.append(constraint)
 		my_string = ""
@@ -62,10 +67,11 @@ class Scenario:
 		"""The addToOutputConstraints function takes a formula as its only argument.
 		If the new constraint uses new variables, these should be added as well with
 		the addToVariables(var) function.
-		A formula should be in CNF and can contain the following operators:
+		A formula can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
+			- The IMPLIES operator ->
 		Parentheses can be omitted where clear from context. """
 		self.outputConstraints.append(constraint)
 		my_string = ""
@@ -117,18 +123,22 @@ class Scenario:
 				that are accepted. The rest is rejected. This profile occurs J times.
 				The formulas should be given by the times they are selected 
 				and seperated by a semicolon. For example, "4, 2;4;5".
-		A formula should be in CNF and can contain the following operators:
+		A formula can contain the following operators:
 			- The OR operator |
 			- The AND operator &
 			- The NOT operator ~
+			- The IMPLIES operator ->
 		Parentheses can be omitted where clear from context. """
+		# Read the file and split all lines
 		conn = open(path)
 		text = conn.read()
 		lines = text.splitlines()
 		conn.close()
 
+		# Create a parser object for future use
 		parser = Parser()
 
+		# Add the variables to the scenario
 		self.variables = lines[0].split(", ")
 
 		# Add the formulas to the agenda dictionary using the given label
@@ -168,20 +178,21 @@ class Scenario:
 		if not self.checkConsistency(my_string):
 			raise Exception ("The output constraints are inconsistent")
 
-		# Add the list of accepted formulas to the profile dictionary
-		# for each of the judgement sets.
+		# Add the number of voters to the scenario
 		self.numberVoters += int(lines[lineNumber].split(", ")[0])
 
+		# Add the list of accepted formulas to the profile dictionary
+		# for each of the judgement sets.
 		numberOfJS = int(lines[lineNumber].split(", ")[1])
 		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
 			currentLine = lines[i].split(", ")
+			# If the list of accepted formulas is not empty continue
 			if currentLine[1] != '':
 				label = int(currentLine[0])
 				formulaLabels = list(map(int, currentLine[1].split(";")))
 				acceptedFormulas = []
 				for formulaLabel in formulaLabels:
 					acceptedFormulas.append(self.agenda[formulaLabel])
-				self.profile.append([label, acceptedFormulas])
 
 				# Check consistency of the judgement set with respect 
 				# to the input constraint
@@ -198,7 +209,11 @@ class Scenario:
 				if not self.checkConsistency(my_string):
 					raise Exception (f"The judgement set on line {i} is inconsistent"\
 						" with the input constraints.")
+
+				# Add the judgement set to the scenario
+				self.profile.append([label, acceptedFormulas])
 			else:
+				# If the all issues are rejected, add the empty list
 				self.profile.append([label, []])
 
 	def checkConsistency(self, sentence):
