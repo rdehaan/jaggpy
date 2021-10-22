@@ -22,7 +22,15 @@ The package uses Answer Set Programming (ASP) for the efficient computation of o
 <li>
     <a href="#usage">Usage</a>
     <ul>
-    <li><a href="#scenario-objects">Scenario objects</a></li>
+    <li>
+    	<a href="#scenario-objects">Scenario objects</a>
+	<ul>
+	<li><a href="#formulas">Formulas</a></li>
+	<li><a href="#jagg-file">.jagg file</a></li>
+	<li><a href="#creating-a-scenario-object">Creating a Scenario Object</a></li>
+	<li><a href="#scenario-methods-and-properties">Scenario methods and properties</a></li>
+	</ul>
+    </li>
     <li>
         <a href="#using-the-solver">Using the solver</a>
         <ul>
@@ -127,7 +135,7 @@ scenario1.loadFromFile(path)
 ```
 If there are any inconsistencies in the scenario defined in the `.jagg` file, a warning indicating the inconsistency will occur. It is not possible to successfully load an inconsistent scenario.
 
-#### **Scenario methods**
+#### **Scenario methods and properties**
 A scenario object has several useful methods and properties.
 - `prettyPrint()`: A method that prints the scenario in a readable format.
 - `agenda`: This property is a dictionary with the the labels of issues as keys and the issues as values.
@@ -145,13 +153,13 @@ A scenario object has several useful methods and properties.
 
 <!-- Examples -->
 ### Examples
+The source code of this package contains the folder `src\test`. There are several example files illustrating the use of the `jaggpy` package. It contains several example scenarios, an example python file incorporating the package and explicit ASP encodings of some scenarios and rules.  
 
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
 ## Contact
@@ -160,9 +168,8 @@ Ronald de Haan - me@ronalddehaan.eu
 
 Github Link: [https://github.com/rdehaan/jaggpy](https://github.com/rdehaan/jaggpy)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- REFERENCES -->
 ## References
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+- Endriss, U., de Haan, R., Lang, J., & Slavkovik, M. (2020). [The Complexity Landscape of Outcome Determination in Judgment Aggregation](https://doi.org/10.1613/jair.1.11970). *Journal of Artificial Intelligence Research*, *69*, 687-731.
+- de Haan, R., & Slavkovik, M. (2019). [Answer set programming for judgment aggregation](https://doi.org/10.24963/ijcai.2019/231). In *Proceedings of the 28th International Joint Conference on Artificial Intelligence (IJCAI 2019)*. AAAI Press.
