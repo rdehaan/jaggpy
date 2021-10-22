@@ -98,15 +98,21 @@ This is an example of how to list things you need to use the software and how to
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Ronald de Haan - me@ronalddehaan.eu
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Github Link: [https://github.com/rdehaan/jaggpy](https://github.com/rdehaan/jaggpy)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- REFERENCES -->
+## References
+<ul>
+<li>
+</li>
