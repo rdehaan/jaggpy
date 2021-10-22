@@ -5,7 +5,9 @@
 
 The package uses Answer Set Programming (ASP) for the efficient computation of outcomes (as this problem shares the same worst-case complexity with ASP), building on the encodings presented by de Haan and Slavkovik in 
 
-> de Haan, R., & Slavkovik, M. (2019). [Answer set programming for judgment aggregation](https://doi.org/10.24963/ijcai.2019/231). In *Proceedings of the 28th International Joint Conference on Artificial Intelligence* (IJCAI 2019). AAAI Press.
+> de Haan, R., & Slavkovik, M. (2019). [Answer set programming for judgment aggregation](https://doi.org/10.24963/ijcai.2019/231). In *Proceedings of the 28th International Joint Conference on Artificial Intelligence (IJCAI 2019)*. AAAI Press.
+
+
 
 <!-- TABLE OF CONTENTS -->
 ## Table of contents
