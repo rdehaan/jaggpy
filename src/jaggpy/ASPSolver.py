@@ -20,14 +20,16 @@ class ASPSolver(Solver):
 			- kemeny
 			- leximax
 			- young
-			- reversal
 			- slater
 			- majority
 			"""
 		parser = Parser()
+
+		# Create a list of all variables in the scenario
 		allVariables = set() 
 		for var in scenario.variables:
 			allVariables.add(var)
+
 		# Add the scenario to asp_program using the scenario
 		# argument.
 		asp_program = textwrap.dedent("""% We first add the scenario to our ASP program.
@@ -62,18 +64,22 @@ class ASPSolver(Solver):
 		# Input constraints
 		asp_program += "\n% Declare input constraints (in CNF)\n"
 		totalInputConstraints = ""
+
 		# Add input constraints specified in the scenario.
 		for conjunct in scenario.inputConstraints:
 			totalInputConstraints += f"{conjunct} & "
+
 		# Add auxiliary input constraints that guarantee that labels corresponds to the right formulas.
 		for constraint in parser.translateAgenda(scenario.agenda):
 			totalInputConstraints += f"({constraint}) & "
 		totalIC = totalInputConstraints[:-3]
+
 		# Translate to cnf
 		cnfObject = parser.toCNF(totalIC, allVariables) 
 		icCNF = cnfObject[0]
 		allVariables = allVariables.union(cnfObject[1])
 
+		# Add the constraint clauses to the program
 		conjuncts = ("".join(icCNF.split())).split("&")
 		clauseNumber = 1
 		for clause in conjuncts:
@@ -98,14 +104,18 @@ class ASPSolver(Solver):
 		totalOutputConstraints = ""
 		for conjunct in scenario.outputConstraints:
 			totalOutputConstraints += f"{conjunct} & "
+
 		# Add auxiliary input constraints that guarantee that labels corresponds to the right formulas.
 		for constraint in parser.translateAgenda(scenario.agenda):
 			totalOutputConstraints += f"({constraint}) & "
 		totalOC = totalOutputConstraints[:-3]
+
 		# Translate to cnf
 		cnfObject = parser.toCNF(totalOC, allVariables)
 		ocCNF = cnfObject[0]
 		allVariables = allVariables.union(cnfObject[1])
+
+		# Add the constraint clauses to the program
 		conjuncts = ("".join(ocCNF.split())).split("&")
 		clauseNumber = 1
 		for clause in conjuncts:
@@ -124,6 +134,7 @@ class ASPSolver(Solver):
 				else:
 					asp_program += f'outputClause({clauseNumber}, {formula}).\n'
 			clauseNumber += 1
+
 		# Add variables
 		asp_program += '\n'
 		for variable in allVariables:
@@ -201,8 +212,6 @@ class ASPSolver(Solver):
 			#show outcome/1.
 				""")
 		
-		# print(asp_program)
-
 		# Ground and solve the program
 		control = clingo.Control(arguments=["--project"])
 		control.add("base", [], asp_program)
@@ -222,15 +231,3 @@ class ASPSolver(Solver):
 								outcome[scenario.agenda[label]] = True
 								break
 					yield (outcome)
-
-		# Yield the results of the program
-		# with control.solve(yield_=True) as handle:
-		# 	for model in handle:
-		# 		outcome = dict()
-		# 		for label in scenario.agenda:
-		# 			outcome[scenario.agenda[label]] = False
-		# 			for atom in model.symbols(shown=True):
-		# 				if f'outcome(l{label})' == str(atom):
-		# 					outcome[scenario.agenda[label]] = True
-		# 					break
-		# 		yield (outcome)
