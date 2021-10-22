@@ -153,6 +153,9 @@ class Scenario:
 		lineNumber = numberOfFormulas+2
 		while lines[lineNumber].split(", ")[0] == "In":
 			formula = lines[lineNumber].split(", ")[1]
+			if formula == "":
+				firstVar = self.variables[0]
+				formula = f'({firstVar} | ~{firstVar})'
 			self.inputConstraints.append(parser.toNNF(formula))	
 			lineNumber += 1
 
@@ -167,6 +170,9 @@ class Scenario:
 		# Add the output constraints to the list of constraints
 		while lines[lineNumber].split(", ")[0] == "Out":
 			formula = lines[lineNumber].split(", ")[1]
+			if formula == "":
+				firstVar = self.variables[0]
+				formula = f'({firstVar} | ~{firstVar})'
 			self.outputConstraints.append(parser.toNNF(formula))	
 			lineNumber += 1
 
