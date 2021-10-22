@@ -13,11 +13,12 @@ from jaggpy.parser import Parser
 class Scenario:
 	def __init__(self):
 		"""A Scenario object has the following properties:
-			- agenda: a list of formulas
+			- variables: a list of occurring variables
+			- agenda: a dictionary with numbers as keys and
+				formulas as values
 			- inputConstraints: a list of input constraints
 			- outputConstraints: a list of output constraints
 			- profile: a list of judgement sets
-			- variables: a list of occurring variables
 			- numberVoters: an integer specifying the number of voters
 			"""
 		self.agenda = dict()
@@ -27,86 +28,95 @@ class Scenario:
 		self.variables = []
 		self.numberVoters = 0
 	
-	def addToVariables(self, variable):
-		"""The addToVariables takes a string denoting a new variable as its
-		only argument. """
-		self.variables.append(variable)
+	# @RONALD: Wij willen de functies waarmee je achteraf een scenario aan kunt passen
+	# weghalen uit de code. Bij het inladen van een file gebeurt er al het een en ander
+	# qua parsen, consistency checks etc. Hierdoor kunnen we niet garanderen dat deze functies
+	# geen problemen opleveren. Het zou herschreven kunnen worden, maar we zien niet een grote
+	# meerwaarde hiervan. 
+	# Als je het hier mee eens bent kan de code in comments verwijdert worden (dus tot de
+	# loadFromFile functie). Wellicht is het een interessante uitbreiding voor later om scenarios
+	# op een effectieve methode aan te passen zonder een nieuw scenario aan te maken.
 
-	def addToAgenda(self, formula):
-		"""The addToAgenda function takes a formula as its only argument.
-		If the formuls uses new variables, these should be added as well with
-		the addToVariables(var) function.
-		A formula can contain the following operators:
-			- The OR operator |
-			- The AND operator &
-			- The NOT operator ~
-			- The IMPLIES operator ->
-		Parentheses can be omitted where clear from context.  """
-		newLabel = len(self.agenda)+1
-		self.agenda[newLabel] = formula
+	# def addToVariables(self, variable):
+	# 	"""The addToVariables takes a string denoting a new variable as its
+	# 	only argument. """
+	# 	self.variables.append(variable)
 
-	def addToInputConstraints(self, constraint):
-		"""The addToInputConstraints function takes a formula as its only argument.
-		If the new constraint uses new variables, these should be added as well with
-		the addToVariables(var) function.
-		A formula can contain the following operators:
-			- The OR operator |
-			- The AND operator &
-			- The NOT operator ~
-			- The IMPLIES operator ->
-		Parentheses can be omitted where clear from context. """
-		self.inputConstraints.append(constraint)
-		my_string = ""
-		for conjunct in self.inputConstraints:
-			my_string += f"({conjunct}) & "
-		my_string = my_string[:-3]
-		if not self.checkConsistency(my_string):
-			raise Exception ("The input constraints are inconsistent")
+	# def addToAgenda(self, formula):
+	# 	"""The addToAgenda function takes a formula as its only argument.
+	# 	If the formuls uses new variables, these should be added as well with
+	# 	the addToVariables(var) function.
+	# 	A formula can contain the following operators:
+	# 		- The OR operator |
+	# 		- The AND operator &
+	# 		- The NOT operator ~
+	# 		- The IMPLIES operator ->
+	# 	Parentheses can be omitted where clear from context.  """
+	# 	newLabel = len(self.agenda)+1
+	# 	self.agenda[newLabel] = formula
 
-	def addToOutputConstraints(self, constraint):
-		"""The addToOutputConstraints function takes a formula as its only argument.
-		If the new constraint uses new variables, these should be added as well with
-		the addToVariables(var) function.
-		A formula can contain the following operators:
-			- The OR operator |
-			- The AND operator &
-			- The NOT operator ~
-			- The IMPLIES operator ->
-		Parentheses can be omitted where clear from context. """
-		self.outputConstraints.append(constraint)
-		my_string = ""
-		for conjunct in self.outputConstraints:
-			my_string += f"({conjunct}) & "
-		my_string = my_string[:-3]
-		if not self.checkConsistency(my_string):
-			raise Exception ("The input constraints are inconsistent")
+	# def addToInputConstraints(self, constraint):
+	# 	"""The addToInputConstraints function takes a formula as its only argument.
+	# 	If the new constraint uses new variables, these should be added as well with
+	# 	the addToVariables(var) function.
+	# 	A formula can contain the following operators:
+	# 		- The OR operator |
+	# 		- The AND operator &
+	# 		- The NOT operator ~
+	# 		- The IMPLIES operator ->
+	# 	Parentheses can be omitted where clear from context. """
+	# 	self.inputConstraints.append(constraint)
+	# 	my_string = ""
+	# 	for conjunct in self.inputConstraints:
+	# 		my_string += f"({conjunct}) & "
+	# 	my_string = my_string[:-3]
+	# 	if not self.checkConsistency(my_string):
+	# 		raise Exception ("The input constraints are inconsistent")
 
-	def addToProfile(self, times, judgementSet):
-		"""The addToProfile function takes a judgement set as its only argument.
-		A judgement set should be a list of the labels of the formulas that are
-		accepted. The rest is rejected. The formulas should be given by their 
-		label and seperated by a semicolon. For example, "2;4;5" """
-		formulaLabels = list(map(int, judgementSet.split(";")))
-		acceptedFormulas = []
-		for formulaLabel in formulaLabels:
-			acceptedFormulas.append(self.agenda[formulaLabel])
-		self.profile.append([times, acceptedFormulas])
-		self.numberVoters += times
+	# def addToOutputConstraints(self, constraint):
+	# 	"""The addToOutputConstraints function takes a formula as its only argument.
+	# 	If the new constraint uses new variables, these should be added as well with
+	# 	the addToVariables(var) function.
+	# 	A formula can contain the following operators:
+	# 		- The OR operator |
+	# 		- The AND operator &
+	# 		- The NOT operator ~
+	# 		- The IMPLIES operator ->
+	# 	Parentheses can be omitted where clear from context. """
+	# 	self.outputConstraints.append(constraint)
+	# 	my_string = ""
+	# 	for conjunct in self.outputConstraints:
+	# 		my_string += f"({conjunct}) & "
+	# 	my_string = my_string[:-3]
+	# 	if not self.checkConsistency(my_string):
+	# 		raise Exception ("The input constraints are inconsistent")
+
+	# def addToProfile(self, times, judgementSet):
+	# 	"""The addToProfile function takes a judgement set as its only argument.
+	# 	A judgement set should be a list of the labels of the formulas that are
+	# 	accepted. The rest is rejected. The formulas should be given by their 
+	# 	label and seperated by a semicolon. For example, "2;4;5" """
+	# 	formulaLabels = list(map(int, judgementSet.split(";")))
+	# 	acceptedFormulas = []
+	# 	for formulaLabel in formulaLabels:
+	# 		acceptedFormulas.append(self.agenda[formulaLabel])
+	# 	self.profile.append([times, acceptedFormulas])
+	# 	self.numberVoters += times
 		
-		# Check consistency of the judgement set with respect # to the input constraint
-		my_string = ""
-		for conjunct in self.inputConstraints:
-			my_string += f"({conjunct}) & "
-		for formulaLabel in formulaLabels:
-			my_string += f"({self.agenda[formulaLabel]}) & "
-		for j in range(1, len(self.agenda)+1):
-			if j not in formulaLabels:
-				my_string += f"(~{self.agenda[j]}) & "
-		my_string = my_string[:-3]
-		self.checkConsistency(my_string)
-		if not self.checkConsistency(my_string):
-			raise Exception (f"The new judgement set is inconsistent"\
-				"with the output constraints.")
+	# 	# Check consistency of the judgement set with respect # to the input constraint
+	# 	my_string = ""
+	# 	for conjunct in self.inputConstraints:
+	# 		my_string += f"({conjunct}) & "
+	# 	for formulaLabel in formulaLabels:
+	# 		my_string += f"({self.agenda[formulaLabel]}) & "
+	# 	for j in range(1, len(self.agenda)+1):
+	# 		if j not in formulaLabels:
+	# 			my_string += f"(~{self.agenda[j]}) & "
+	# 	my_string = my_string[:-3]
+	# 	self.checkConsistency(my_string)
+	# 	if not self.checkConsistency(my_string):
+	# 		raise Exception (f"The new judgement set is inconsistent"\
+	# 			"with the output constraints.")
 
 	def loadFromFile(self, path):
 		"""Load the scenario from a .jagg file given its path.
@@ -119,10 +129,11 @@ class Scenario:
 			- In, Formula: The input constraint labeled by the text "In"
 			- Out, Formula: The output constraint labeled by the text "Out"
 			- Number of voters, Number of distinct judgement sets
-			- J, phi_1;...;phi_n: A list of the formulas phi_1 to phi_n 
-				that are accepted. The rest is rejected. This profile occurs J times.
-				The formulas should be given by the times they are selected 
-				and seperated by a semicolon. For example, "4, 2;4;5".
+			- J, l1;...;ln: A list of the labels of the formulas
+				that are accepted. The rest is rejected. 
+				This profile occurs J times. The formulas should be 
+				given by the times they are selected and seperated 
+				by a semicolon. For example, "4, 2;4;5".
 		A formula can contain the following operators:
 			- The OR operator |
 			- The AND operator &
@@ -223,6 +234,8 @@ class Scenario:
 				self.profile.append([label, []])
 
 	def checkConsistency(self, sentence):
+		"""The function checkConsistency should receive an NNF-formula as a 
+		string. It return a Boolean indicating whether the formula is consistent."""
 		my_string = sentence
 
 		# Use a prefix to prevent variable name collisions
@@ -272,12 +285,20 @@ class Scenario:
 class Solver(ABC):
 	@abstractmethod
 	def solve(self, scenario, rule):
+		"""Given a scenario and an aggregation rule, yields a generator 
+		with the corresponding outcomes.""" 
 		pass
 	
 	def enumerateOutcomes(self, scenario, rule):
+		"""Given a scenario and an aggregation rule, prints all
+		corresponding outcomes."""
 		for outcome in self.solve(scenario, rule):
 			print(outcome)
 
 	def enumerateFirstNOutcomes(self, scenario, rule, n):
+		"""Given a scenario, an aggregation rule and an integer n,
+		prints the first n corresponding outcomes. Note that if n
+		exceeds the number of outcomes, then it starts printing 
+		the beginning again."""
 		for i in range(n):
 			print(next(self.solve(scenario, rule)))
