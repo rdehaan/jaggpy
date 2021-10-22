@@ -22,7 +22,15 @@ The package offers two ways in which to generate outcomes for a scenario given a
 <li>
     <a href="#usage">Usage</a>
     <ul>
-    <li><a href="#scenario-objects">Scenario objects</a></li>
+    <li>
+    	<a href="#scenario-objects">Scenario objects</a>
+	<ul>
+	<li><a href="#formulas">Formulas</a></li>
+	<li><a href="#jagg-file">.jagg file</a></li>
+	<li><a href="#creating-a-scenario-object">Creating a Scenario Object</a></li>
+	<li><a href="#scenario-methods-and-properties">Scenario methods and properties</a></li>
+	</ul>
+    </li>
     <li>
         <a href="#using-the-solver">Using the solver</a>
         <ul>
@@ -42,35 +50,20 @@ The package offers two ways in which to generate outcomes for a scenario given a
 <!-- GETTING STARTED -->
 <!-- This still needs to be done! -->
 ## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
+At least Python 3.4 is required.
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+### Installation using PIP
+To install the package run the following command
+```
+pip install jaggpy
+```
 
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/github_username/repo_name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+If necessary, this also installs dependencies of the package. These include:
+- clingo
+- nnf
+- typing
+- pyparsing
 
 <!-- USAGE -->
 ## Usage
@@ -128,7 +121,7 @@ scenario1.loadFromFile(path)
 ```
 If there are any inconsistencies in the scenario defined in the `.jagg` file, a warning indicating the inconsistency will occur. It is not possible to successfully load an inconsistent scenario.
 
-#### **Scenario methods**
+#### **Scenario methods and properties**
 A scenario object has several useful methods and properties.
 - `prettyPrint()`: A method that prints the scenario in a readable format.
 - `agenda`: This property is a dictionary with the the labels of issues as keys and the issues as values.
@@ -176,13 +169,13 @@ bfs.enumerateFirstNOutcomes(scenario1, "kemeny", 2)
 
 <!-- Examples -->
 ### Examples
+The source code of this package contains the folder `src\test`. There are several example files illustrating the use of the `jaggpy` package. It contains several example scenarios, an example python file incorporating the package and explicit ASP encodings of some scenarios and rules.  
 
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
@@ -196,9 +189,8 @@ Ronald de Haan - me@ronalddehaan.eu
 
 Github Link: [https://github.com/rdehaan/jaggpy](https://github.com/rdehaan/jaggpy)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- REFERENCES -->
 ## References
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+- Endriss, U., de Haan, R., Lang, J., & Slavkovik, M. (2020). [The Complexity Landscape of Outcome Determination in Judgment Aggregation](https://doi.org/10.1613/jair.1.11970). *Journal of Artificial Intelligence Research*, *69*, 687-731.
+- de Haan, R., & Slavkovik, M. (2019). [Answer set programming for judgment aggregation](https://doi.org/10.24963/ijcai.2019/231). In *Proceedings of the 28th International Joint Conference on Artificial Intelligence (IJCAI 2019)*. AAAI Press.
