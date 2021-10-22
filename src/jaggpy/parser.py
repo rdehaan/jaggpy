@@ -4,19 +4,26 @@
 ## https://github.com/pyparsing/pyparsing/blob/master/examples/simpleBool.py#L16
 ## It has been altered for this application.
 #####################################################################
+
 from typing import Callable, Iterable
 from pyparsing import infixNotation, opAssoc, Keyword, Word, alphas, alphanums, ParserElement
 from nnf import *
 
 class Parser:
 	def parseSentence(self, sentence):
+		"""Given a formula as a string, parse it and return a list of
+		lists with the [] representing brackets. So x1 | (x2 & ~x3) 
+		returns [x1, |, [x2, &, [~, x3]]] """
+		# Create space between negations and atoms
 		prepSentence = sentence.split("~")
 		prepSentence = "~ ".join(prepSentence)
 
 		ParserElement.enablePackrat()
 
-		# define classes to be built at parse time, as each matching
-		# expression type is parsed
+		# Define classes to be built at parse time, as each matching
+		# expression type is parsed. Each class has a as_list method
+		# that returns itself and its elements in list representation
+		# (recursively).
 		class BoolOperand:
 			def __init__(self, t):
 				self.label = t[0]
@@ -61,7 +68,6 @@ class Parser:
 					result. append("&")
 				result = result[:-1]
 				return result
-				# return [self.args[0].as_list(), "&", self.args[1].as_list()]
 
 		class BoolOr(BoolBinOp):
 			repr_symbol = "|"
@@ -73,26 +79,26 @@ class Parser:
 					result.append("|")
 				result = result[:-1]
 				return result
-				# return [self.args[0].as_list(), "|", self.args[1].as_list()]
 
 		class BoolImplies(BoolBinOp):
 			repr_symbol = "->"
 			def as_list(self):
 				return [self.args[0].as_list(), "->", self.args[1].as_list()]
 
+		# Define what the operator symbols mean
 		NOT = Keyword("~")
 		AND = Keyword("&")
 		OR = Keyword("|")
 		IMPLIES = Keyword("->")
 
+		# Atoms can be alphanumerals
 		boolOperand = Word(alphanums)
 		boolOperand.setParseAction(BoolOperand).setName("bool_operand")
 
-		# define expression, based on expression operand and
-		# list of operations in precedence order
 		boolExpr = infixNotation(
 		boolOperand,
-		[
+		[	
+			# Define precedence of operations
 			(NOT, 1, opAssoc.RIGHT, BoolNot),
 			(OR, 2, opAssoc.LEFT, BoolOr),
 			(AND, 2, opAssoc.LEFT, BoolAnd),
@@ -100,19 +106,25 @@ class Parser:
 		],
 		)
 
+		# Create a parse object
 		parsedSentence = boolExpr.parseString(prepSentence)[0]
 
+		# Return the parsed sentence as a list
 		return parsedSentence.as_list()
 
 	def toNNF(self, sentence):
+		"""Given a formula as a string, returns a string of the
+		formula converted to NNF."""
 		# Parse the sentence and then convert it to NNF
 		parsed = self.parseSentence(sentence)
 		nnf = self.toNNFParsed(parsed)
 
 		return nnf
 
-	# Recursively convert the sentence to NNF
 	def toNNFParsed(self, sentence):
+		"""Helper function for the recursive proces of the toNNF function.
+		Given a formula, returns the formula partially converted
+		to NNF. """
 		# If the sentence is just a string, leave it be
 		if type(sentence) == str:
 			return sentence 
@@ -151,6 +163,8 @@ class Parser:
 				return " ".join(result)
 
 	def negAnd(self, sentence):
+		"""Helper function for toNNFParsed. Given a negated conjunction,
+		returns a disjunction with the disjuncts negated. """
 		result = ['(']
 		for i in range(len(sentence)):
 			if i % 2 == 0:
@@ -162,6 +176,8 @@ class Parser:
 		return " ".join(result)
 
 	def negOr(self, sentence):
+		"""Helper function for toNNFParsed. Given a negated disjunction,
+		returns a conjuncts with the conjuncts negated. """
 		result = ['(']
 		for i in range(len(sentence)):
 			if i % 2 == 0:
@@ -173,6 +189,8 @@ class Parser:
 		return " ".join(result)
 
 	def negImplies(self, sentence):
+		"""Helper function for toNNFParsed. Given a negated implication,
+		returns a disjunction with the antecedent negated."""
 		# Negate the antecedent
 		antecedent = self.toNNFParsed(['~', sentence[0]])
 		consequent = self.toNNFParsed(sentence[2])
@@ -183,6 +201,9 @@ class Parser:
 	def toCNF(self, sentence, variables):
 		"""
 		Translate a sentence from NNF (as produced by the toNNF function), to CNF.
+		The function needs a formula/sentence as a string and a list of all
+		variables occuring in the sentence. It returns the CNF formula and
+		an updated list of all occurring variables.
 		"""
 		my_string = sentence
 		allVariables = set()
@@ -201,44 +222,44 @@ class Parser:
 			allVariables.add(var)
 		formula = eval(my_string_preprocessed)
 
-		# Change nothing if formula already in CNF (DOES THIS WORK??), else convert to CNF using to_CNF method from nnf package.
-		if formula.is_CNF():
-			print("Formula is already in CNF.")
-			return sentence
-		else:
-			formula = formula.to_CNF()
-			for var in formula.vars():
-				if type(var) != str:
-					allVariables.add('a' + str(var)[:4])
-				else:
-					allVariables.add(var)
-			# Translate formula to string.
-			list_of_conjuncts = []
-			for conjunct in formula:
-				conj = "( "
-				disjunct_counter = 0
-				for disjunct in conjunct:
-					if str(disjunct)[-1] == '>':
-						disjunct = "a".join(str(disjunct)[:-1].split('<'))
-					if disjunct_counter < len(conjunct) - 1:
-						conj = conj + str(disjunct) + " | "
-					else:
-						conj = conj + str(disjunct) + " )"
-					disjunct_counter += 1
-				list_of_conjuncts.append(conj)
-			
-			if len(formula) == 1:
-				return [list_of_conjuncts[0], allVariables]
+		# Translate the formula to CNF and update what variables
+		# occur in the formula.
+		formula = formula.to_CNF()
+		for var in formula.vars():
+			if type(var) != str:
+				allVariables.add('a' + str(var)[:4])
 			else:
-				formula_str = "( "
-				for i in range(len(list_of_conjuncts)):
-					if i < len(list_of_conjuncts) - 1:
-						formula_str = formula_str + list_of_conjuncts[i] + " & "
-					else:
-						formula_str = formula_str + list_of_conjuncts[i] + " )"
-				return [formula_str, allVariables]
+				allVariables.add(var)
+
+		# Translate formula to string.
+		list_of_conjuncts = []
+		for conjunct in formula:
+			conj = "( "
+			disjunct_counter = 0
+			for disjunct in conjunct:
+				if str(disjunct)[-1] == '>':
+					disjunct = "a".join(str(disjunct)[:-1].split('<'))
+				if disjunct_counter < len(conjunct) - 1:
+					conj = conj + str(disjunct) + " | "
+				else:
+					conj = conj + str(disjunct) + " )"
+				disjunct_counter += 1
+			list_of_conjuncts.append(conj)
+		if len(formula) == 1:
+			return [list_of_conjuncts[0], allVariables]
+		else:
+			formula_str = "( "
+			for i in range(len(list_of_conjuncts)):
+				if i < len(list_of_conjuncts) - 1:
+					formula_str = formula_str + list_of_conjuncts[i] + " & "
+				else:
+					formula_str = formula_str + list_of_conjuncts[i] + " )"
+			return [formula_str, allVariables]
 
 	def translateAgenda(self, agenda):
+		"""Given a (sub)-agenda returns a list of constraints. For each issue a 
+		constraint is added of the form (label -> formula) and (formula -> label).
+		Both are made sure to be NNF formulas. """
 		newConstraints = []
 		for label in agenda.keys():
 			labelVar = f'l{label}'
