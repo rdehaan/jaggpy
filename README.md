@@ -1,6 +1,6 @@
 # JAGGPY
 
-`jaggpy` is a Python package for computing outcomes for [judgement aggregation](https://plato.stanford.edu/entries/belief-merging/#JudAgg). 
+```sh jaggpy``` is a Python package for computing outcomes for [judgement aggregation](https://plato.stanford.edu/entries/belief-merging/#JudAgg). 
 
 <!-- TABLE OF CONTENTS -->
 ## Table of contents
@@ -36,6 +36,7 @@
 </li>
 <li><a href="#license">License</a></li>
 <li><a href="#contact">Contact</a></li>
+<li><a href="#references">References</a></li>
 </ol>
 
 <!-- GETTING STARTED -->
@@ -116,3 +117,5 @@ Github Link: [https://github.com/rdehaan/jaggpy](https://github.com/rdehaan/jagg
 <ul>
 <li>
 </li>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
