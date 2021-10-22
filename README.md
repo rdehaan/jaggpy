@@ -1,6 +1,11 @@
 # JAGGPY
 
-```sh jaggpy``` is a Python package for computing outcomes for [judgement aggregation](https://plato.stanford.edu/entries/belief-merging/#JudAgg). 
+`jaggpy` is a Python package for computing outcomes of [judgement aggregation](https://plato.stanford.edu/entries/belief-merging/#JudAgg) (JA) scenarios. The package allows for JA scenarios in the most general form, where issues in the agenda, constraints on judgement sets and constraints on the outcome may be arbitrary formulas. For more information on the formal framework used see, e.g.,
+> Endriss, U., de Haan, R., Lang, J., & Slavkovik, M. (2020). [The Complexity Landscape of Outcome Determination in Judgment Aggregation](https://doi.org/10.1613/jair.1.11970). *Journal of Artificial Intelligence Research*, *69*, 687-731.
+
+The package uses Answer Set Programming (ASP) for the efficient computation of outcomes (as this problem shares the same worst-case complexity with ASP), building on the encodings presented by de Haan and Slavkovik in 
+
+> de Haan, R., & Slavkovik, M. (2019). [Answer set programming for judgment aggregation](https://doi.org/10.24963/ijcai.2019/231). In *Proceedings of the 28th International Joint Conference on Artificial Intelligence* (IJCAI 2019). AAAI Press.
 
 <!-- TABLE OF CONTENTS -->
 ## Table of contents
@@ -15,15 +20,7 @@
 <li>
     <a href="#usage">Usage</a>
     <ul>
-    <li>
-        <a href="#scenario-objects">Scenario objects</a>
-        <ul>
-        <li><a href="#`.jagg-files">`.jagg` files</a></li>
-        <li><a href="#creating-a-scenario-object">Creating a scenario object</a></li>
-        <li><a href="#`pretty-printing">Pretty printing</a></li>
-        <li><a href="#scenario-methods">Scenario methods</a></li>
-        </ul>
-    </li>
+    <li><a href="#scenario-objects">Scenario objects</a></li>
     <li>
         <a href="#using-the-solver">Using the solver</a>
         <ul>
