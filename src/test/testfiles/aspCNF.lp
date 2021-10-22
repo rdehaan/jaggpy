@@ -7,21 +7,6 @@ issue(x1;x2;x3;x4;x5).
 
 % Declare variables
 variable(x1;x2;x3;x4;x5;b;c).
-% 1 {js(cons, X); js(cons, -X)} 1 :- variable(X).
-
-% :- inputClause(C,_), js(cons,-L) : inputClause(C,L).
-% :- outputClause(C,_), js(cons,-L) : outputClause(C,L).
-
-% consistency(X) :- js(cons, X).
-
-% ( ( x3 | ~x4 ) & ( ~x1 | ~x3 | x4 ) & ( ~x2 | ~x3 | ~x4 ) )
-% inputClause(1, (x3;-x4)).
-% inputClause(2, (-x1;-x3;x4)).
-% inputClause(3, (-x2;-x3;x4)).
-
-% outputClause(1, (x3;-x4)).
-% outputClause(2, (-x1;-x3;x4)).
-% outputClause(3, (-x2;-x3;x4)).
 
 % Declare input constraints (in CNF)
 inputClause(1, (x4;b)).  

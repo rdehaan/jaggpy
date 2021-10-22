@@ -58,18 +58,6 @@ wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
 % js(col,X) :- inmaj(X).
 % #minimize { 1@1,out(A) : out(A) }.
 
-% Reversal scoring
-% agent(vrt(A,X)) :- voter(A), lit(X). 
-% js(vrt(A,X),-X) :- voter(A), lit(X), js(A,X).
-
-% disagree(A,X,Y) :- voter(A), lit(X), lit(Y), js(A,Y), js(vrt(A,X),-Y).
-% disagreement(A,X,D) :- voter(A), lit(X), D = #count { Y : disagree(A,X,Y) }.
-% #minimize { D@2,disagreemt(A,X,D) : disagreement(A,X,D) }.
-
-% score(A,X,D) :- js(col,X), disagreement(A,X,D).
-% score(E) :- E = #sum { D,score(A,X,D) : score(A,X,D) }.
-% #maximize { E@1,score(E) : score(E) }.
-
 % % Slater rule
 % % determine the majority outcome
 % pc(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
