@@ -94,6 +94,7 @@ class BruteForce(Solver):
 						translation = scenario.agenda[label]
 						translatedOutcomes[translation] = outcome[formula]
 				outcomes[i] = translatedOutcomes
+			outcomes = [dict(t) for t in {tuple(outcome.items()) for outcome in outcomes}]
 			yield(outcomes)
 
 		# MaxHamming rule
@@ -143,6 +144,7 @@ class BruteForce(Solver):
 						translation = scenario.agenda[label]
 						translatedOutcomes[translation] = outcome[formula]
 				outcomes[i] = translatedOutcomes
+			outcomes = [dict(t) for t in {tuple(outcome.items()) for outcome in outcomes}]
 			yield(outcomes)
 	
 
@@ -229,6 +231,7 @@ class BruteForce(Solver):
 						translation = scenario.agenda[label]
 						translatedOutcomes[translation] = outcome[formula]
 				outcomes[i] = translatedOutcomes
+			outcomes = [dict(t) for t in {tuple(outcome.items()) for outcome in outcomes}]
 			yield(outcomes)
 		else:
 			raise Exception (f"{rule} is not a recognized aggregation rule.")
