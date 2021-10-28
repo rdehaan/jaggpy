@@ -1,6 +1,6 @@
 #####################################################################
 ## The ASP solver that uses the given rule to give back the
-## outcome of the judgement aggregation. We use clingo to find the
+## outcome of the judgment aggregation. We use clingo to find the
 ## correct answer sets.
 #####################################################################
 
@@ -14,7 +14,7 @@ class ASPSolver(Solver):
 	def solve(self, scenario, rule):
 		"""Given a scenario object and the name of a rule
 		this function will yield the outcomes
-		of the judgement aggregation. Each outcome is yielded seperately.
+		of the judgment aggregation. Each outcome is yielded seperately.
 		The rule should be given as a string and can be one of the
 		following lowercase commands:
 			- kemeny
@@ -43,7 +43,7 @@ class ASPSolver(Solver):
 			asp_program += f"issue(l{key}).\n"
 			allVariables.add(f"l{key}")
 
-		# Voters and judgement sets
+		# Voters and judgment sets
 		asp_program += textwrap.dedent("""
 		% Adding voters and specifying what they voted for sets.
 		""")

@@ -18,7 +18,7 @@ class Scenario:
 				formulas as values
 			- inputConstraints: a list of input constraints
 			- outputConstraints: a list of output constraints
-			- profile: a list of judgement sets
+			- profile: a list of judgment sets
 			- numberVoters: an integer specifying the number of voters
 			"""
 		self.agenda = dict()
@@ -91,19 +91,19 @@ class Scenario:
 	# 	if not self.checkConsistency(my_string):
 	# 		raise Exception ("The input constraints are inconsistent")
 
-	# def addToProfile(self, times, judgementSet):
-	# 	"""The addToProfile function takes a judgement set as its only argument.
-	# 	A judgement set should be a list of the labels of the formulas that are
+	# def addToProfile(self, times, judgmentSet):
+	# 	"""The addToProfile function takes a judgment set as its only argument.
+	# 	A judgment set should be a list of the labels of the formulas that are
 	# 	accepted. The rest is rejected. The formulas should be given by their 
 	# 	label and seperated by a semicolon. For example, "2;4;5" """
-	# 	formulaLabels = list(map(int, judgementSet.split(";")))
+	# 	formulaLabels = list(map(int, judgmentSet.split(";")))
 	# 	acceptedFormulas = []
 	# 	for formulaLabel in formulaLabels:
 	# 		acceptedFormulas.append(self.agenda[formulaLabel])
 	# 	self.profile.append([times, acceptedFormulas])
 	# 	self.numberVoters += times
 		
-	# 	# Check consistency of the judgement set with respect # to the input constraint
+	# 	# Check consistency of the judgment set with respect # to the input constraint
 	# 	my_string = ""
 	# 	for conjunct in self.inputConstraints:
 	# 		my_string += f"({conjunct}) & "
@@ -115,7 +115,7 @@ class Scenario:
 	# 	my_string = my_string[:-3]
 	# 	self.checkConsistency(my_string)
 	# 	if not self.checkConsistency(my_string):
-	# 		raise Exception (f"The new judgement set is inconsistent"\
+	# 		raise Exception (f"The new judgment set is inconsistent"\
 	# 			"with the output constraints.")
 
 	def loadFromFile(self, path):
@@ -128,7 +128,7 @@ class Scenario:
 			- X, Formula: The formula labeled by the number X  
 			- In, Formula: The input constraint labeled by the text "In"
 			- Out, Formula: The output constraint labeled by the text "Out"
-			- Number of voters, Number of distinct judgement sets
+			- Number of voters, Number of distinct judgment sets
 			- J, l1;...;ln: A list of the labels of the formulas
 				that are accepted. The rest is rejected. 
 				This profile occurs J times. The formulas should be 
@@ -199,7 +199,7 @@ class Scenario:
 		self.numberVoters += int(lines[lineNumber].split(", ")[0])
 
 		# Add the list of accepted formulas to the profile dictionary
-		# for each of the judgement sets.
+		# for each of the judgment sets.
 		numberOfJS = int(lines[lineNumber].split(", ")[1])
 		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
 			currentLine = lines[i].split(", ")
@@ -211,7 +211,7 @@ class Scenario:
 				for formulaLabel in formulaLabels:
 					acceptedFormulas.append(self.agenda[formulaLabel])
 
-				# Check consistency of the judgement set with respect 
+				# Check consistency of the judgment set with respect 
 				# to the input constraint
 				my_string = ""
 				for conjunct in self.inputConstraints:
@@ -224,10 +224,10 @@ class Scenario:
 				my_string = my_string[:-3]
 				self.checkConsistency(my_string)
 				if not self.checkConsistency(my_string):
-					raise Exception (f"The judgement set on line {i} is inconsistent"\
+					raise Exception (f"The judgment set on line {i} is inconsistent"\
 						" with the input constraints.")
 
-				# Add the judgement set to the scenario
+				# Add the judgment set to the scenario
 				self.profile.append([label, acceptedFormulas])
 			else:
 				# If the all issues are rejected, add the empty list

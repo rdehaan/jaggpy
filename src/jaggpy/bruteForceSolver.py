@@ -1,6 +1,6 @@
 #####################################################################
 ## The simplest solver that uses the given rule to give back the 
-## outcome of the judgement aggregation.
+## outcome of the judgment aggregation.
 #####################################################################
 
 from .classes import Solver
@@ -14,7 +14,7 @@ class BruteForce(Solver):
 	def solve(self, scenario, rule):
 		"""Given a scenario object and the name of a rule 
 		this function will yield a list with all the outcomes
-		of the judgement aggregation. The rule should be given 
+		of the judgment aggregation. The rule should be given 
 		as a string and can be one of the following lowercase commands:
 			- kemeny
 			- maxhamming
@@ -26,7 +26,7 @@ class BruteForce(Solver):
 		parser = Parser()
 		translatedAgenda = parser.translateAgenda(scenario.agenda)
 
-		# Make a list of all the judgement sets that are consistent
+		# Make a list of all the judgment sets that are consistent
 		# with the output constraints.
 		my_string = ""
 		for conjunct in scenario.outputConstraints:
@@ -145,7 +145,7 @@ class BruteForce(Solver):
 		for outcome in consistentOutcomes:
 			# Reset max Hamming Distance
 			maxHD = 0
-			# Check the Hamming distance from the outcome to each judgement set and track the maximal distance.
+			# Check the Hamming distance from the outcome to each judgment set and track the maximal distance.
 			for judSet in scenario.profile:
 				# Check Hamming distance.
 				hamDist = 0
