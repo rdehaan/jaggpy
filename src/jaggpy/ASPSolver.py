@@ -1,21 +1,21 @@
 #####################################################################
-## The ASP solver that uses the given rule to give back the 
-## outcome of the judgement aggregation. We use clingo to find the 
+## The ASP solver that uses the given rule to give back the
+## outcome of the judgement aggregation. We use clingo to find the
 ## correct answer sets.
 #####################################################################
 
 import clingo
 from .classes import Solver
-from clingo import String
+from clingo import String  # pylint: disable=no-name-in-module
 from .parser import Parser
 import textwrap
 
 class ASPSolver(Solver):
 	def solve(self, scenario, rule):
-		"""Given a scenario object and the name of a rule 
+		"""Given a scenario object and the name of a rule
 		this function will yield the outcomes
 		of the judgement aggregation. Each outcome is yielded seperately.
-		The rule should be given as a string and can be one of the 
+		The rule should be given as a string and can be one of the
 		following lowercase commands:
 			- kemeny
 			- leximax
@@ -26,7 +26,7 @@ class ASPSolver(Solver):
 		parser = Parser()
 
 		# Create a list of all variables in the scenario
-		allVariables = set() 
+		allVariables = set()
 		for var in scenario.variables:
 			allVariables.add(var)
 
@@ -75,7 +75,7 @@ class ASPSolver(Solver):
 		totalIC = totalInputConstraints[:-3]
 
 		# Translate to cnf
-		cnfObject = parser.toCNF(totalIC, allVariables) 
+		cnfObject = parser.toCNF(totalIC, allVariables)
 		icCNF = cnfObject[0]
 		allVariables = allVariables.union(cnfObject[1])
 
@@ -148,7 +148,7 @@ class ASPSolver(Solver):
 		1 { js(A,X) ; js(A,-X) } 1 :- agent(A), variable(X).
 		:- voter(A), inputClause(C,_), js(A,-L) : inputClause(C,L).
 
-		% Consistency check of the collective outcome with respect 
+		% Consistency check of the collective outcome with respect
 		% to the output constraint
 		agent(col).
 		:- agent(col), outputClause(C,_), js(col,-L) : outputClause(C,L).
@@ -158,11 +158,11 @@ class ASPSolver(Solver):
 		if rule == "kemeny":
 			print("Computing outcome with ASP and the Kemeny rule...")
 			asp_program += textwrap.dedent("""
-			% Kemeny rule 
+			% Kemeny rule
 			wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
 			#maximize { N@1,wgt(X,N) : wgt(X,N), js(col,X) }.
 			""")
-		
+
 		elif rule == "leximax":
 			print("Computing outcome with ASP and the leximax rule...")
 			asp_program += textwrap.dedent("""
@@ -170,7 +170,7 @@ class ASPSolver(Solver):
 			wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
 			#maximize { 1@N,wgt(X,N) : wgt(X,N), js(col,X) }.
 			""")
-		
+
 		elif rule == "young":
 			print("Computing outcome with ASP and the young rule...")
 			asp_program += textwrap.dedent("""
@@ -181,7 +181,7 @@ class ASPSolver(Solver):
 			js(col,X) :- inmaj(X).
 			#minimize { 1@1,out(A) : out(A) }.
 			""")
-		
+
 		elif rule == "slater":
 			print("Computing outcome with ASP and the slater rule...")
 			asp_program += textwrap.dedent("""
@@ -192,7 +192,7 @@ class ASPSolver(Solver):
 			% maximize agreement with the majority outcome
 			#minimize { 1@10,maj(X) : maj(X), js(col,-X) }.
 			""")
-		
+
 		elif rule == "majority":
 			print("Computing outcome with ASP and the majority rule...")
 			asp_program += textwrap.dedent("""
@@ -211,7 +211,7 @@ class ASPSolver(Solver):
 			outcome(X) :- agent(col), js(col, X), issue(X).
 			#show outcome/1.
 				""")
-		
+
 		# Ground and solve the program
 		control = clingo.Control(arguments=["--project"])
 		control.add("base", [], asp_program)
