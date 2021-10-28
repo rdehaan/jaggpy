@@ -1,11 +1,11 @@
 # JAGGPY
 
-`jaggpy` is a Python package for computing outcomes of [judgement aggregation](https://plato.stanford.edu/entries/belief-merging/#JudAgg) (JA) scenarios. The package allows for JA scenarios in the most general form, where issues in the agenda, constraints on judgement sets and constraints on the outcome may be arbitrary formulas. For more information on the formal framework used see, e.g.,
+`jaggpy` is a Python package for computing outcomes of [judgment aggregation](https://plato.stanford.edu/entries/belief-merging/#JudAgg) (JA) scenarios. The package allows for JA scenarios in the most general form, where issues in the agenda, constraints on judgment sets and constraints on the outcome may be arbitrary formulas. For more information on the formal framework used see, e.g.,
 > Endriss, U., de Haan, R., Lang, J., & Slavkovik, M. (2020). [The Complexity Landscape of Outcome Determination in Judgment Aggregation](https://doi.org/10.1613/jair.1.11970). *Journal of Artificial Intelligence Research*, *69*, 687-731.
 
-in which it is referred to as *framework 6*.
+in which it is referred to as *framework (6)*.
 
-The package offers two ways in which to generate outcomes for a scenario given a JA rule. The first (and slowest) is a brute force solver, and the second makes use of Answer Set Programming (ASP) for the efficient computation of outcomes (as this problem shares the same worst-case complexity with ASP), building on the encodings presented by de Haan and Slavkovik in 
+The package offers two ways in which to generate outcomes for a scenario given a JA rule. The first (and slowest) is a brute force solver, and the second makes use of Answer Set Programming (ASP) for the efficient computation of outcomes, building on the encodings presented by de Haan and Slavkovik in
 
 > de Haan, R., & Slavkovik, M. (2019). [Answer set programming for judgment aggregation](https://doi.org/10.24963/ijcai.2019/231). In *Proceedings of the 28th International Joint Conference on Artificial Intelligence (IJCAI 2019)*. AAAI Press.
 
@@ -67,31 +67,31 @@ If necessary, this also installs dependencies of the package. These include:
 
 <!-- USAGE -->
 ## Usage
-To use this package you need to create a scenario object for the scenario that you want to apply juddgement aggregation to. Futhermore, a solver object needs to be made to apply several aggregation rules to the scenario. These objects and their methods will be discussed in what follows.
+To use this package you need to create a scenario object for the scenario that you want to apply judgment aggregation to. Futhermore, a solver object needs to be made to apply one of the aggregation rules to the scenario. These objects and their methods will be discussed in what follows.
 
 <!-- Scenario objects -->
 ### Scenario objects
 
 #### **Formulas**
 
-This package can handle arbitrary formulas in the agenda, input-, and output constraints. The available operators are conjunction (`&`), disjunction (`|`), negation (`~`) and implication (`->`). Parentheses can usually be omitted where clear from context. A few example formulas are: 
-``` 
+This package can handle arbitrary formulas in the agenda, input-, and output constraints. The available operators are conjunction (`&`), disjunction (`|`), negation (`~`) and implication (`->`). Parentheses can usually be omitted where clear from context. A few example formulas are:
+```
  (~x1 | ~x2 | ~x3) & (~x1 | ~x3 | ~x4)
 
  (x1 -> ~(x2 & x3)) & (x1 -> ~(x3 & x4)))
- 
+
  ( ~x1 & x2 ) -> x3
 ```
 #### **`.jagg` file**
 An object from the scenario class is read from a `.jagg` file. A `.jagg` file should be formatted as follows:
 
 - `var_1,...,var_n`: A list of all the variables occuring in the scenario.
-- `m`: The number of issues in the pre-agenda. (Note that only a pre-agenda needs to be specified. The agenda will be automatically generated.)
+- `m`: The number of issues in the pre-agenda. (Note that only a pre-agenda needs to be specified. The agenda will be automatically generated. A pre-agenda contains all the issues in their unnegated form. The agenda additionally includes their negations.)
 - `X, Formula`: For each of the `m` formulas in the pre-agenda, the number `X` as a label followed by the formula.
 - `In, Formula`: The input constraint labeled by the string "In". (Note that it is possible to have be multiple input constraints.)
 - `Out, Formula`: The output constraint labeled by the string "Out". (Note that it is possible to have be multiple output constraints.)
-- `v, j`: The number of voters `v` followed by the number of distinct judgement sets `j`.
-- `J, Label_1;...;Label_n`: The number of times this judgement set occurs followed by the labels of the accepted formulas. The formulas should be seperated by a semicolon. The issues that are not accepted will be rejected.
+- `v, j`: The number of voters `v` followed by the number of distinct judgment sets `j`.
+- `J, Label_1;...;Label_n`: The number of times this judgment set occurs followed by the labels of the accepted formulas. The formulas should be separated by a semicolon. Issues that are not accepted are rejected.
 
 An example of the format of a `.jagg` file is:
 ```
@@ -108,7 +108,7 @@ Out, ( x1 | ~x1 )
 2, 1;2;4
 3, 4
 ```
-In this scenario we have the variables `x1`, `x2` and `x3`. There are `4` different issues in the agenda. These issues are `x1`, `x2`, `x3` and `( ~x1 & x2 ) -> x3`, and are labeled by the numbers `1-4` respectively. The input and output constraints are `( x1 | ~x1 )`. There are `8` voters and `3` different judgement sets. Of the voters three have accepted the issues labeled by `2`, `3` and `4`. Two have accepted the issues labeled by `1`, `2` and `4`. And three have accepted the issue labeled by `4`.
+In this scenario we have the variables `x1`, `x2` and `x3`. There are `4` different issues in the agenda. These issues are `x1`, `x2`, `x3` and `( ~x1 & x2 ) -> x3`, and are labeled by the numbers `1-4` respectively. The input and output constraints are `( x1 | ~x1 )`. There are `8` voters and `3` different judgment sets. Of the voters three have accepted the issues labeled by `2`, `3` and `4` (and thus have rejected the issue labeled by `1`). Two have accepted the issues labeled by `1`, `2` and `4` (and thus have rejected the issue labeled by `3`). And three have accepted the issue labeled by `4` (and thus have rejected the issues labeled by `1`, `2` and `3`).
 
 #### **Creating a Scenario Object**
 A scenario object should first be created, and then can be loaded from a `.jagg` file given its path. The path should be a raw string, i.e., of the form `r"path/to/file/"`. It can then be loaded using the `loadFromFile` method of the scenario class. For example:
@@ -127,7 +127,7 @@ A scenario object has several useful methods and properties.
 - `agenda`: This property is a dictionary with the the labels of issues as keys and the issues as values.
 - `inputConstraints`: This property is a list of the input constraints.
 - `outputConstraints`: This property is a list of the output constraints.
-- `profile`: This property is a list of the judgement sets. Each element is a list of which the first element is the number of times the judgement set occurs. The second element of these lists is a list with the issues that are accepted.
+- `profile`: This property is a list of the judgment sets. Each element is a list of which the first element is the number of times the judgment set occurs. The second element of these lists is a list with the issues that are accepted.
 - `numberVoters`: This property is an integer specifying the number of voters.
 
 <!-- Solver -->
@@ -158,7 +158,7 @@ For the ASP solver these are:
 There are three solver methods corresponding to different ways in which the output is given. For each of these the first argument is the the scenario object and the second argument a lowercase string specifying the rule to be executed. The methods are the following:
 - `solve()` This method uses no additional arguments. The output given is a generator. Note that the generator returned by the brute force solver yields a list of all outcomes while the ASP solver's generator yields individual outcomes.
 - `enumerateOutcomes()` This method uses no additional arguments and prints all the outcomes.
-- `enumerateFirstNOutcomes()` This method takes one additional argument `n` and prints the first `n` outcomes. Note that when `n` is chosen such that it is larger than the amount of outcomes, this method will print outcomes already seen until it has printed `n` statements. 
+- `enumerateFirstNOutcomes()` This method takes one additional argument `n` and prints the first `n` outcomes. Note that when `n` is chosen such that it is larger than the amount of outcomes, this method will print outcomes already seen until it has printed `n` statements.
 
 For example, we can compute and enumerate outcomes generated by the Kemeny rule, given the scenario object `scenario1` as follows:
 
@@ -169,7 +169,7 @@ bfs.enumerateFirstNOutcomes(scenario1, "kemeny", 2)
 
 <!-- Examples -->
 ### Examples
-The source code of this package contains the folder `src\test`. There are several example files illustrating the use of the `jaggpy` package. It contains several example scenarios, an example python file incorporating the package and explicit ASP encodings of some scenarios and rules.  
+The source code of this package contains the folder `src/test`. There are several example files illustrating the use of the `jaggpy` package. It contains several example scenarios, an example python file incorporating the package and explicit ASP encodings of some scenarios and rules.  
 
 <!-- LICENSE -->
 ## License
