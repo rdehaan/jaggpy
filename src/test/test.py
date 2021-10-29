@@ -84,3 +84,5 @@ asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario6, "slater")
 
 asp.enumerateOutcomes(scenario8, "kemeny")
+
+# scenario1.prettyPrint()
