@@ -6,7 +6,7 @@
 #####################################################################
 
 from pyparsing import infixNotation, opAssoc, Keyword, Word, alphanums, ParserElement
-from nnf import Var, Or, And
+from nnf import Var, Or, And # pylint: disable=unused-import
 
 class Parser:
     """A parser class for parsing formulas."""
@@ -265,7 +265,7 @@ class Parser:
             return [formula_str, all_variables]
 
     def translate_agenda(self, agenda):
-        """Given a (sub)-agenda returns a list of constraints. For each issue a 
+        """Given a (sub)-agenda returns a list of constraints. For each issue a
         constraint is added of the form (label -> formula) and (formula -> label).
         Both are made sure to be NNF formulas. """
         new_constraints = []
@@ -281,3 +281,4 @@ class Parser:
             new_constraints.append(f'{neg_formula} | {label_var}')
 
         return new_constraints
+        

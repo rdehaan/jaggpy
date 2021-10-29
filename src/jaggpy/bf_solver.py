@@ -6,7 +6,7 @@
 import copy
 import math
 from itertools import combinations
-from nnf import Var, Or, And
+from nnf import Var, Or, And # pylint: disable=unused-import
 from .classes import Solver
 from .parser import Parser
 

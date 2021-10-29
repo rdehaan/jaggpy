@@ -7,7 +7,7 @@
 
 from abc import ABC, abstractmethod
 from itertools import islice
-from nnf import Var, Or, And
+from nnf import Var, Or, And  # pylint: disable=unused-import
 from jaggpy.parser import Parser
 
 class Scenario:

@@ -6,7 +6,6 @@
 
 import textwrap
 import clingo
-from clingo import String  # pylint: disable=no-name-in-module
 from .classes import Solver
 from .parser import Parser
 
