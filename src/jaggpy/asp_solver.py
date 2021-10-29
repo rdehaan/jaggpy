@@ -11,7 +11,7 @@ from .classes import Solver
 from .parser import Parser
 
 class ASPSolver(Solver):
-    """An 'answer set programming' solver for Judgment Aggregation."""
+    """A solver that uses Answer Set Programming to compute outcomes."""
     def solve(self, scenario, rule, verbose=False):
         """Given a scenario object and the name of a rule
         this function will yield the outcomes
@@ -23,20 +23,19 @@ class ASPSolver(Solver):
             - young
             - slater
             - majority
-            """
+        """
         parser = Parser()
 
-        # Create a list of all variables in the scenario
+        # Create a list of all variables in the scenario.
         all_variables = set()
         for var in scenario.variables:
             all_variables.add(var)
 
-        # Add the scenario to asp_program using the scenario
-        # argument.
+        # Add the scenario to the asp_program using the scenario argument.
         asp_program = textwrap.dedent("""% We first add the scenario to our ASP program.
         """)
 
-        # Issues
+        # Adding issues.
         asp_program += textwrap.dedent("""
         % Adding the labels that represent the issues.
         """)
@@ -44,9 +43,9 @@ class ASPSolver(Solver):
             asp_program += f"issue(l{key}).\n"
             all_variables.add(f"l{key}")
 
-        # Voters and judgment sets
+        # Adding voters and judgment sets.
         asp_program += textwrap.dedent("""
-        % Adding voters and specifying what they voted for sets.
+        % Adding voters and specifying how they voted.
         """)
         voter_count = 0
         for coalition in scenario.profile:
@@ -54,7 +53,7 @@ class ASPSolver(Solver):
                 # Register new voter.
                 voter = str(voter_count + voter_index)
                 asp_program += f"voter({voter}).\n"
-                # Register what they voted for.
+                # Register how they voted for each issue.
                 for label in scenario.agenda:
                     if scenario.agenda[label] in coalition[1]:
                         asp_program += f"js({voter},l{label}).\n"
@@ -62,26 +61,26 @@ class ASPSolver(Solver):
                         asp_program += f"js({voter},-l{label}).\n"
             voter_count += coalition[0]
 
-        # Input constraints
+        # Adding input constraints.
         asp_program += "\n% Declare input constraints (in CNF)\n"
         total_input_constraints = ""
 
-        # Add input constraints specified in the scenario.
+        # Compound separate constraints into one.
         for conjunct in scenario.input_constraints:
             total_input_constraints += f"{conjunct} & "
 
         # Add auxiliary input constraints that guarantee that labels
-        # corresponds to the right formulas.
+        # correspond to the right formulas.
         for constraint in parser.translate_agenda(scenario.agenda):
             total_input_constraints += f"({constraint}) & "
         total_ic = total_input_constraints[:-3]
 
-        # Translate to cnf
+        # Translate the constraint to CNF.
         cnf_object = parser.to_cnf(total_ic, all_variables)
         ic_cnf = cnf_object[0]
         all_variables = all_variables.union(cnf_object[1])
 
-        # Add the constraint clauses to the program
+        # Adding the input constraint clauses to the program.
         conjuncts = ("".join(ic_cnf.split())).split("&")
         clause_number = 1
         for clause in conjuncts:
@@ -101,24 +100,26 @@ class ASPSolver(Solver):
                     asp_program += f'inputClause({clause_number}, {formula}).\n'
             clause_number += 1
 
-        # Output constraints
+        # Adding output constraints.
         asp_program += "\n% Declare output constraints (in CNF)\n"
         total_output_contstraints = ""
+        
+        # Compound separate constraints into one.
         for conjunct in scenario.output_constraints:
             total_output_contstraints += f"{conjunct} & "
 
         # Add auxiliary input constraints that guarantee
-        # that labels corresponds to the right formulas.
+        # that labels correspond to the right formulas.
         for constraint in parser.translate_agenda(scenario.agenda):
             total_output_contstraints += f"({constraint}) & "
         total_oc = total_output_contstraints[:-3]
 
-        # Translate to cnf
+        # Translate the constraint to CNF.
         cnf_object = parser.to_cnf(total_oc, all_variables)
         oc_cnf = cnf_object[0]
         all_variables = all_variables.union(cnf_object[1])
 
-        # Add the constraint clauses to the program
+        # Adding the output constraint clauses to the program.
         conjuncts = ("".join(oc_cnf.split())).split("&")
         clause_number = 1
         for clause in conjuncts:
@@ -138,12 +139,12 @@ class ASPSolver(Solver):
                     asp_program += f'outputClause({clause_number}, {formula}).\n'
             clause_number += 1
 
-        # Add variables
+        # Declare variables.
         asp_program += '\n'
         for variable in all_variables:
             asp_program += f'variable({variable}).\n'
 
-        # Add the consistency check for the given scenario
+        # Add the consistency checks for the input and output constraints.
         asp_program += textwrap.dedent("""
         % Consistency check with respect to the input constraint
         agent(A) :- voter(A).
@@ -157,7 +158,7 @@ class ASPSolver(Solver):
         :- agent(col), outputClause(C,_), js(col,-L) : outputClause(C,L).
         """)
 
-        # Add the rule depending on what rule we need to use
+        # Add the ASP code corresponding to the rule that is to be executed.
         if rule == "kemeny":
             if verbose:
                 print("Computing outcome with ASP and the Kemeny rule...")
@@ -169,7 +170,7 @@ class ASPSolver(Solver):
 
         elif rule == "leximax":
             if verbose:
-                print("Computing outcome with ASP and the leximax rule...")
+                print("Computing outcome with ASP and the Leximax rule...")
             asp_program += textwrap.dedent("""
             % Leximax rule
             wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
@@ -178,7 +179,7 @@ class ASPSolver(Solver):
 
         elif rule == "young":
             if verbose:
-                print("Computing outcome with ASP and the young rule...")
+                print("Computing outcome with ASP and the Young rule...")
             asp_program += textwrap.dedent("""
             % Young rule
             in(A) ; out(A) :- voter(A).
@@ -190,7 +191,7 @@ class ASPSolver(Solver):
 
         elif rule == "slater":
             if verbose:
-                print("Computing outcome with ASP and the slater rule...")
+                print("Computing outcome with ASP and the Slater rule...")
             asp_program += textwrap.dedent("""
             % Slater rule
             % determine the majority outcome
@@ -202,7 +203,7 @@ class ASPSolver(Solver):
 
         elif rule == "majority":
             if verbose:
-                print("Computing outcome with ASP and the majority rule...")
+                print("Computing outcome with ASP and the Majority rule...")
             asp_program += textwrap.dedent("""
             % Majority rule
             % require that the collective outcome agrees with all issues
@@ -214,20 +215,20 @@ class ASPSolver(Solver):
         else:
             raise Exception (f"{rule} is not a recognized aggregation rule.")
 
-        # Add the outcome predicate
+        # Add the outcome predicate.
         asp_program += textwrap.dedent("""
             outcome(X) :- agent(col), js(col, X), issue(X).
             #show outcome/1.
                 """)
 
-        # Ground and solve the program
+        # Ground and solve the program.
         control = clingo.Control(arguments=["--project"])
         control.add("base", [], asp_program)
         control.ground([("base", [])])
         control.configuration.solve.models = 0
         control.configuration.solve.opt_mode = "optN"
 
-        # Yield the results of the program
+        # Yield the results of the program.
         with control.solve(yield_=True) as handle:
             for model in handle:
                 if model.optimality_proven:

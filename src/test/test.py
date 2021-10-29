@@ -5,7 +5,7 @@
 #############################################################################
 
 from jaggpy.classes import Scenario
-from jaggpy.bf_solver import BruteForce
+from jaggpy.bf_solver import BFSolver
 from jaggpy.asp_solver import ASPSolver
 
 scenario1 = Scenario()
@@ -40,7 +40,7 @@ scenario8 = Scenario()
 RELATIVE_FILE_PATH8 = "./test/testfiles/scenario8.jagg"
 scenario8.load_from_file(RELATIVE_FILE_PATH8)
 
-brutus = BruteForce()
+brutus = BFSolver()
 
 brutus.enumerate_outcomes(scenario1, "kemeny")
 brutus.enumerate_outcomes(scenario1, "slater")
