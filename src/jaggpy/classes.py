@@ -170,8 +170,8 @@ class Scenario:
 	
 
 	def prettyPrint(self):
-		"""Prints the Scenario object in a readable way"""
-		print("Variables: ")
+		"""Returns string that represents the scenario object in a readable way"""
+		scenario_string = "Variables: "
 		for variable in self.variables:
 			print(variable)
 		print("\nSub-agenda (label, formula):")
