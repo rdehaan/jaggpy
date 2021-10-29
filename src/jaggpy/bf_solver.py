@@ -94,15 +94,15 @@ class BFSolver(Solver):
                     translated_outcomes[translation] = outcome[formula]
             outcomes[i] = translated_outcomes
 
-        # Remove duplicates from outcomes
+        # Remove duplicates from outcomes.
         outcomes = [dict(t) for t in {tuple(outcome.items()) for outcome in outcomes}]
 
         yield outcomes
 
     def support_number(self, agenda, profile):
-        """The function support_number gets an agenda profile and returns a dictionary that
-        has the labels of the formulas as keys and the number of times it is suported
-        as its values."""
+        """The function support_number gets an agenda and profile and returns a dictionary, where each key
+        is the label of a formula and each value is the number of times the issue corresponding to the 
+        label is voted for."""
         support_count = dict()
         for formula in agenda.values():
             support_count[formula] = 0
@@ -114,14 +114,14 @@ class BFSolver(Solver):
         return support_count
 
     def solve_kemeny(self, scenario, consistent_outcomes):
-        """Helper function for the solve function. Given a scenario and the list of
+        """Helper function for the solve function. Given a scenario and a list of
         consistent outcomes, returns a list of the outcomes corresponding to the
         Kemeny rule."""
-        # Keep track of the maximum agreement score and initiate list of outcomes
+        # Keep track of the maximum agreement score and initiate list of outcomes.
         max_agreement = 0
         outcomes = []
 
-        # Check agreement score for each outcome and update list of outcomes accordingly
+        # Check agreement score for each outcome and update list of outcomes accordingly.
         for outcome in consistent_outcomes:
             agreement_score = 0
             # For each formula in the pre-agenda, check how many agents agree
@@ -141,16 +141,15 @@ class BFSolver(Solver):
         return outcomes
 
     def solve_max_hamming(self, scenario, consistent_outcomes):
-        """Helper function for the solve function. Given a scenario and the list of
+        """Helper function for the solve function. Given a scenario and a list of
         consistent outcomes, returns a list of the outcomes corresponding to the
-        maxHamming rule."""
+        MaxHamming rule."""
         # Keep track of minimum maximal Hamming distance and initialise list of outcomes.
         minimum_mhd = math.inf
         outcomes = []
 
         # Find max Hamming difference for each outcome and update
         for outcome in consistent_outcomes:
-            # Reset max Hamming Distance
             max_hd = 0
             # Check the Hamming distance from the outcome to each judgment set
             # and track the maximal distance.
@@ -168,7 +167,7 @@ class BFSolver(Solver):
                     max_hd = ham_dist
 
             # Update outcome set to include only those outcomes with the minimum
-            # maximum Hamming distance (thus far)
+            # maximum Hamming distance (thus far).
             if max_hd == minimum_mhd:
                 outcomes.append(outcome)
             elif max_hd < minimum_mhd:
@@ -177,7 +176,7 @@ class BFSolver(Solver):
         return outcomes
 
     def solve_slater(self, scenario, consistent_outcomes):
-        """Helper function for the solve function. Given a scenario and the list of
+        """Helper function for the solve function. Given a scenario and a list of
         consistent outcomes, returns a list of the outcomes corresponding to the
         Slater rule."""
         # Determine the set of formulas that has a majority vote, add a
@@ -197,8 +196,8 @@ class BFSolver(Solver):
                 negated_formula = f'neg l{key}'
                 majority_set.append(negated_formula)
 
-        # Make a list of potential subsets to see if the current
-        # 'size' of subsets has consistent ones.
+        # Make a list of potential subsets to see if there are consistent subsets of
+        # the current 'size'.
         potential_subsets = []
         for i in range(len(majority_set), 0, -1):
             # For a given length give all subsets of the majority_set
@@ -208,8 +207,8 @@ class BFSolver(Solver):
                 temp_outcomes = copy.deepcopy(consistent_outcomes)
                 to_remove = []
                 # For each formula in the subset, remove all the models
-                # that do not agree with it. Hence looking if some model
-                # agrees with all formulas in the subset
+                # that do not agree with it, thereby checking which models
+                # agree with all formulas in the subset.
                 for formula in subset:
                     if formula[0:4] == "neg ":
                         for j, value in enumerate(temp_outcomes):
@@ -219,23 +218,23 @@ class BFSolver(Solver):
                         for j, value in enumerate(temp_outcomes):
                             if not value[formula]:
                                 to_remove.append(j)
-                # Keep all models that have not been put in the to_remove list
+                # Keep all models that have not been put in the to_remove list.
                 to_keep = [index for index in range(len(temp_outcomes)) if index not in to_remove]
                 consistent_list = [temp_outcomes[index] for index in to_keep]
 
-                # If some models were kept we add this subset as a candidate
+                # If some models were kept we add this subset as a candidate.
                 if consistent_list != []:
                     potential_subsets.append(subset)
-            # If at least one subset has been chosen this length of subsets
-            # has the greatest consistent sets.
+            # We break out of the (decreasing) loop when we have at least one consistent subset, for 
+            # this/these subsets will be the largest consistent subset(s).
             if potential_subsets != []:
                 break
-        # Go over all chosen subsets in max(m(J),<=)
+        # Go over all maximal (consistent) subsets.
         outcomes = []
         for subset in potential_subsets:
             temp_outcomes = copy.deepcopy(consistent_outcomes)
             to_remove = []
-            # For each formula remove all the models that do not agree
+            # For each formula remove all the models that do not agree.
             for formula in subset:
                 if formula[0:4] == "neg ":
                     for j, value in enumerate(temp_outcomes):
@@ -246,7 +245,7 @@ class BFSolver(Solver):
                         if not value[formula]:
                             to_remove.append(j)
             to_keep = [index for index in range(len(temp_outcomes)) if index not in to_remove]
-            # Add all the extensions of the chosen subsets to the outcome
+            # Add all the extensions of the chosen subsets to the outcome.
             for index in to_keep:
                 outcomes.append(temp_outcomes[index])
         return outcomes

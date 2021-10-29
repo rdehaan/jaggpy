@@ -2,8 +2,9 @@
 ## Useful python classes for the scenarios and the possible solvers.
 #################################################################
 
-# A scenario class that will be read from a .jagg file. A scenario
-# has an agenda, input constraints, output constraints and a profile.
+# A scenario class that will allow us to create a scenario object by loading 
+# information from a .jagg file. A scenario has an agenda, input constraints,
+# output constraints and a profile.
 
 from abc import ABC, abstractmethod
 from itertools import islice
