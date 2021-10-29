@@ -1,90 +1,90 @@
-# A file to implement and test the functions that have 
+#############################################################################
+# A file to implement and test the functions that have
 # been written until now.
-
 # To test this file, run "python3 -m unittest test.test" in the terminal.
+#############################################################################
 
 from jaggpy.classes import Scenario
-from jaggpy.bruteForceSolver import BruteForce
-from jaggpy.ASPSolver import ASPSolver
-from jaggpy.parser import Parser
+from jaggpy.bf_solver import BruteForce
+from jaggpy.asp_solver import ASPSolver
 
 scenario1 = Scenario()
-relativeFilePath = "./test/testfiles/scenario1.jagg"
-scenario1.loadFromFile(relativeFilePath)
+RELATIVE_FILE_PATH = "./test/testfiles/scenario1.jagg"
+scenario1.load_from_file(RELATIVE_FILE_PATH)
 
 scenario2 = Scenario()
-relativeFilePath2 = "./test/testfiles/scenario2.jagg"
-scenario2.loadFromFile(relativeFilePath2)
+RELATIVE_FILE_PATH2 = "./test/testfiles/scenario2.jagg"
+scenario2.load_from_file(RELATIVE_FILE_PATH2)
 
 scenario3 = Scenario()
-relativeFilePath3 = "./test/testfiles/scenario3.jagg"
-scenario3.loadFromFile(relativeFilePath3)
+RELATIVE_FILE_PATH3 = "./test/testfiles/scenario3.jagg"
+scenario3.load_from_file(RELATIVE_FILE_PATH3)
 
 scenario4 = Scenario()
-relativeFilePath4 = "./test/testfiles/scenario4.jagg"
-scenario4.loadFromFile(relativeFilePath4)
+RELATIVE_FILE_PATH4 = "./test/testfiles/scenario4.jagg"
+scenario4.load_from_file(RELATIVE_FILE_PATH4)
 
 scenario5 = Scenario()
-relativeFilePath5 = "./test/testfiles/scenario5.jagg"
-scenario5.loadFromFile(relativeFilePath5)
+RELATIVE_FILE_PATH5 = "./test/testfiles/scenario5.jagg"
+scenario5.load_from_file(RELATIVE_FILE_PATH5)
 
 scenario6 = Scenario()
-relativeFilePath6 = "./test/testfiles/scenario6.jagg"
-scenario6.loadFromFile(relativeFilePath6)
+RELATIVE_FILE_PATH6 = "./test/testfiles/scenario6.jagg"
+scenario6.load_from_file(RELATIVE_FILE_PATH6)
 
 scenario7 = Scenario()
-relativeFilePath7 = "./test/testfiles/scenario7.jagg"
-scenario7.loadFromFile(relativeFilePath7)
+RELATIVE_FILE_PATH7 = "./test/testfiles/scenario7.jagg"
+scenario7.load_from_file(RELATIVE_FILE_PATH7)
 
 scenario8 = Scenario()
-relativeFilePath8 = "./test/testfiles/scenario8.jagg"
-scenario8.loadFromFile(relativeFilePath8)
+RELATIVE_FILE_PATH8 = "./test/testfiles/scenario8.jagg"
+scenario8.load_from_file(RELATIVE_FILE_PATH8)
 
 brutus = BruteForce()
 
-# brutus.enumerateOutcomes(scenario1, "kemeny")
-# brutus.enumerateOutcomes(scenario1, "slater")
-# brutus.enumerateOutcomes(scenario2, "kemeny")
-# brutus.enumerateOutcomes(scenario2, "slater")
-# brutus.enumerateOutcomes(scenario3, "kemeny")
-# brutus.enumerateOutcomes(scenario3, "slater")
-# brutus.enumerateOutcomes(scenario4, "kemeny")
-# brutus.enumerateOutcomes(scenario4, "slater")
-# brutus.enumerateOutcomes(scenario5, "kemeny")
-# brutus.enumerateOutcomes(scenario5, "slater")
-# brutus.enumerateOutcomes(scenario6, "kemeny")
+brutus.enumerate_outcomes(scenario1, "kemeny")
+brutus.enumerate_outcomes(scenario1, "slater")
+brutus.enumerate_outcomes(scenario2, "kemeny")
+brutus.enumerate_outcomes(scenario2, "slater")
+brutus.enumerate_outcomes(scenario3, "kemeny")
+brutus.enumerate_outcomes(scenario3, "slater")
+brutus.enumerate_outcomes(scenario4, "kemeny")
+brutus.enumerate_outcomes(scenario4, "slater")
+brutus.enumerate_outcomes(scenario5, "kemeny")
+brutus.enumerate_outcomes(scenario5, "slater")
+brutus.enumerate_outcomes(scenario6, "kemeny")
 
 asp = ASPSolver()
 
-# asp.enumerateOutcomes(scenario1, "leximax")
-# asp.enumerateOutcomes(scenario1, "young")
-asp.enumerateFirstNOutcomes(scenario1, "young", True, n=5)
+asp.enumerate_outcomes(scenario1, "leximax")
+asp.enumerate_outcomes(scenario1, "young")
+asp.enumerate_first_n_outcomes(scenario1, "young", True, n=5)
 
 
-# asp.enumerateOutcomes(scenario2, "kemeny")
-# asp.enumerateOutcomes(scenario2, "leximax")
-# asp.enumerateOutcomes(scenario2, "young")
-# asp.enumerateOutcomes(scenario2, "slater")
-# asp.enumerateOutcomes(scenario2, "majority")
+asp.enumerate_outcomes(scenario2, "kemeny")
+asp.enumerate_outcomes(scenario2, "leximax")
+asp.enumerate_outcomes(scenario2, "young")
+asp.enumerate_outcomes(scenario2, "slater")
+asp.enumerate_outcomes(scenario2, "majority")
 
-# asp.enumerateOutcomes(scenario3, "kemeny")
-# asp.enumerateOutcomes(scenario3, "slater")
+asp.enumerate_outcomes(scenario3, "kemeny")
+asp.enumerate_outcomes(scenario3, "slater")
 
-# asp.enumerateOutcomes(scenario4, "kemeny")
-# asp.enumerateOutcomes(scenario4, "slater")
+asp.enumerate_outcomes(scenario4, "kemeny")
+asp.enumerate_outcomes(scenario4, "slater")
 
-# asp.enumerateOutcomes(scenario5, "kemeny")
-# asp.enumerateOutcomes(scenario5, "slater")
+asp.enumerate_outcomes(scenario5, "kemeny")
+asp.enumerate_outcomes(scenario5, "slater")
 
-# asp.enumerateOutcomes(scenario5, "kemeny")
-# asp.enumerateOutcomes(scenario5, "slater")
+asp.enumerate_outcomes(scenario5, "kemeny")
+asp.enumerate_outcomes(scenario5, "slater")
 
-# brutus.enumerateOutcomes(scenario6, "kemeny")
-# asp.enumerateOutcomes(scenario6, "kemeny")
-# brutus.enumerateOutcomes(scenario6, "slater")
-# asp.enumerateOutcomes(scenario6, "slater")
+brutus.enumerate_outcomes(scenario6, "kemeny")
+asp.enumerate_outcomes(scenario6, "kemeny")
+brutus.enumerate_outcomes(scenario6, "slater")
+asp.enumerate_outcomes(scenario6, "slater")
 
-# asp.enumerateOutcomes(scenario8, "kemeny")
-# asp.enumerateOutcomes(scenario8, "kemeny")
+asp.enumerate_outcomes(scenario8, "kemeny")
+asp.enumerate_outcomes(scenario8, "kemeny")
 
-# scenario1.prettyPrint()
+scenario1.pretty_repr()
