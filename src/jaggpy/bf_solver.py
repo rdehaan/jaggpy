@@ -10,7 +10,7 @@ from nnf import Var, Or, And # pylint: disable=unused-import
 from .classes import Solver
 from .parser import Parser
 
-class BruteForce(Solver):
+class BFSolver(Solver):
     """A brute solver for Judgment Aggregation."""
     def solve(self, scenario, rule, verbose=False):
         """Given a scenario object and the name of a rule
@@ -20,10 +20,12 @@ class BruteForce(Solver):
             - kemeny
             - maxhamming
             - slater
-            """
+        Set verbose to true if you want the program to inform you that
+        it is computing with the given rule.
+        """
         # Translate the agenda so that the issues are represented
-        # by their labels. These representations will be added to
-        # the constraints.
+        # by their labels. That labels correspond to the correct issues
+        # will be achieved by adding constraints.
         parser = Parser()
         translated_agenda = parser.translate_agenda(scenario.agenda)
 
@@ -35,19 +37,19 @@ class BruteForce(Solver):
         for conjunct in translated_agenda:
             my_string += f'({conjunct}) & '
 
-        # Update what variables appear in the scenario
+        # Update what variables appear in the scenario.
         all_variables = []
         for var in scenario.variables:
             all_variables.append(var)
         for label in scenario.agenda.keys():
             all_variables.append(f'l{label}')
 
-        # Make sure that each variable gets an assignment
+        # Make sure that each variable gets an assignment.
         for var in all_variables:
             my_string += f"({var} | ~{var}) & "
         my_string = my_string[:-3]
 
-        # Preprocess the string representing the scenario
+        # Preprocess the string representing the scenario.
         var_prefix = "my_var_"
         my_string_preprocessed = my_string
         for var in all_variables:
@@ -56,30 +58,30 @@ class BruteForce(Solver):
             exec(f"{var_prefix}{var} = Var('{var}')")
         output_contstraint = eval(my_string_preprocessed)
 
-        # List all the models that are consistent with the output constraints
+        # List all the models that are consistent with the output constraints.
         consistent_outcomes =  list(output_contstraint.models())
 
-        # Depending on the given rule we use helper functions to determine the outcomes
+        # We determine the outcome with a helper function that corresponds to the chosen rule.
         # Kemeny rule
         if rule == "kemeny":
             if verbose:
-                print("Computing outcome with brute force and the Kemeny rule...")
+                print("Computing outcome with the brute force solver and the Kemeny rule...")
             outcomes = self.solve_kemeny(scenario, consistent_outcomes)
 
         # MaxHamming rule
         elif rule == "maxhamming":
             if verbose:
-                print("Computing outcome with the brute force and MaxHamming rule...")
+                print("Computing outcome with the brute force solver and the MaxHamming rule...")
             outcomes =  self.solve_max_hamming(scenario, consistent_outcomes)
 
         # Slater rule
         elif rule == "slater":
             if verbose:
-                print("Computing outcome with the brute force and Slater rule...")
+                print("Computing outcome with the brute force solver and the Slater rule...")
             outcomes = self.solve_slater(scenario, consistent_outcomes)
-
+        
         else:
-            raise Exception (f"{rule} is not an implemented aggregation rule.")
+            raise Exception (f"{rule} is not a recognized aggregation rule.")
 
         # Clean outcomes to only contain issues
         for i, outcome in enumerate(outcomes):

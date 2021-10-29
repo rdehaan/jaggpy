@@ -137,46 +137,43 @@ class Parser:
         if isinstance(sentence, str):
             return sentence
         # If it is negated, push the negation through
-        elif sentence[0] == '~':
+        if sentence[0] == '~':
             if isinstance(sentence[1], str):
                 return "".join(sentence)
-            elif sentence[1][1] == '&':
+            if sentence[1][1] == '&':
                 return self.neg_and(sentence[1])
-            elif sentence[1][1] == '|':
+            if sentence[1][1] == '|':
                 return self.neg_or(sentence[1])
-            elif sentence[1][1] == '->':
+            if sentence[1][1] == '->':
                 return self.neg_implies(sentence[1])
             # Remove double negations
-            elif sentence[1][0] == '~':
+            if sentence[1][0] == '~':
                 return self.to_nnf_parsed(sentence[1][1])
-            else:
-                raise Exception("There seems to be something wrong..")
-        else:
-            # If it is not negated, rewrite implication and
-            # search for more negations
-            operator = sentence[1]
-            if operator == '->':
-                left = self.to_nnf_parsed(['~', sentence[0]])
-                right = self.to_nnf_parsed(sentence[2])
-                return " ".join(['(', left, '|', right, ')'])
-            else:
-                result = ['(']
-                for i in range(len(sentence)):
-                    if i % 2 == 0:
-                        element = self.to_nnf_parsed(sentence[i])
-                        result.append(element)
-                        result.append(operator)
-                result = result[:-1]
-                result.append(')')
-                return " ".join(result)
+            raise Exception("There seems to be something wrong..")
+        # If it is not negated, rewrite implication and
+        # search for more negations
+        operator = sentence[1]
+        if operator == '->':
+            left = self.to_nnf_parsed(['~', sentence[0]])
+            right = self.to_nnf_parsed(sentence[2])
+            return " ".join(['(', left, '|', right, ')'])
+        result = ['(']
+        for i, value in enumerate(sentence):
+            if i % 2 == 0:
+                element = self.to_nnf_parsed(value)
+                result.append(element)
+                result.append(operator)
+        result = result[:-1]
+        result.append(')')
+        return " ".join(result)
 
     def neg_and(self, sentence):
         """Helper function for to_nnf_parsed. Given a negated conjunction,
         returns a disjunction with the disjuncts negated. """
         result = ['(']
-        for i in range(len(sentence)):
+        for i, value in enumerate(sentence):
             if i % 2 == 0:
-                element = self.to_nnf_parsed(['~', sentence[i]])
+                element = self.to_nnf_parsed(['~', value])
                 result.append(element)
                 result.append('|')
         result = result[:-1]
@@ -187,9 +184,9 @@ class Parser:
         """Helper function for to_nnf_parsed. Given a negated disjunction,
         returns a conjuncts with the conjuncts negated. """
         result = ['(']
-        for i in range(len(sentence)):
+        for i, value in enumerate(sentence):
             if i % 2 == 0:
-                element = self.to_nnf_parsed(['~', sentence[i]])
+                element = self.to_nnf_parsed(['~', value])
                 result.append(element)
                 result.append('&')
         result = result[:-1]
@@ -255,14 +252,13 @@ class Parser:
             list_of_conjuncts.append(conj)
         if len(formula) == 1:
             return [list_of_conjuncts[0], all_variables]
-        else:
-            formula_str = "( "
-            for i in range(len(list_of_conjuncts)):
-                if i < len(list_of_conjuncts) - 1:
-                    formula_str = formula_str + list_of_conjuncts[i] + " & "
-                else:
-                    formula_str = formula_str + list_of_conjuncts[i] + " )"
-            return [formula_str, all_variables]
+        formula_str = "( "
+        for i, value in enumerate(list_of_conjuncts):
+            if i < len(list_of_conjuncts) - 1:
+                formula_str = formula_str + value + " & "
+            else:
+                formula_str = formula_str + value + " )"
+        return [formula_str, all_variables]
 
     def translate_agenda(self, agenda):
         """Given a (sub)-agenda returns a list of constraints. For each issue a
