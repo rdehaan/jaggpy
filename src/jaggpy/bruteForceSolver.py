@@ -11,7 +11,7 @@ import copy
 import math
 
 class BruteForce(Solver):
-	def solve(self, scenario, rule):
+	def solve(self, scenario, rule, verbose=False):
 		"""Given a scenario object and the name of a rule 
 		this function will yield a list with all the outcomes
 		of the judgment aggregation. The rule should be given 
@@ -61,17 +61,20 @@ class BruteForce(Solver):
 		# Depending on the given rule we use helper functions to determine the outcomes
 		# Kemeny rule
 		if rule == "kemeny":
-			print("Computing outcome with brute force and the Kemeny rule...")
+			if verbose:
+				print("Computing outcome with brute force and the Kemeny rule...")
 			outcomes = self.solveKemeny(scenario, consistentOutcomes)
 
 		# MaxHamming rule
 		elif rule == "maxhamming":
-			print("Computing outcome with the brute force and MaxHamming rule...")
+			if verbose:
+				print("Computing outcome with the brute force and MaxHamming rule...")
 			outcomes =  self.solveMaxHamming(scenario, consistentOutcomes)
 
 		# Slater rule
 		elif rule == "slater":
-			print("Computing outcome with the brute force and Slater rule...")
+			if verbose:
+				print("Computing outcome with the brute force and Slater rule...")
 			outcomes = self.solveSlater(scenario, consistentOutcomes)
 
 		else:

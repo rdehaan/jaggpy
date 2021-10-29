@@ -11,7 +11,7 @@ from .parser import Parser
 import textwrap
 
 class ASPSolver(Solver):
-	def solve(self, scenario, rule):
+	def solve(self, scenario, rule, verbose=False):
 		"""Given a scenario object and the name of a rule
 		this function will yield the outcomes
 		of the judgment aggregation. Each outcome is yielded seperately.
@@ -156,7 +156,8 @@ class ASPSolver(Solver):
 
 		# Add the rule depending on what rule we need to use
 		if rule == "kemeny":
-			print("Computing outcome with ASP and the Kemeny rule...")
+			if verbose:
+				print("Computing outcome with ASP and the Kemeny rule...")
 			asp_program += textwrap.dedent("""
 			% Kemeny rule
 			wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
@@ -164,7 +165,8 @@ class ASPSolver(Solver):
 			""")
 
 		elif rule == "leximax":
-			print("Computing outcome with ASP and the leximax rule...")
+			if verbose:
+				print("Computing outcome with ASP and the leximax rule...")
 			asp_program += textwrap.dedent("""
 			% Leximax rule
 			wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
@@ -172,7 +174,8 @@ class ASPSolver(Solver):
 			""")
 
 		elif rule == "young":
-			print("Computing outcome with ASP and the young rule...")
+			if verbose:
+				print("Computing outcome with ASP and the young rule...")
 			asp_program += textwrap.dedent("""
 			% Young rule
 			in(A) ; out(A) :- voter(A).
@@ -183,7 +186,8 @@ class ASPSolver(Solver):
 			""")
 
 		elif rule == "slater":
-			print("Computing outcome with ASP and the slater rule...")
+			if verbose:
+				print("Computing outcome with ASP and the slater rule...")
 			asp_program += textwrap.dedent("""
 			% Slater rule
 			% determine the majority outcome
@@ -194,7 +198,8 @@ class ASPSolver(Solver):
 			""")
 
 		elif rule == "majority":
-			print("Computing outcome with ASP and the majority rule...")
+			if verbose:
+				print("Computing outcome with ASP and the majority rule...")
 			asp_program += textwrap.dedent("""
 			% Majority rule
 			% require that the collective outcome agrees with all issues

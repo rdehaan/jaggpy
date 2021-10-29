@@ -198,20 +198,20 @@ class Scenario:
 # all the outcomes given a scenario and an aggregation rule.
 class Solver(ABC):
 	@abstractmethod
-	def solve(self, scenario, rule):
+	def solve(self, scenario, rule, verbose=False):
 		"""Given a scenario and an aggregation rule, yields a generator 
 		with the corresponding outcomes.""" 
 		pass
 	
-	def enumerateOutcomes(self, scenario, rule):
+	def enumerateOutcomes(self, scenario, rule, verbose=False):
 		"""Given a scenario and an aggregation rule, prints all
 		corresponding outcomes."""
-		for outcome in self.solve(scenario, rule):
+		for outcome in self.solve(scenario, rule, verbose):
 			print(outcome)
 
-	def enumerateFirstNOutcomes(self, scenario, rule, n):
+	def enumerateFirstNOutcomes(self, scenario, rule, verbose=False, n=1):
 		"""Given a scenario, an aggregation rule and an integer n,
 		prints the first n corresponding outcomes."""
-		nOutcomes = islice(self.solve(scenario, rule), n) 
+		nOutcomes = islice(self.solve(scenario, rule, verbose), n) 
 		for outcome in nOutcomes:
 			print(outcome)

@@ -56,10 +56,9 @@ brutus = BruteForce()
 
 asp = ASPSolver()
 
-# asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
-# asp.enumerateFirstNOutcomes(scenario1, "young", 100)
+asp.enumerateFirstNOutcomes(scenario1, "young", True, n=5)
 
 
 # asp.enumerateOutcomes(scenario2, "kemeny")
@@ -86,6 +85,6 @@ asp = ASPSolver()
 # asp.enumerateOutcomes(scenario6, "slater")
 
 # asp.enumerateOutcomes(scenario8, "kemeny")
-asp.enumerateOutcomes(scenario8, "kemeny")
+# asp.enumerateOutcomes(scenario8, "kemeny")
 
 # scenario1.prettyPrint()
