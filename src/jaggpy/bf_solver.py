@@ -82,8 +82,8 @@ class BruteForce(Solver):
             raise Exception (f"{rule} is not an implemented aggregation rule.")
 
         # Clean outcomes to only contain issues
-        for i in range(len(outcomes)):
-            outcome = outcomes[i]
+        for i, value in enumerate(outcomes):
+            outcome = value
             translated_outcomes = {}
             for formula in outcome.keys():
                 if formula[0] == 'l':
@@ -210,12 +210,12 @@ class BruteForce(Solver):
                 # agrees with all formulas in the subset
                 for formula in subset:
                     if formula[0:4] == "neg ":
-                        for j in range(len(temp_outcomes)):
-                            if temp_outcomes[j][formula[4:]]:
+                        for j, value in enumerate(temp_outcomes):
+                            if value[formula[4:]]:
                                 to_remove.append(j)
                     else:
-                        for j in range(len(temp_outcomes)):
-                            if not temp_outcomes[j][formula]:
+                        for j, value in enumerate(temp_outcomes):
+                            if not value[formula]:
                                 to_remove.append(j)
                 # Keep all models that have not been put in the to_remove list
                 to_keep = [index for index in range(len(temp_outcomes)) if index not in to_remove]
@@ -236,12 +236,12 @@ class BruteForce(Solver):
             # For each formula remove all the models that do not agree
             for formula in subset:
                 if formula[0:4] == "neg ":
-                    for j in range(len(temp_outcomes)):
-                        if temp_outcomes[j][formula[4:]]:
+                    for j, value in enumerate(temp_outcomes):
+                        if value[formula[4:]]:
                             to_remove.append(j)
                 else:
-                    for j in range(len(temp_outcomes)):
-                        if not temp_outcomes[j][formula]:
+                    for j, value in enumerate(temp_outcomes):
+                        if not value[formula]:
                             to_remove.append(j)
             to_keep = [index for index in range(len(temp_outcomes)) if index not in to_remove]
             # Add all the extensions of the chosen subsets to the outcome
