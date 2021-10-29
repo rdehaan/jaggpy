@@ -9,6 +9,7 @@
 from abc import ABC, abstractmethod
 from nnf import *
 from jaggpy.parser import Parser
+from itertools import islice
 
 class Scenario:
 	def __init__(self):
@@ -210,8 +211,7 @@ class Solver(ABC):
 
 	def enumerateFirstNOutcomes(self, scenario, rule, n):
 		"""Given a scenario, an aggregation rule and an integer n,
-		prints the first n corresponding outcomes. Note that if n
-		exceeds the number of outcomes, then it starts printing 
-		the beginning again."""
-		for i in range(n):
-			print(next(self.solve(scenario, rule)))
+		prints the first n corresponding outcomes."""
+		nOutcomes = islice(self.solve(scenario, rule), n) 
+		for outcome in nOutcomes:
+			print(outcome)
