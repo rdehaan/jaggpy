@@ -27,96 +27,6 @@ class Scenario:
 		self.profile = []
 		self.variables = []
 		self.numberVoters = 0
-	
-	# @RONALD: Wij willen de functies waarmee je achteraf een scenario aan kunt passen
-	# weghalen uit de code. Bij het inladen van een file gebeurt er al het een en ander
-	# qua parsen, consistency checks etc. Hierdoor kunnen we niet garanderen dat deze functies
-	# geen problemen opleveren. Het zou herschreven kunnen worden, maar we zien niet een grote
-	# meerwaarde hiervan. 
-	# Als je het hier mee eens bent kan de code in comments verwijdert worden (dus tot de
-	# loadFromFile functie). Wellicht is het een interessante uitbreiding voor later om scenarios
-	# op een effectieve methode aan te passen zonder een nieuw scenario aan te maken.
-
-	# def addToVariables(self, variable):
-	# 	"""The addToVariables takes a string denoting a new variable as its
-	# 	only argument. """
-	# 	self.variables.append(variable)
-
-	# def addToAgenda(self, formula):
-	# 	"""The addToAgenda function takes a formula as its only argument.
-	# 	If the formuls uses new variables, these should be added as well with
-	# 	the addToVariables(var) function.
-	# 	A formula can contain the following operators:
-	# 		- The OR operator |
-	# 		- The AND operator &
-	# 		- The NOT operator ~
-	# 		- The IMPLIES operator ->
-	# 	Parentheses can be omitted where clear from context.  """
-	# 	newLabel = len(self.agenda)+1
-	# 	self.agenda[newLabel] = formula
-
-	# def addToInputConstraints(self, constraint):
-	# 	"""The addToInputConstraints function takes a formula as its only argument.
-	# 	If the new constraint uses new variables, these should be added as well with
-	# 	the addToVariables(var) function.
-	# 	A formula can contain the following operators:
-	# 		- The OR operator |
-	# 		- The AND operator &
-	# 		- The NOT operator ~
-	# 		- The IMPLIES operator ->
-	# 	Parentheses can be omitted where clear from context. """
-	# 	self.inputConstraints.append(constraint)
-	# 	my_string = ""
-	# 	for conjunct in self.inputConstraints:
-	# 		my_string += f"({conjunct}) & "
-	# 	my_string = my_string[:-3]
-	# 	if not self.checkConsistency(my_string):
-	# 		raise Exception ("The input constraints are inconsistent")
-
-	# def addToOutputConstraints(self, constraint):
-	# 	"""The addToOutputConstraints function takes a formula as its only argument.
-	# 	If the new constraint uses new variables, these should be added as well with
-	# 	the addToVariables(var) function.
-	# 	A formula can contain the following operators:
-	# 		- The OR operator |
-	# 		- The AND operator &
-	# 		- The NOT operator ~
-	# 		- The IMPLIES operator ->
-	# 	Parentheses can be omitted where clear from context. """
-	# 	self.outputConstraints.append(constraint)
-	# 	my_string = ""
-	# 	for conjunct in self.outputConstraints:
-	# 		my_string += f"({conjunct}) & "
-	# 	my_string = my_string[:-3]
-	# 	if not self.checkConsistency(my_string):
-	# 		raise Exception ("The input constraints are inconsistent")
-
-	# def addToProfile(self, times, judgmentSet):
-	# 	"""The addToProfile function takes a judgment set as its only argument.
-	# 	A judgment set should be a list of the labels of the formulas that are
-	# 	accepted. The rest is rejected. The formulas should be given by their 
-	# 	label and seperated by a semicolon. For example, "2;4;5" """
-	# 	formulaLabels = list(map(int, judgmentSet.split(";")))
-	# 	acceptedFormulas = []
-	# 	for formulaLabel in formulaLabels:
-	# 		acceptedFormulas.append(self.agenda[formulaLabel])
-	# 	self.profile.append([times, acceptedFormulas])
-	# 	self.numberVoters += times
-		
-	# 	# Check consistency of the judgment set with respect # to the input constraint
-	# 	my_string = ""
-	# 	for conjunct in self.inputConstraints:
-	# 		my_string += f"({conjunct}) & "
-	# 	for formulaLabel in formulaLabels:
-	# 		my_string += f"({self.agenda[formulaLabel]}) & "
-	# 	for j in range(1, len(self.agenda)+1):
-	# 		if j not in formulaLabels:
-	# 			my_string += f"(~{self.agenda[j]}) & "
-	# 	my_string = my_string[:-3]
-	# 	self.checkConsistency(my_string)
-	# 	if not self.checkConsistency(my_string):
-	# 		raise Exception (f"The new judgment set is inconsistent"\
-	# 			"with the output constraints.")
 
 	def loadFromFile(self, path):
 		"""Load the scenario from a .jagg file given its path.
@@ -145,6 +55,9 @@ class Scenario:
 		text = conn.read()
 		lines = text.splitlines()
 		conn.close()
+
+		# Remove blank lines and comments from the lines
+		lines = [line for line in lines if line != "" and line[0] != "#"]
 
 		# Create a parser object for future use
 		parser = Parser()

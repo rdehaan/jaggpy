@@ -9,32 +9,36 @@ from jaggpy.ASPSolver import ASPSolver
 from jaggpy.parser import Parser
 
 scenario1 = Scenario()
-relativeFilePath = r"./test/testfiles/scenario1.jagg"
+relativeFilePath = "./test/testfiles/scenario1.jagg"
 scenario1.loadFromFile(relativeFilePath)
 
 scenario2 = Scenario()
-relativeFilePath2 = r"./test/testfiles/scenario2.jagg"
+relativeFilePath2 = "./test/testfiles/scenario2.jagg"
 scenario2.loadFromFile(relativeFilePath2)
 
 scenario3 = Scenario()
-relativeFilePath3 = r"./test/testfiles/scenario3.jagg"
+relativeFilePath3 = "./test/testfiles/scenario3.jagg"
 scenario3.loadFromFile(relativeFilePath3)
 
 scenario4 = Scenario()
-relativeFilePath4 = r"./test/testfiles/scenario4.jagg"
+relativeFilePath4 = "./test/testfiles/scenario4.jagg"
 scenario4.loadFromFile(relativeFilePath4)
 
 scenario5 = Scenario()
-relativeFilePath5 = r"./test/testfiles/scenario5.jagg"
+relativeFilePath5 = "./test/testfiles/scenario5.jagg"
 scenario5.loadFromFile(relativeFilePath5)
 
 scenario6 = Scenario()
-relativeFilePath6 = r"./test/testfiles/scenario6.jagg"
+relativeFilePath6 = "./test/testfiles/scenario6.jagg"
 scenario6.loadFromFile(relativeFilePath6)
 
 scenario7 = Scenario()
-relativeFilePath7 = r"./test/testfiles/scenario7.jagg"
+relativeFilePath7 = "./test/testfiles/scenario7.jagg"
 scenario7.loadFromFile(relativeFilePath7)
+
+scenario8 = Scenario()
+relativeFilePath8 = "./test/testfiles/scenario8.jagg"
+scenario8.loadFromFile(relativeFilePath8)
 
 brutus = BruteForce()
 
@@ -52,7 +56,7 @@ brutus = BruteForce()
 
 asp = ASPSolver()
 
-# asp.enumerateOutcomes(scenario1, "kemeny")
+asp.enumerateOutcomes(scenario1, "kemeny")
 # asp.enumerateOutcomes(scenario1, "leximax")
 # asp.enumerateOutcomes(scenario1, "young")
 
@@ -79,3 +83,4 @@ asp = ASPSolver()
 # brutus.enumerateOutcomes(scenario6, "slater")
 # asp.enumerateOutcomes(scenario6, "slater")
 
+asp.enumerateOutcomes(scenario8, "kemeny")

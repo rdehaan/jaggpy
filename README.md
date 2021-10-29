@@ -93,16 +93,24 @@ An object from the scenario class is read from a `.jagg` file. A `.jagg` file sh
 - `v, j`: The number of voters `v` followed by the number of distinct judgment sets `j`.
 - `J, Label_1;...;Label_n`: The number of times this judgment set occurs followed by the labels of the accepted formulas. The formulas should be separated by a semicolon. Issues that are not accepted are rejected.
 
+By starting a line with a "#" the line will be ignored in the reading of the file. Blank lines will also be ignored.
+
 An example of the format of a `.jagg` file is:
 ```
 x1, x2, x3
 4
+
+# The issues
 1, x1
 2, x2
 3, x3
 4, ( ~x1 & x2 ) -> x3
+
+# The constraints are the same
 In, ( x1 | ~x1 )
 Out, ( x1 | ~x1 )
+
+# We 8 voters and 3 different judgment sets
 8, 3
 3, 2;3;4
 2, 1;2;4
