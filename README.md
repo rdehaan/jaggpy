@@ -131,7 +131,7 @@ If there are any inconsistencies in the scenario defined in the `.jagg` file, a 
 
 #### **Scenario methods and properties**
 A scenario object has several useful methods and properties.
-- `prettyPrint()`: A method that prints the scenario in a readable format.
+- `prettyPrint()`: A method that returns a string that represents the scenario in a readable format.
 - `agenda`: This property is a dictionary with the the labels of issues as keys and the issues as values.
 - `inputConstraints`: This property is a list of the input constraints.
 - `outputConstraints`: This property is a list of the output constraints.

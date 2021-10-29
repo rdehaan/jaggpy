@@ -171,19 +171,19 @@ class Scenario:
 
 	def prettyPrint(self):
 		"""Returns string that represents the scenario object in a readable way"""
-		scenario_string = "Variables: "
+		scenario_string = "Variables:"
 		for variable in self.variables:
-			print(variable)
-		print("\nSub-agenda (label, formula):")
+			scenario_string += f"\n{variable}"
+		scenario_string += "\n\nSub-agenda (label, formula):"
 		for key in self.agenda:
-			print(key, self.agenda[key])
-		print("\nInput constraint:")
+			scenario_string += f"\n{key}, {self.agenda[key]}"
+		scenario_string += "\n\nInput constraints:"
 		for constraint in self.inputConstraints:
-			print(constraint)
-		print("\nOutput constraint:")
+			scenario_string += f"\n{constraint}"
+		scenario_string +=  "\n\nOutput constraints:"
 		for constraint in self.outputConstraints:
-			print(constraint)
-		print("\nProfile (times selected, accepted formulas):")
+			scenario_string += f"\n{constraint}"
+		scenario_string += "\n\nProfile (times selected, accepted formulas):"
 		for js in self.profile:
 			accepted = "("
 			for variable in js[1]:
@@ -192,7 +192,8 @@ class Scenario:
 				else:
 					accepted += ", " + variable
 			accepted += ")"
-			print(js[0],  accepted)
+			scenario_string += (f"\n{js[0]}, " + accepted)
+		return scenario_string
 
 # A solver class with an enumerate_outcomes function that enumerates
 # all the outcomes given a scenario and an aggregation rule.
