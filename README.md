@@ -119,12 +119,12 @@ Out, ( x1 | ~x1 )
 In this scenario we have the variables `x1`, `x2` and `x3`. There are `4` different issues in the agenda. These issues are `x1`, `x2`, `x3` and `( ~x1 & x2 ) -> x3`, and are labeled by the numbers `1-4` respectively. The input and output constraints are `( x1 | ~x1 )`. There are `8` voters and `3` different judgment sets. Of the voters three have accepted the issues labeled by `2`, `3` and `4` (and thus have rejected the issue labeled by `1`). Two have accepted the issues labeled by `1`, `2` and `4` (and thus have rejected the issue labeled by `3`). And three have accepted the issue labeled by `4` (and thus have rejected the issues labeled by `1`, `2` and `3`).
 
 #### **Creating a Scenario Object**
-A scenario object should first be created, and then can be loaded from a `.jagg` file given its path. The path should be a raw string, i.e., of the form `r"path/to/file/"`. It can then be loaded using the `loadFromFile` method of the scenario class. For example:
+A scenario object should first be created, and then can be loaded from a `.jagg` file given its path. The path should be given as a string, i.e., of the form `"path/to/file/"`. It can then be loaded using the `loadFromFile` method of the scenario class. For example:
 ```python
 from jaggpy.classes import Scenario
 
 scenario1 = Scenario()
-path = r"path/to/file"
+path = "path/to/file"
 scenario1.loadFromFile(path)
 ```
 If there are any inconsistencies in the scenario defined in the `.jagg` file, a warning indicating the inconsistency will occur. It is not possible to successfully load an inconsistent scenario.
