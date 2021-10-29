@@ -144,9 +144,9 @@ A scenario object has several useful methods and properties.
 #### **Creating a solver object**
 In order to call a solver, we first need to create a solver object. We can create a brute force solver object and an ASP solver object as follows:
 ```python
-from jaggpy.bf_solver import BruteForce
+from jaggpy.bf_solver import BFSolver
 from jaggpy.asp_solver import ASPSolver
-bfs = BruteForce()
+bfs = BFSolver()
 asp = ASPSolver()
 ```
 
