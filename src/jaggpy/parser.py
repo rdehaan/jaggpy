@@ -5,9 +5,8 @@
 ## It has been altered for this application.
 #####################################################################
 
-from typing import Callable, Iterable
-from pyparsing import infixNotation, opAssoc, Keyword, Word, alphas, alphanums, ParserElement
-from nnf import *
+from pyparsing import infixNotation, opAssoc, Keyword, Word, alphanums, ParserElement
+from nnf import Var, Or, And
 
 class Parser:
     """A parser class for parsing formulas."""

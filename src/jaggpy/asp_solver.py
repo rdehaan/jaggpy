@@ -72,12 +72,12 @@ class ASPSolver(Solver):
 
         # Add auxiliary input constraints that guarantee that labels
         # corresponds to the right formulas.
-        for constraint in parser.translateAgenda(scenario.agenda):
+        for constraint in parser.translate_agenda(scenario.agenda):
             total_input_constraints += f"({constraint}) & "
         total_ic = total_input_constraints[:-3]
 
         # Translate to cnf
-        cnf_object = parser.toCNF(total_ic, all_variables)
+        cnf_object = parser.to_cnf(total_ic, all_variables)
         ic_cnf = cnf_object[0]
         all_variables = all_variables.union(cnf_object[1])
 
@@ -109,12 +109,12 @@ class ASPSolver(Solver):
 
         # Add auxiliary input constraints that guarantee
         # that labels corresponds to the right formulas.
-        for constraint in parser.translateAgenda(scenario.agenda):
+        for constraint in parser.translate_agenda(scenario.agenda):
             total_output_contstraints += f"({constraint}) & "
         total_oc = total_output_contstraints[:-3]
 
         # Translate to cnf
-        cnf_object = parser.toCNF(total_oc, all_variables)
+        cnf_object = parser.to_cnf(total_oc, all_variables)
         oc_cnf = cnf_object[0]
         all_variables = all_variables.union(cnf_object[1])
 

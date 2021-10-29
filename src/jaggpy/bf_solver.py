@@ -25,12 +25,12 @@ class BruteForce(Solver):
         # by their labels. These representations will be added to
         # the constraints.
         parser = Parser()
-        translated_agenda = parser.translateAgenda(scenario.agenda)
+        translated_agenda = parser.translate_agenda(scenario.agenda)
 
         # Make a list of all the judgment sets that are consistent
         # with the output constraints.
         my_string = ""
-        for conjunct in scenario.output_contstraints:
+        for conjunct in scenario.output_constraints:
             my_string += f'({conjunct}) & '
         for conjunct in translated_agenda:
             my_string += f'({conjunct}) & '
@@ -129,7 +129,7 @@ class BruteForce(Solver):
                 if outcome[f'l{label}']:
                     agreement_score += support[scenario.agenda[label]]
                 else:
-                    agreement_score += scenario.numberVoters - support[scenario.agenda[label]]
+                    agreement_score += scenario.number_voters - support[scenario.agenda[label]]
 
             if agreement_score == max_agreement:
                 outcomes.append(outcome)
@@ -182,7 +182,7 @@ class BruteForce(Solver):
         # formula if it is accepted and add it with 'neg ' in front of
         # it when it is rejected. The 'neg ' is merely a prefix to read
         # later.
-        majority_number = scenario.numberVoters / 2
+        majority_number = scenario.number_voters / 2
         majority_set = []
         support = self.support_number(scenario.agenda, scenario.profile)
         for key in scenario.agenda.keys():

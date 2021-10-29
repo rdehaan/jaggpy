@@ -80,7 +80,7 @@ class Scenario:
             current_line = lines[i].split(", ")
             label = int(current_line[0])
             formula = current_line[1]
-            self.agenda[label] = parser.toNNF(formula)
+            self.agenda[label] = parser.to_nnf(formula)
 
         # Add the input constraints to the list of constraints
         line_number = number_of_formulass+2
@@ -89,7 +89,7 @@ class Scenario:
             if formula == "":
                 first_var = self.variables[0]
                 formula = f'({first_var} | ~{first_var})'
-            self.input_constraints.append(parser.toNNF(formula))
+            self.input_constraints.append(parser.to_nnf(formula))
             line_number += 1
 
         # Check consistency of the input constraints
@@ -106,7 +106,7 @@ class Scenario:
             if formula == "":
                 first_var = self.variables[0]
                 formula = f'({first_var} | ~{first_var})'
-            self.output_constraints.append(parser.toNNF(formula))
+            self.output_constraints.append(parser.to_nnf(formula))
             line_number += 1
 
         # Check consistency of the output constraints
