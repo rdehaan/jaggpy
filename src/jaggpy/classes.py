@@ -1,304 +1,227 @@
-#####################################################################
-## Useful python classes for the scenarios and the 
-## possible solvers. 
-#####################################################################
+######################################################################
+## Useful python classes for the scenarios and the possible solvers.
+#################################################################
 
-# A scenario class that will be read from a .jagg file. A scenario
-# has an agenda, input constraints, output constraints and a profile.
+# A scenario class that will allow us to create a scenario object by loading 
+# information from a .jagg file. A scenario has an agenda, input constraints,
+# output constraints and a profile.
 
 from abc import ABC, abstractmethod
-from nnf import *
+from itertools import islice
+from nnf import Var, Or, And  # pylint: disable=unused-import
 from jaggpy.parser import Parser
 
 class Scenario:
-	def __init__(self):
-		"""A Scenario object has the following properties:
-			- variables: a list of occurring variables
-			- agenda: a dictionary with numbers as keys and
-				formulas as values
-			- inputConstraints: a list of input constraints
-			- outputConstraints: a list of output constraints
-			- profile: a list of judgment sets
-			- numberVoters: an integer specifying the number of voters
-			"""
-		self.agenda = dict()
-		self.inputConstraints = []
-		self.outputConstraints = []
-		self.profile = []
-		self.variables = []
-		self.numberVoters = 0
-	
-	# @RONALD: Wij willen de functies waarmee je achteraf een scenario aan kunt passen
-	# weghalen uit de code. Bij het inladen van een file gebeurt er al het een en ander
-	# qua parsen, consistency checks etc. Hierdoor kunnen we niet garanderen dat deze functies
-	# geen problemen opleveren. Het zou herschreven kunnen worden, maar we zien niet een grote
-	# meerwaarde hiervan. 
-	# Als je het hier mee eens bent kan de code in comments verwijdert worden (dus tot de
-	# loadFromFile functie). Wellicht is het een interessante uitbreiding voor later om scenarios
-	# op een effectieve methode aan te passen zonder een nieuw scenario aan te maken.
+    """A Scenario object has the following properties:
+            - variables: a list of occurring variables
+            - agenda: a dictionary with numbers as keys and
+                formulas as values
+            - input_constraints: a list of input constraints
+            - output_constraints: a list of output constraints
+            - profile: a list of judgment sets
+            - number_voters: an integer specifying the number of voters
+            """
+    def __init__(self):
+        """A Scenario object has the following properties:
+            - variables: a list of occurring variables
+            - agenda: a dictionary with numbers as keys and
+                formulas as values
+            - input_constraints: a list of input constraints
+            - output_constraints: a list of output constraints
+            - profile: a list of judgment sets
+            - number_voters: an integer specifying the number of voters
+            """
+        self.agenda = dict()
+        self.input_constraints = []
+        self.output_constraints = []
+        self.profile = []
+        self.variables = []
+        self.number_voters = 0
 
-	# def addToVariables(self, variable):
-	# 	"""The addToVariables takes a string denoting a new variable as its
-	# 	only argument. """
-	# 	self.variables.append(variable)
+    def load_from_file(self, path):
+        """Load the scenario from a .jagg file given its path.
+        The path should be a raw string, i.e. of the form r"path/to/file".
+        The file should have the following format, with each element being on
+        a new line:
+            - var_1,..., var_n: list of all the variables
+            - Number of Formulas: The number of formulas in the pre-agenda
+            - X, Formula: The formula labeled by the number X
+            - In, Formula: The input constraint labeled by the text "In"
+            - Out, Formula: The output constraint labeled by the text "Out"
+            - Number of voters, Number of distinct judgment sets
+            - J, l1;...;ln: A list of the labels of the formulas
+                that are accepted. The rest is rejected.
+                This profile occurs J times. The formulas should be
+                given by the times they are selected and seperated
+                by a semicolon. For example, "4, 2;4;5".
+        A formula can contain the following operators:
+            - The OR operator |
+            - The AND operator &
+            - The NOT operator ~
+            - The IMPLIES operator ->
+        Parentheses can be omitted where clear from context. """
+        # Read the file and split all lines
+        conn = open(path)
+        text = conn.read()
+        lines = text.splitlines()
+        conn.close()
 
-	# def addToAgenda(self, formula):
-	# 	"""The addToAgenda function takes a formula as its only argument.
-	# 	If the formuls uses new variables, these should be added as well with
-	# 	the addToVariables(var) function.
-	# 	A formula can contain the following operators:
-	# 		- The OR operator |
-	# 		- The AND operator &
-	# 		- The NOT operator ~
-	# 		- The IMPLIES operator ->
-	# 	Parentheses can be omitted where clear from context.  """
-	# 	newLabel = len(self.agenda)+1
-	# 	self.agenda[newLabel] = formula
+        # Remove blank lines and comments from the lines
+        lines = [line for line in lines if line != "" and line[0] != "#"]
 
-	# def addToInputConstraints(self, constraint):
-	# 	"""The addToInputConstraints function takes a formula as its only argument.
-	# 	If the new constraint uses new variables, these should be added as well with
-	# 	the addToVariables(var) function.
-	# 	A formula can contain the following operators:
-	# 		- The OR operator |
-	# 		- The AND operator &
-	# 		- The NOT operator ~
-	# 		- The IMPLIES operator ->
-	# 	Parentheses can be omitted where clear from context. """
-	# 	self.inputConstraints.append(constraint)
-	# 	my_string = ""
-	# 	for conjunct in self.inputConstraints:
-	# 		my_string += f"({conjunct}) & "
-	# 	my_string = my_string[:-3]
-	# 	if not self.checkConsistency(my_string):
-	# 		raise Exception ("The input constraints are inconsistent")
+        # Create a parser object for future use
+        parser = Parser()
 
-	# def addToOutputConstraints(self, constraint):
-	# 	"""The addToOutputConstraints function takes a formula as its only argument.
-	# 	If the new constraint uses new variables, these should be added as well with
-	# 	the addToVariables(var) function.
-	# 	A formula can contain the following operators:
-	# 		- The OR operator |
-	# 		- The AND operator &
-	# 		- The NOT operator ~
-	# 		- The IMPLIES operator ->
-	# 	Parentheses can be omitted where clear from context. """
-	# 	self.outputConstraints.append(constraint)
-	# 	my_string = ""
-	# 	for conjunct in self.outputConstraints:
-	# 		my_string += f"({conjunct}) & "
-	# 	my_string = my_string[:-3]
-	# 	if not self.checkConsistency(my_string):
-	# 		raise Exception ("The input constraints are inconsistent")
+        # Add the variables to the scenario
+        self.variables = lines[0].split(", ")
 
-	# def addToProfile(self, times, judgmentSet):
-	# 	"""The addToProfile function takes a judgment set as its only argument.
-	# 	A judgment set should be a list of the labels of the formulas that are
-	# 	accepted. The rest is rejected. The formulas should be given by their 
-	# 	label and seperated by a semicolon. For example, "2;4;5" """
-	# 	formulaLabels = list(map(int, judgmentSet.split(";")))
-	# 	acceptedFormulas = []
-	# 	for formulaLabel in formulaLabels:
-	# 		acceptedFormulas.append(self.agenda[formulaLabel])
-	# 	self.profile.append([times, acceptedFormulas])
-	# 	self.numberVoters += times
-		
-	# 	# Check consistency of the judgment set with respect # to the input constraint
-	# 	my_string = ""
-	# 	for conjunct in self.inputConstraints:
-	# 		my_string += f"({conjunct}) & "
-	# 	for formulaLabel in formulaLabels:
-	# 		my_string += f"({self.agenda[formulaLabel]}) & "
-	# 	for j in range(1, len(self.agenda)+1):
-	# 		if j not in formulaLabels:
-	# 			my_string += f"(~{self.agenda[j]}) & "
-	# 	my_string = my_string[:-3]
-	# 	self.checkConsistency(my_string)
-	# 	if not self.checkConsistency(my_string):
-	# 		raise Exception (f"The new judgment set is inconsistent"\
-	# 			"with the output constraints.")
+        # Add the formulas to the agenda dictionary using the given label
+        number_of_formulass = int(lines[1])
+        for i in range(2, number_of_formulass+2):
+            current_line = lines[i].split(", ")
+            label = int(current_line[0])
+            formula = current_line[1]
+            self.agenda[label] = parser.to_nnf(formula)
 
-	def loadFromFile(self, path):
-		"""Load the scenario from a .jagg file given its path.
-		The path should be a raw string, i.e. of the form r"path/to/file". 
-		The file should have the following format, with each element being on 
-		a new line:
-			- var_1,..., var_n: list of all the variables
-			- Number of Formulas: The number of formulas in the pre-agenda
-			- X, Formula: The formula labeled by the number X  
-			- In, Formula: The input constraint labeled by the text "In"
-			- Out, Formula: The output constraint labeled by the text "Out"
-			- Number of voters, Number of distinct judgment sets
-			- J, l1;...;ln: A list of the labels of the formulas
-				that are accepted. The rest is rejected. 
-				This profile occurs J times. The formulas should be 
-				given by the times they are selected and seperated 
-				by a semicolon. For example, "4, 2;4;5".
-		A formula can contain the following operators:
-			- The OR operator |
-			- The AND operator &
-			- The NOT operator ~
-			- The IMPLIES operator ->
-		Parentheses can be omitted where clear from context. """
-		# Read the file and split all lines
-		conn = open(path)
-		text = conn.read()
-		lines = text.splitlines()
-		conn.close()
+        # Add the input constraints to the list of constraints
+        line_number = number_of_formulass+2
+        while lines[line_number].split(", ")[0] == "In":
+            formula = lines[line_number].split(", ")[1]
+            if formula == "":
+                first_var = self.variables[0]
+                formula = f'({first_var} | ~{first_var})'
+            self.input_constraints.append(parser.to_nnf(formula))
+            line_number += 1
 
-		# Create a parser object for future use
-		parser = Parser()
+        # Check consistency of the input constraints
+        my_string = ""
+        for conjunct in self.input_constraints:
+            my_string += f"({conjunct}) & "
+        my_string = my_string[:-3]
+        if not self.check_consistency(my_string):
+            raise Exception ("The input constraints are inconsistent")
 
-		# Add the variables to the scenario
-		self.variables = lines[0].split(", ")
+        # Add the output constraints to the list of constraints
+        while lines[line_number].split(", ")[0] == "Out":
+            formula = lines[line_number].split(", ")[1]
+            if formula == "":
+                first_var = self.variables[0]
+                formula = f'({first_var} | ~{first_var})'
+            self.output_constraints.append(parser.to_nnf(formula))
+            line_number += 1
 
-		# Add the formulas to the agenda dictionary using the given label
-		numberOfFormulas = int(lines[1])
-		for i in range(2, numberOfFormulas+2):
-			currentLine = lines[i].split(", ")
-			label = int(currentLine[0])
-			formula = currentLine[1]
-			self.agenda[label] = parser.toNNF(formula)
+        # Check consistency of the output constraints
+        my_string = ""
+        for conjunct in self.output_constraints:
+            my_string += f"({conjunct}) & "
+        my_string = my_string[:-3]
+        if not self.check_consistency(my_string):
+            raise Exception ("The output constraints are inconsistent")
 
-		# Add the input constraints to the list of constraints
-		lineNumber = numberOfFormulas+2
-		while lines[lineNumber].split(", ")[0] == "In":
-			formula = lines[lineNumber].split(", ")[1]
-			if formula == "":
-				firstVar = self.variables[0]
-				formula = f'({firstVar} | ~{firstVar})'
-			self.inputConstraints.append(parser.toNNF(formula))	
-			lineNumber += 1
+        # Add the number of voters to the scenario
+        self.number_voters += int(lines[line_number].split(", ")[0])
 
-		# Check consistency of the input constraints
-		my_string = ""
-		for conjunct in self.inputConstraints:
-			my_string += f"({conjunct}) & "
-		my_string = my_string[:-3]
-		if not self.checkConsistency(my_string):
-			raise Exception ("The input constraints are inconsistent")
-		
-		# Add the output constraints to the list of constraints
-		while lines[lineNumber].split(", ")[0] == "Out":
-			formula = lines[lineNumber].split(", ")[1]
-			if formula == "":
-				firstVar = self.variables[0]
-				formula = f'({firstVar} | ~{firstVar})'
-			self.outputConstraints.append(parser.toNNF(formula))	
-			lineNumber += 1
+        # Add the list of accepted formulas to the profile dictionary
+        # for each of the judgment sets.
+        number_of_js = int(lines[line_number].split(", ")[1])
+        for i in range(line_number+1, line_number+number_of_js+1):
+            current_line = lines[i].split(", ")
+            # If the list of accepted formulas is not empty continue
+            if current_line[1] != '':
+                label = int(current_line[0])
+                formula_labels = list(map(int, current_line[1].split(";")))
+                accepted_formulas = []
+                for formula_label in formula_labels:
+                    accepted_formulas.append(self.agenda[formula_label])
 
-		# Check consistency of the output constraints
-		my_string = ""
-		for conjunct in self.outputConstraints:
-			my_string += f"({conjunct}) & "
-		my_string = my_string[:-3]
-		if not self.checkConsistency(my_string):
-			raise Exception ("The output constraints are inconsistent")
+                # Check consistency of the judgment set with respect
+                # to the input constraint
+                my_string = ""
+                for conjunct in self.input_constraints:
+                    my_string += f"({conjunct}) & "
+                for j in range(1, len(self.agenda)+1):
+                    if j not in formula_labels:
+                        my_string += f"(~{self.agenda[j]}) & "
+                    else:
+                        my_string += f"({self.agenda[j]}) & "
+                my_string = my_string[:-3]
+                self.check_consistency(my_string)
+                if not self.check_consistency(my_string):
+                    raise Exception (f"The judgment set on line {i} is inconsistent"\
+                        " with the input constraints.")
 
-		# Add the number of voters to the scenario
-		self.numberVoters += int(lines[lineNumber].split(", ")[0])
+                # Add the judgment set to the scenario
+                self.profile.append([label, accepted_formulas])
+            else:
+                # If the all issues are rejected, add the empty list
+                self.profile.append([label, []])
 
-		# Add the list of accepted formulas to the profile dictionary
-		# for each of the judgment sets.
-		numberOfJS = int(lines[lineNumber].split(", ")[1])
-		for i in range(lineNumber+1, lineNumber+numberOfJS+1):
-			currentLine = lines[i].split(", ")
-			# If the list of accepted formulas is not empty continue
-			if currentLine[1] != '':
-				label = int(currentLine[0])
-				formulaLabels = list(map(int, currentLine[1].split(";")))
-				acceptedFormulas = []
-				for formulaLabel in formulaLabels:
-					acceptedFormulas.append(self.agenda[formulaLabel])
+    def check_consistency(self, sentence):
+        """The function check_consistency should receive an NNF-formula as a
+        string. It return a Boolean indicating whether the formula is consistent."""
+        my_string = sentence
 
-				# Check consistency of the judgment set with respect 
-				# to the input constraint
-				my_string = ""
-				for conjunct in self.inputConstraints:
-					my_string += f"({conjunct}) & "
-				for j in range(1, len(self.agenda)+1):
-					if j not in formulaLabels:
-						my_string += f"(~{self.agenda[j]}) & "
-					else:
-						my_string += f"({self.agenda[j]}) & "
-				my_string = my_string[:-3]
-				self.checkConsistency(my_string)
-				if not self.checkConsistency(my_string):
-					raise Exception (f"The judgment set on line {i} is inconsistent"\
-						" with the input constraints.")
+        # Use a prefix to prevent variable name collisions
+        # Add this prefix to all variables in the string
+        var_prefix = "my_var_"
+        my_string_preprocessed = my_string
+        for var in self.variables:
+            my_string_preprocessed = my_string_preprocessed.replace(var, var_prefix + var)
 
-				# Add the judgment set to the scenario
-				self.profile.append([label, acceptedFormulas])
-			else:
-				# If the all issues are rejected, add the empty list
-				self.profile.append([label, []])
+        # Declare variables (with prefix) and parse the formula with the
+        # variable prefixes added
+        for var in self.variables:
+            exec(f"{var_prefix}{var} = Var('{var}')")
+        formula = eval(my_string_preprocessed)
 
-	def checkConsistency(self, sentence):
-		"""The function checkConsistency should receive an NNF-formula as a 
-		string. It return a Boolean indicating whether the formula is consistent."""
-		my_string = sentence
+        # Return whether the formula is consistent
+        return formula.consistent()
 
-		# Use a prefix to prevent variable name collisions
-		# Add this prefix to all variables in the string
-		var_prefix = "my_var_"
-		my_string_preprocessed = my_string
-		for var in self.variables:
-			my_string_preprocessed = my_string_preprocessed.replace(var, var_prefix + var)
 
-		# Declare variables (with prefix) and parse the formula with the
-		# variable prefixes added
-		for var in self.variables:
-			exec(f"{var_prefix}{var} = Var('{var}')")
-		formula = eval(my_string_preprocessed)
+    def pretty_repr(self):
+        """Returns string that represents the scenario object in a readable way"""
+        scenario_string = "Variables:"
+        for variable in self.variables:
+            scenario_string += f"\n{variable}"
+        scenario_string += "\n\nSub-agenda (label, formula):"
+        for key in self.agenda:
+            scenario_string += f"\n{key}, {self.agenda[key]}"
+        scenario_string += "\n\nInput constraints:"
+        for constraint in self.input_constraints:
+            scenario_string += f"\n{constraint}"
+        scenario_string +=  "\n\nOutput constraints:"
+        for constraint in self.output_constraints:
+            scenario_string += f"\n{constraint}"
+        scenario_string += "\n\nProfile (times selected, accepted formulas):"
+        for judgment_set in self.profile:
+            accepted = "("
+            for variable in judgment_set[1]:
+                if accepted == "(":
+                    accepted += variable
+                else:
+                    accepted += ", " + variable
+            accepted += ")"
+            scenario_string += (f"\n{judgment_set[0]}, " + accepted)
+        return scenario_string
 
-		# Return whether the formula is consistent
-		return(formula.consistent())
-	
-
-	def prettyPrint(self):
-		"""Prints the Scenario object in a readable way"""
-		print("Variables: ")
-		for variable in self.variables:
-			print(variable)
-		print("\nSub-agenda (label, formula):")
-		for key in self.agenda:
-			print(key, self.agenda[key])
-		print("\nInput constraint:")
-		for constraint in self.inputConstraints:
-			print(constraint)
-		print("\nOutput constraint:")
-		for constraint in self.outputConstraints:
-			print(constraint)
-		print("\nProfile (times selected, accepted formulas):")
-		for js in self.profile:
-			accepted = "("
-			for variable in js[1]:
-				if accepted == "(":
-					accepted += variable
-				else:
-					accepted += ", " + variable
-			accepted += ")"
-			print(js[0],  accepted)
-
-# A solver class with an enumerate_outcomes function that enumerates
-# all the outcomes given a scenario and an aggregation rule.
+    # A solver class with an enumerate_outcomes function that enumerates
+    # all the outcomes given a scenario and an aggregation rule.
 class Solver(ABC):
-	@abstractmethod
-	def solve(self, scenario, rule):
-		"""Given a scenario and an aggregation rule, yields a generator 
-		with the corresponding outcomes.""" 
-		pass
-	
-	def enumerateOutcomes(self, scenario, rule):
-		"""Given a scenario and an aggregation rule, prints all
-		corresponding outcomes."""
-		for outcome in self.solve(scenario, rule):
-			print(outcome)
+    """The abstract class for solvers. """
+    @abstractmethod
+    def solve(self, scenario, rule, verbose=False):
+        """Given a scenario and an aggregation rule, yields a generator
+        with the corresponding outcomes."""
 
-	def enumerateFirstNOutcomes(self, scenario, rule, n):
-		"""Given a scenario, an aggregation rule and an integer n,
-		prints the first n corresponding outcomes. Note that if n
-		exceeds the number of outcomes, then it starts printing 
-		the beginning again."""
-		for i in range(n):
-			print(next(self.solve(scenario, rule)))
+    def enumerate_outcomes(self, scenario, rule, verbose=False):
+        """Given a scenario and an aggregation rule, prints all
+        corresponding outcomes."""
+        for outcome in self.solve(scenario, rule, verbose):
+            print(outcome)
+
+    def enumerate_first_n_outcomes(self, scenario, rule, verbose=False, n=1):
+        """Given a scenario, an aggregation rule and an integer n,
+        prints the first n corresponding outcomes."""
+        n_outcomes = islice(self.solve(scenario, rule, verbose), n)
+        for outcome in n_outcomes:
+            print(outcome)

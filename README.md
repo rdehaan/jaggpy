@@ -62,7 +62,6 @@ pip install jaggpy
 If necessary, this also installs dependencies of the package. These include:
 - clingo
 - nnf
-- typing
 - pyparsing
 
 <!-- USAGE -->
@@ -93,16 +92,24 @@ An object from the scenario class is read from a `.jagg` file. A `.jagg` file sh
 - `v, j`: The number of voters `v` followed by the number of distinct judgment sets `j`.
 - `J, Label_1;...;Label_n`: The number of times this judgment set occurs followed by the labels of the accepted formulas. The formulas should be separated by a semicolon. Issues that are not accepted are rejected.
 
+By starting a line with a "#" the line will be ignored in the reading of the file. Blank lines will also be ignored. Using these comments and blank lines the `.jagg` file can be made more readable.
+
 An example of the format of a `.jagg` file is:
 ```
 x1, x2, x3
 4
+
+# The issues
 1, x1
 2, x2
 3, x3
 4, ( ~x1 & x2 ) -> x3
+
+# The constraints are the same
 In, ( x1 | ~x1 )
 Out, ( x1 | ~x1 )
+
+# We have 8 voters and 3 different judgment sets
 8, 3
 3, 2;3;4
 2, 1;2;4
@@ -111,24 +118,24 @@ Out, ( x1 | ~x1 )
 In this scenario we have the variables `x1`, `x2` and `x3`. There are `4` different issues in the agenda. These issues are `x1`, `x2`, `x3` and `( ~x1 & x2 ) -> x3`, and are labeled by the numbers `1-4` respectively. The input and output constraints are `( x1 | ~x1 )`. There are `8` voters and `3` different judgment sets. Of the voters three have accepted the issues labeled by `2`, `3` and `4` (and thus have rejected the issue labeled by `1`). Two have accepted the issues labeled by `1`, `2` and `4` (and thus have rejected the issue labeled by `3`). And three have accepted the issue labeled by `4` (and thus have rejected the issues labeled by `1`, `2` and `3`).
 
 #### **Creating a Scenario Object**
-A scenario object should first be created, and then can be loaded from a `.jagg` file given its path. The path should be a raw string, i.e., of the form `r"path/to/file/"`. It can then be loaded using the `loadFromFile` method of the scenario class. For example:
+A scenario object should first be created, and then can be loaded from a `.jagg` file given its path. The path should be given as a string, i.e., of the form `"path/to/file/"`. It can then be loaded using the `load_from_file` method of the scenario class. For example:
 ```python
 from jaggpy.classes import Scenario
 
 scenario1 = Scenario()
-path = r"path/to/file"
-scenario1.loadFromFile(path)
+PATH = "path/to/file"
+scenario1.load_from_file(PATH)
 ```
 If there are any inconsistencies in the scenario defined in the `.jagg` file, a warning indicating the inconsistency will occur. It is not possible to successfully load an inconsistent scenario.
 
 #### **Scenario methods and properties**
 A scenario object has several useful methods and properties.
-- `prettyPrint()`: A method that prints the scenario in a readable format.
+- `pretty_repr()`: A method that returns a string that represents the scenario in a readable format.
 - `agenda`: This property is a dictionary with the the labels of issues as keys and the issues as values.
-- `inputConstraints`: This property is a list of the input constraints.
-- `outputConstraints`: This property is a list of the output constraints.
+- `input_constraints`: This property is a list of the input constraints.
+- `output_constraints`: This property is a list of the output constraints.
 - `profile`: This property is a list of the judgment sets. Each element is a list of which the first element is the number of times the judgment set occurs. The second element of these lists is a list with the issues that are accepted.
-- `numberVoters`: This property is an integer specifying the number of voters.
+- `number_voters`: This property is an integer specifying the number of voters.
 
 <!-- Solver -->
 ### Using the solver
@@ -136,9 +143,9 @@ A scenario object has several useful methods and properties.
 #### **Creating a solver object**
 In order to call a solver, we first need to create a solver object. We can create a brute force solver object and an ASP solver object as follows:
 ```python
-from jaggpy.bruteForceSolver import BruteForce
-from jaggpy.ASPSolver import ASPSolver
-bfs = BruteForce()
+from jaggpy.bf_solver import BFSolver
+from jaggpy.asp_solver import ASPSolver
+bfs = BFSolver()
 asp = ASPSolver()
 ```
 
@@ -155,16 +162,19 @@ For the ASP solver these are:
 - young
 - majority
 
-There are three solver methods corresponding to different ways in which the output is given. For each of these the first argument is the the scenario object and the second argument a lowercase string specifying the rule to be executed. The methods are the following:
+There are three solver methods corresponding to different ways in which the output is given. For each of these the first argument is the the scenario object and the second argument a lowercase string specifying the rule to be executed. Also, each method has a `verbose` property that, if turned on, prints the used rule and solver. This property is `false` by default.
+
+ The methods are the following:
 - `solve()` This method uses no additional arguments. The output given is a generator. Note that the generator returned by the brute force solver yields a list of all outcomes while the ASP solver's generator yields individual outcomes.
-- `enumerateOutcomes()` This method uses no additional arguments and prints all the outcomes.
-- `enumerateFirstNOutcomes()` This method takes one additional argument `n` and prints the first `n` outcomes. Note that when `n` is chosen such that it is larger than the amount of outcomes, this method will print outcomes already seen until it has printed `n` statements.
+- `enumerate_outcomes()` This method uses no additional arguments and prints all the outcomes.
+- `enumerate_first_n_outcomes()` This method takes one additional argument `n` and prints the first `n` outcomes.
 
 For example, we can compute and enumerate outcomes generated by the Kemeny rule, given the scenario object `scenario1` as follows:
 
 ```python
-asp.enumerateOutcomes(scenario1, "kemeny")
-bfs.enumerateFirstNOutcomes(scenario1, "kemeny", 2)
+asp.enumerate_outcomes(scenario1, "kemeny")
+asp.enumerate_outcomes(scenario1, "kemeny", True)
+bfs.enumerate_first_n_outcomes(scenario1, "kemeny", False, n=2)
 ```
 
 <!-- Examples -->
