@@ -84,8 +84,7 @@ class BFSolver(Solver):
             raise Exception (f"{rule} is not a recognized aggregation rule.")
 
         # Clean outcomes to only contain issues
-        for i, value in enumerate(outcomes):
-            outcome = value
+        for i, outcome in enumerate(outcomes):
             translated_outcomes = {}
             for formula in outcome.keys():
                 if formula[0] == 'l':
