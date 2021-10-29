@@ -62,7 +62,6 @@ pip install jaggpy
 If necessary, this also installs dependencies of the package. These include:
 - clingo
 - nnf
-- typing
 - pyparsing
 
 <!-- USAGE -->
@@ -93,7 +92,7 @@ An object from the scenario class is read from a `.jagg` file. A `.jagg` file sh
 - `v, j`: The number of voters `v` followed by the number of distinct judgment sets `j`.
 - `J, Label_1;...;Label_n`: The number of times this judgment set occurs followed by the labels of the accepted formulas. The formulas should be separated by a semicolon. Issues that are not accepted are rejected.
 
-By starting a line with a "#" the line will be ignored in the reading of the file. Blank lines will also be ignored.
+By starting a line with a "#" the line will be ignored in the reading of the file. Blank lines will also be ignored. Using these comments and blank lines the `.jagg` file can be made more readable.
 
 An example of the format of a `.jagg` file is:
 ```
