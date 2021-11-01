@@ -53,20 +53,27 @@ The package offers two ways in which to generate outcomes for a scenario given a
 ### Prerequisites
 At least Python 3.4 is required.
 
-### Installation using PIP
+### Installation
 To install the package run the following command
 ```
 pip install jaggpy
 ```
 
-If necessary, this also installs dependencies of the package. These include:
-- clingo
-- nnf
-- pyparsing
+This will automatically install (if not yet available)
+the following dependencies:
+- [nnf](https://pypi.org/project/nnf/)
+- [pyparsing](https://pypi.org/project/pyparsing/)
+- [clingo](https://pypi.org/project/clingo/)
+
+### Tests
+To check whether the package and all dependencies are installed and working properly, run the following command:
+```
+python -m unittest jaggpy.tests
+```
 
 <!-- USAGE -->
 ## Usage
-To use this package you need to create a scenario object for the scenario that you want to apply judgment aggregation to. Futhermore, a solver object needs to be made to apply one of the aggregation rules to the scenario. These objects and their methods will be discussed in what follows.
+To use this package you need to create a scenario object for the scenario that you want to apply judgment aggregation to. Futhermore, a solver object needs to be made to apply one of the aggregation rules to the scenario. These objects and their methods will be discussed in the following.
 
 <!-- Scenario objects -->
 ### Scenario objects
