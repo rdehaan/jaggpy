@@ -79,7 +79,7 @@ class BFSolver(Solver):
             if verbose:
                 print("Computing outcome with the brute force solver and the Slater rule...")
             outcomes = self.solve_slater(scenario, consistent_outcomes)
-        
+
         else:
             raise Exception (f"{rule} is not a recognized aggregation rule.")
 
@@ -96,11 +96,11 @@ class BFSolver(Solver):
         # Remove duplicates from outcomes.
         outcomes = [dict(t) for t in {tuple(outcome.items()) for outcome in outcomes}]
 
-        yield outcomes
+        return outcomes
 
     def support_number(self, agenda, profile):
         """The function support_number gets an agenda and profile and returns a dictionary, where each key
-        is the label of a formula and each value is the number of times the issue corresponding to the 
+        is the label of a formula and each value is the number of times the issue corresponding to the
         label is voted for."""
         support_count = dict()
         for formula in agenda.values():
@@ -224,7 +224,7 @@ class BFSolver(Solver):
                 # If some models were kept we add this subset as a candidate.
                 if consistent_list != []:
                     potential_subsets.append(subset)
-            # We break out of the (decreasing) loop when we have at least one consistent subset, for 
+            # We break out of the (decreasing) loop when we have at least one consistent subset, for
             # this/these subsets will be the largest consistent subset(s).
             if potential_subsets != []:
                 break
