@@ -160,7 +160,7 @@ class ASPSolver(Solver):
         # Add the ASP code corresponding to the rule that is to be executed.
         if rule == "kemeny":
             if verbose:
-                print("Computing outcome with ASP and the Kemeny rule...")
+                print("Computing outcomes with ASP and the Kemeny rule...")
             asp_program += textwrap.dedent("""
             % Kemeny rule
             wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
@@ -169,7 +169,7 @@ class ASPSolver(Solver):
 
         elif rule == "leximax":
             if verbose:
-                print("Computing outcome with ASP and the Leximax rule...")
+                print("Computing outcomes with ASP and the Leximax rule...")
             asp_program += textwrap.dedent("""
             % Leximax rule
             wgt(X,N) :- lit(X), N = #count { A : voter(A), js(A,X) }.
@@ -178,7 +178,7 @@ class ASPSolver(Solver):
 
         elif rule == "young":
             if verbose:
-                print("Computing outcome with ASP and the Young rule...")
+                print("Computing outcomes with ASP and the Young rule...")
             asp_program += textwrap.dedent("""
             % Young rule
             in(A) ; out(A) :- voter(A).
@@ -190,7 +190,7 @@ class ASPSolver(Solver):
 
         elif rule == "slater":
             if verbose:
-                print("Computing outcome with ASP and the Slater rule...")
+                print("Computing outcomes with ASP and the Slater rule...")
             asp_program += textwrap.dedent("""
             % Slater rule
             % determine the majority outcome
@@ -202,7 +202,7 @@ class ASPSolver(Solver):
 
         elif rule == "majority":
             if verbose:
-                print("Computing outcome with ASP and the Majority rule...")
+                print("Computing outcomes with ASP and the Majority rule...")
             asp_program += textwrap.dedent("""
             % Majority rule
             % require that the collective outcome agrees with all issues

@@ -65,19 +65,19 @@ class BFSolver(Solver):
         # Kemeny rule
         if rule == "kemeny":
             if verbose:
-                print("Computing outcome with the brute force solver and the Kemeny rule...")
+                print("Computing outcomes with the brute force solver and the Kemeny rule...")
             outcomes = self.solve_kemeny(scenario, consistent_outcomes)
 
         # MaxHamming rule
         elif rule == "maxhamming":
             if verbose:
-                print("Computing outcome with the brute force solver and the MaxHamming rule...")
+                print("Computing outcomes with the brute force solver and the MaxHamming rule...")
             outcomes =  self.solve_max_hamming(scenario, consistent_outcomes)
 
         # Slater rule
         elif rule == "slater":
             if verbose:
-                print("Computing outcome with the brute force solver and the Slater rule...")
+                print("Computing outcomes with the brute force solver and the Slater rule...")
             outcomes = self.solve_slater(scenario, consistent_outcomes)
 
         else:
