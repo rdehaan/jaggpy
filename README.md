@@ -17,6 +17,7 @@ The package offers two ways in which to generate outcomes for a scenario given a
     <ul>
     <li><a href="#prerequisites">Prerequisites</a></li>
     <li><a href="#installation">Installation</a></li>
+    <li><a href="#tests">Tests</a></li>
     </ul>
 </li>
 <li>
@@ -38,7 +39,7 @@ The package offers two ways in which to generate outcomes for a scenario given a
         <li><a href="#solver-methods">Solver methods</a></li>
         </ul>
     </li>
-    <li><a href="#examples">Examples</a></li>
+    <!--<li><a href="#examples">Examples</a></li>-->
     </ul>
 </li>
 <li><a href="#license">License</a></li>
@@ -192,8 +193,10 @@ for outcome in bfs.outcomes(scenario1, "slater", num=2):
 ```
 
 <!-- Examples -->
+<!--
 ### Examples
-The source code of this package contains the folder `src/test`. There are several example files illustrating the use of the `jaggpy` package. It contains several example scenarios, an example python file incorporating the package and explicit ASP encodings of some scenarios and rules.  
+The source code of this package contains the folder `src/test`. There are several example files illustrating the use of the `jaggpy` package. It contains several example scenarios, an example python file incorporating the package and explicit ASP encodings of some scenarios and rules.
+-->
 
 <!-- LICENSE -->
 ## License
