@@ -63,7 +63,15 @@ This will automatically install (if not yet available)
 the following dependencies:
 - [nnf](https://pypi.org/project/nnf/)
 - [pyparsing](https://pypi.org/project/pyparsing/)
-- [clingo](https://pypi.org/project/clingo/)
+
+Part of the functionality of `jaggpy` depends
+on [clingo](https://potassco.org/clingo/),
+which is most conveniently installed using [Anaconda](https://conda.io),
+e.g., with:
+```
+conda install -c potassco clingo
+```
+
 
 ### Tests
 To check whether the package and all dependencies are installed and working properly, run the following command:
