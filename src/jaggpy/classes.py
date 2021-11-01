@@ -182,7 +182,7 @@ class Scenario:
         scenario_string = "Variables:"
         for variable in self.variables:
             scenario_string += f"\n{variable}"
-        scenario_string += "\n\nSub-agenda (label, formula):"
+        scenario_string += "\n\nAgenda (label, formula):"
         for key in self.agenda:
             scenario_string += f"\n{key}, {self.agenda[key]}"
         scenario_string += "\n\nInput constraints:"
