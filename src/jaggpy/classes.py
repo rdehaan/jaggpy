@@ -2,7 +2,7 @@
 ## Useful python classes for the scenarios and the possible solvers.
 #################################################################
 
-# A scenario class that will allow us to create a scenario object by loading 
+# A scenario class that will allow us to create a scenario object by loading
 # information from a .jagg file. A scenario has an agenda, input constraints,
 # output constraints and a profile.
 
@@ -31,7 +31,7 @@ class Scenario:
             - profile: a list of judgment sets
             - number_voters: an integer specifying the number of voters
             """
-        self.agenda = dict()
+        self.agenda = {}
         self.input_constraints = []
         self.output_constraints = []
         self.profile = []
@@ -61,10 +61,9 @@ class Scenario:
             - The IMPLIES operator ->
         Parentheses can be omitted where clear from context. """
         # Read the file and split all lines
-        conn = open(path)
-        text = conn.read()
-        lines = text.splitlines()
-        conn.close()
+        with open(path, encoding='utf-8') as conn:
+            text = conn.read()
+            lines = text.splitlines()
 
         # Remove blank lines and comments from the lines
         lines = [line for line in lines if line != "" and line[0] != "#"]
@@ -204,24 +203,16 @@ class Scenario:
             scenario_string += (f"\n{judgment_set[0]}, " + accepted)
         return scenario_string
 
-    # A solver class with an enumerate_outcomes function that enumerates
-    # all the outcomes given a scenario and an aggregation rule.
+# A solver class with an enumerate_outcomes function that enumerates
+# all the outcomes given a scenario and an aggregation rule.
 class Solver(ABC):
-    """The abstract class for solvers. """
+    """The abstract class for solvers."""
     @abstractmethod
-    def solve(self, scenario, rule, verbose=False):
+    def all_outcomes(self, scenario, rule, verbose=False):
         """Given a scenario and an aggregation rule, yields a generator
         with the corresponding outcomes."""
 
-    def enumerate_outcomes(self, scenario, rule, verbose=False):
-        """Given a scenario and an aggregation rule, prints all
-        corresponding outcomes."""
-        for outcome in self.solve(scenario, rule, verbose):
-            print(outcome)
-
-    def enumerate_first_n_outcomes(self, scenario, rule, verbose=False, n=1):
-        """Given a scenario, an aggregation rule and an integer n,
-        prints the first n corresponding outcomes."""
-        n_outcomes = islice(self.solve(scenario, rule, verbose), n)
-        for outcome in n_outcomes:
-            print(outcome)
+    def outcomes(self, scenario, rule, num=1, verbose=False):
+        """Given a scenario, an aggregation rule and an integer `num`,
+        yields the first `num` corresponding outcomes."""
+        return islice(self.all_outcomes(scenario, rule, verbose=verbose), num)

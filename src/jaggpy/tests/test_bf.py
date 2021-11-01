@@ -22,7 +22,7 @@ class TestBFSolverScenario1(unittest.TestCase):
 
     def test_kemeny(self):
         """Test Kemeny brute force solver with scenario1.jagg."""
-        outcomes = list(self.solver.solve(self.scenario, "kemeny"))
+        outcomes = list(self.solver.all_outcomes(self.scenario, "kemeny"))
         self.assertEqual(
             len(outcomes), 1,
             "Incorrect number of outcomes (BFSolver, Kemeny, scenario1.jagg)"
@@ -30,7 +30,7 @@ class TestBFSolverScenario1(unittest.TestCase):
 
     def test_slater(self):
         """Test Slater brute force solver with scenario1.jagg."""
-        outcomes = list(self.solver.solve(self.scenario, "slater"))
+        outcomes = list(self.solver.all_outcomes(self.scenario, "slater"))
         self.assertEqual(
             len(outcomes), 2,
             "Incorrect number of outcomes (BFSolver, Slater, scenario1.jagg)"
@@ -38,7 +38,7 @@ class TestBFSolverScenario1(unittest.TestCase):
 
     def test_maxhamming(self):
         """Test Max-Hamming brute force solver with scenario1.jagg."""
-        outcomes = list(self.solver.solve(self.scenario, "maxhamming"))
+        outcomes = list(self.solver.all_outcomes(self.scenario, "maxhamming"))
         self.assertEqual(
             len(outcomes), 9,
             "Incorrect number of outcomes " + \

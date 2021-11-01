@@ -11,7 +11,7 @@ from .parser import Parser
 
 class ASPSolver(Solver):
     """A solver that uses Answer Set Programming to compute outcomes."""
-    def solve(self, scenario, rule, verbose=False):
+    def all_outcomes(self, scenario, rule, verbose=False):
         """Given a scenario object and the name of a rule
         this function will yield the outcomes
         of the judgment aggregation. Each outcome is yielded seperately.
@@ -102,7 +102,7 @@ class ASPSolver(Solver):
         # Adding output constraints.
         asp_program += "\n% Declare output constraints (in CNF)\n"
         total_output_contstraints = ""
-        
+
         # Compound separate constraints into one.
         for conjunct in scenario.output_constraints:
             total_output_contstraints += f"{conjunct} & "
@@ -231,7 +231,7 @@ class ASPSolver(Solver):
         with control.solve(yield_=True) as handle:
             for model in handle:
                 if model.optimality_proven:
-                    outcome = dict()
+                    outcome = {}
                     for label in scenario.agenda:
                         for atom in model.symbols(shown=True):
                             outcome[scenario.agenda[label]] = False

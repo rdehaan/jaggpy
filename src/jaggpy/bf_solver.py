@@ -11,8 +11,8 @@ from .classes import Solver
 from .parser import Parser
 
 class BFSolver(Solver):
-    """A brute solver for Judgment Aggregation."""
-    def solve(self, scenario, rule, verbose=False):
+    """A brute force solver for Judgment Aggregation."""
+    def all_outcomes(self, scenario, rule, verbose=False):
         """Given a scenario object and the name of a rule
         this function will yield a list with all the outcomes
         of the judgment aggregation. The rule should be given
