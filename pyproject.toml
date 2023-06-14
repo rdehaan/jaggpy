@@ -6,8 +6,25 @@ requires = [
 
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "jaggpy"
+version = "0.1.2"
+description= "A Python package for Judgment Aggregation"
+readme = "README.md"
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = ["nnf>=0.3.0", "pyparsing"]
+
+[[project.maintainers]]
+name = "Ronald de Haan"
+email = "me@ronalddehaan.eu"
+
 [project.urls]
-homepage = "https://github.com/rdehaan/jaggpy/"
+repository = "https://github.com/rdehaan/jaggpy/"
 
 [tool.bumpver]
 current_version = "0.1.2"
@@ -20,4 +37,5 @@ push = false
 [tool.bumpver.file_patterns]
 "pyproject.toml" = [
     'current_version = "{version}"',
+    'version = "{version}"',
 ]
