@@ -221,6 +221,7 @@ class ASPSolver(Solver):
                 """)
 
         # Ground and solve the program.
+        # pylint: disable=E1101
         control = clingo.Control(arguments=["--project"])
         control.add("base", [], asp_program)
         control.ground([("base", [])])
