@@ -156,8 +156,9 @@ class Scenario:
                 self.profile.append([label, accepted_formulas])
             else:
                 # If the all issues are rejected, add the empty list
-                # label = int(current_line[0])
+                label = int(current_line[0])
                 self.profile.append([label, []])
+
 
     def check_consistency(self, sentence):
         """The function check_consistency should receive an NNF-formula as a
