@@ -73,6 +73,8 @@ class Scenario:
 
         # Add the variables to the scenario
         self.variables = lines[0].split(", ")
+        # Remove duplicates
+        self.variables = list(set(self.variables))
 
         # Add the formulas to the agenda dictionary using the given label
         number_of_formulass = int(lines[1])
@@ -140,7 +142,8 @@ class Scenario:
                     my_string += f"({conjunct}) & "
                 for j in range(1, len(self.agenda)+1):
                     if j not in formula_labels:
-                        my_string += f"(~{self.agenda[j]}) & "
+                        nnf_formula = parser.to_nnf(f"~{self.agenda[j]}")
+                        my_string += f"({nnf_formula}) & "
                     else:
                         my_string += f"({self.agenda[j]}) & "
                 my_string = my_string[:-3]
@@ -153,6 +156,7 @@ class Scenario:
                 self.profile.append([label, accepted_formulas])
             else:
                 # If the all issues are rejected, add the empty list
+                # label = int(current_line[0])
                 self.profile.append([label, []])
 
     def check_consistency(self, sentence):
