@@ -50,7 +50,7 @@ class BFSolver(Solver):
         my_string = my_string[:-3]
 
         # Preprocess the string representing the scenario.
-        var_prefix = "my_var_"
+        var_prefix = "_"
         my_string_preprocessed = my_string
         for var in all_variables:
             my_string_preprocessed = my_string_preprocessed.replace(var, var_prefix + var)

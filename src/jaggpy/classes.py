@@ -167,7 +167,7 @@ class Scenario:
 
         # Use a prefix to prevent variable name collisions
         # Add this prefix to all variables in the string
-        var_prefix = "my_var_"
+        var_prefix = "_"
         my_string_preprocessed = my_string
         for var in self.variables:
             my_string_preprocessed = my_string_preprocessed.replace(var, var_prefix + var)
