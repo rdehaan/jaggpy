@@ -5,3 +5,19 @@ requires = [
 ]
 
 build-backend = "setuptools.build_meta"
+
+[project.urls]
+homepage = "https://github.com/rdehaan/jaggpy/"
+
+[tool.bumpver]
+current_version = "0.1.1"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = false
+tag = false
+push = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
